@@ -16,5 +16,6 @@ urlpatterns = [
     path("structure/", include("org.urls")),
     path("norms/", include("norms.urls")),
     path("portfolio/", include("portfolio.urls")),
+    path("instruments/", include("instruments.urls")),
     path("admin/", admin.site.urls),
 ]

@@ -26,7 +26,7 @@ def index(request):
 @login_required
 def version_detail(request, pk):
     version = get_object_or_404(FrameworkVersion.objects.select_related("framework"), pk=pk)
-    nodes = list(version.nodes.prefetch_related("indicators"))
+    nodes = list(version.nodes.prefetch_related("indicators__instrument_derived__version__instrument"))
     by_parent = {}
     for n in nodes:
         by_parent.setdefault(n.parent_id, []).append(n)

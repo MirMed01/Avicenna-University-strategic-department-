@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Инструменты{% endblock %}
+{% block content %}
+<div class="row between"><h1>Инструменты</h1>
+  {% if can_manage %}<a class="btn" href="{% url 'instruments:create' %}">+ Новый инструмент</a>{% endif %}</div>
+<p class="muted">«Методы обследования»: формы отчётов, чек-листы, протоколы посещения, станции ОСКЭ, анкеты.
+Каждый пункт и каждый расчёт привязан к показателю нормы.</p>
+<div class="tbl"><table><thead><tr><th>Инструмент</th><th>Вид</th><th>Кто заполняет</th><th>Версия</th></tr></thead><tbody>
+{% for i, latest, current in rows %}<tr>
+<td><a href="{% url 'instruments:version' latest.pk %}">{{ i.title }}</a>{% if i.source_title %}<div class="small muted">Основание: {{ i.source_title }}</div>{% endif %}</td>
+<td><span class="kind">{{ i.get_kind_display }}</span></td><td>{{ i.get_respondent_display }}</td>
+<td>{% if current %}<span class="pill ok">действует: в.{{ current.number }}</span>{% endif %}
+    {% if latest.status == "draft" %}<span class="pill warn">черновик в.{{ latest.number }}</span>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="4" class="muted">Инструментов пока нет.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

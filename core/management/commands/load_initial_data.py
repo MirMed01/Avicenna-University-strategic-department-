@@ -11,6 +11,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
+from instruments.models import Derived, Instrument, InstrumentVersion, Item, Section
 from norms.models import Framework, FrameworkVersion, Indicator, NormNode
 from org.models import OrgUnit
 
@@ -29,6 +30,7 @@ class Command(BaseCommand):
         self.structure()
         self.strategy()
         self.skeletons()
+        self.instruments()
 
     def _unit(self, kind, name, parent, order=0):
         unit, created = OrgUnit.objects.get_or_create(kind=kind, name=name, parent=parent, defaults={"order": order})
@@ -81,3 +83,35 @@ class Command(BaseCommand):
             for i, (code, title) in enumerate(f["areas"]):
                 NormNode.objects.create(version=v, kind=NormNode.Kind.AREA, code=code, title=title, order=i)
             self.stdout.write(f"{fw.title}: каркас из {len(f['areas'])} областей.")
+
+    def instruments(self):
+        data = _load("instruments.json")
+        f = data["framework"]
+        fw, _ = Framework.objects.get_or_create(code=f["code"], defaults={"title": f["title"], "description": f["description"]})
+        v, created = FrameworkVersion.objects.get_or_create(framework=fw, version=f["version"])
+        if created:
+            for i, area in enumerate(f["areas"]):
+                node = NormNode.objects.create(version=v, kind=NormNode.Kind.AREA, code=area["code"], title=area["title"], order=i)
+                for j, (code, title, unit) in enumerate(area["indicators"]):
+                    Indicator.objects.create(node=node, code=code, title=title, unit=unit, order=j,
+                                             note="Порог не задан в положении — установите его.")
+        indicators = {i.code: i for i in Indicator.objects.filter(node__version=v)}
+        made = 0
+        for d in data["instruments"]:
+            inst, new = Instrument.objects.get_or_create(code=d["code"], defaults={
+                k: d[k] for k in ("title", "kind", "respondent", "description", "source_title", "source_url")})
+            if not new:
+                continue
+            made += 1
+            ver = InstrumentVersion.objects.create(instrument=inst, number=1)
+            items = {}
+            for si, sec in enumerate(d["sections"]):
+                s = Section.objects.create(version=ver, title=sec["title"], order=si)
+                for ii, (code, text, typ, help_, ind) in enumerate(sec["items"]):
+                    items[code] = Item.objects.create(section=s, code=code, text=text, type=typ, help=help_, order=ii,
+                                                      required=typ != "text", indicator=indicators.get(ind))
+            for di, (code, title, method, num, den, ind) in enumerate(d["derived"]):
+                Derived.objects.create(version=ver, code=code, title=title, method=method, order=di,
+                                       numerator=items.get(num), denominator=items.get(den), indicator=indicators.get(ind))
+            ver.publish()
+        self.stdout.write(f"Инструменты: добавлено {made}.")

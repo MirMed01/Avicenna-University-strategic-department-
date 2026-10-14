@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "accounts",
     "norms",
     "portfolio",
+    "instruments",
 ]
 
 MIDDLEWARE = [

@@ -17,7 +17,8 @@
   <a class="btn small ghost" href="{% url 'norms:node_delete' n.pk %}">Удалить</a></td>{% endif %}</tr>
   {% for i in n.indicators.all %}
   <tr><td class="indent-{{ depth|add:1 }}">{{ i.code }} {{ i.title }}{% if i.direction == "lower_better" %} <span class="pill">чем меньше, тем лучше</span>{% endif %}
-    {% if i.note %}<div class="small muted">{{ i.note }}</div>{% endif %}</td>
+    {% if i.note %}<div class="small muted">{{ i.note }}</div>{% endif %}
+    {% for d in i.instrument_derived.all %}{% if d.version.status != "archived" %}<div class="small">Измеряет: <a href="{% url 'instruments:version' d.version_id %}">{{ d.version.instrument.title }}</a></div>{% endif %}{% endfor %}</td>
     <td class="num">{{ i.threshold_weak|num }}</td><td class="num">{{ i.threshold_medium|num }}</td>
     <td class="num">{{ i.threshold_high|num }}</td><td>{{ i.unit }}</td>
     {% if can_manage %}<td class="row"><a class="btn small ghost" href="{% url 'norms:indicator_edit' i.pk %}">Изменить</a></td>{% endif %}</tr>

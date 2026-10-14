@@ -68,9 +68,10 @@ class InitialDataTests(TestCase):
         self.assertIsNone(inds.get(code="1.4").threshold_medium)  # университетская клиника — без чисел
         self.assertEqual(NormNode.objects.filter(version__framework__code="wfme-bme").count(), 8)
         # Повторный запуск ничего не дублирует.
+        before = Indicator.objects.count()
         call_command("load_initial_data", stdout=open("/dev/null", "w"))
         self.assertEqual(OrgUnit.objects.filter(kind="department").count(), 59)
-        self.assertEqual(Indicator.objects.count(), 16)
+        self.assertEqual(Indicator.objects.count(), before)
 
 
 class NormViewsTests(TestCase):
