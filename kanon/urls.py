@@ -21,6 +21,7 @@ urlpatterns = [
     path("inspections/", include("inspections.urls")),
     path("plans/", include("capa.urls")),
     path("feedback/", include("feedback.urls")),
+    path("dashboard/", include("dashboard.urls")),
     path("s/", include((public_urlpatterns, "feedback"), namespace="student")),
     path("admin/", admin.site.urls),
 ]

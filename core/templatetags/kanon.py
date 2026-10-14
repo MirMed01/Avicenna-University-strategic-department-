@@ -13,3 +13,8 @@ def num(value):
     if isinstance(value, Decimal):
         return f"{value.normalize():f}"
     return value
+
+
+@register.filter
+def zip_titles(codes, titles):
+    return zip(codes, titles)

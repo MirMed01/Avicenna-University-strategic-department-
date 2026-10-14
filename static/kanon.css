@@ -57,3 +57,6 @@ input[type=text],input[type=email],input[type=password],input[type=url],input[ty
 .kind{font-family:var(--f-mono);font-size:12px;color:var(--teal);text-transform:uppercase;letter-spacing:.05em}
 .auth{max-width:440px;margin:40px auto}
 @media (max-width:640px){h1{font-size:23px}.top .me{margin-left:0}}
+.heat td,.heat th{text-align:center;padding:6px 6px}
+.heat td:first-child,.heat th:first-child{text-align:left}
+.c-ok{background:var(--ok-bg);color:var(--ok)} .c-warn{background:var(--warn-bg);color:var(--warn)} .c-bad{background:var(--bad-bg);color:var(--bad)}

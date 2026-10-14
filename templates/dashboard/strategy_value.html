@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ ind.code }} {{ ind.title }}</h1>
+<p class="muted">Значение по университету за {{ year }} год. Цель 2027: {{ ind.threshold_medium|default_if_none:"—" }}, цель 2030: {{ ind.threshold_high|default_if_none:"—" }} {{ ind.unit }}.</p>
+<form method="post" class="f card">{% csrf_token %}
+<div><label for="value">Значение ({{ ind.unit }})</label><input type="text" id="value" name="value" inputmode="decimal" value="{{ current.value|default_if_none:'' }}" style="max-width:200px">
+<div class="help">Оставьте пустым и сохраните, чтобы удалить значение.</div></div>
+<div><label for="note">Источник</label><input type="text" id="note" name="note" value="{{ current.note|default:'' }}" placeholder="Например: приказ, отчёт отдела кадров, база Scopus"></div>
+<div class="row"><button class="btn">Сохранить</button><a class="btn ghost" href="{% url 'dashboard:index' %}?year={{ year }}#strategy">Отмена</a></div></form>
+{% endblock %}

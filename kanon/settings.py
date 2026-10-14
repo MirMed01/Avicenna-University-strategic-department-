@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "inspections",
     "capa",
     "feedback",
+    "dashboard",
 ]
 
 MIDDLEWARE = [
