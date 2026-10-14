@@ -102,6 +102,7 @@ class Command(BaseCommand):
         indicators = {i.code: i for i in Indicator.objects.filter(node__version=v)}
         made = 0
         for d in data["instruments"]:
+            self._fill_tajik(d)
             inst, new = Instrument.objects.get_or_create(code=d["code"], defaults={
                 k: d[k] for k in ("title", "kind", "respondent", "description", "source_title", "source_url")})
             if not new:
@@ -118,7 +119,18 @@ class Command(BaseCommand):
                 Derived.objects.create(version=ver, code=code, title=title, method=method, order=di,
                                        numerator=items.get(num), denominator=items.get(den), indicator=indicators.get(ind))
             ver.publish()
+            self._fill_tajik(d)
         self.stdout.write(f"Инструменты: добавлено {made}.")
+
+    def _fill_tajik(self, d):
+        """Таджикский вариант вопросов: заполняется только там, где поле ещё пустое (правки в программе не затираются)."""
+        tg = d.get("tg")
+        if not tg:
+            return
+        for title, title_tg in tg.get("sections", {}).items():
+            Section.objects.filter(version__instrument__code=d["code"], title=title, title_tg="").update(title_tg=title_tg)
+        for code, text_tg in tg.get("items", {}).items():
+            Item.objects.filter(section__version__instrument__code=d["code"], code=code, text_tg="").update(text_tg=text_tg)
 
     def problems(self):
         from capa.models import Problem

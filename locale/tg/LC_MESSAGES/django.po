@@ -1,0 +1,2861 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 01:47+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Сотрудник"
+msgstr ""
+
+msgid "Заявка"
+msgstr ""
+
+msgid "Доступ"
+msgstr ""
+
+msgid "Подразделение"
+msgstr ""
+
+msgid "Неверный email или пароль."
+msgstr ""
+
+msgid "Доступ ещё не открыт. Дождитесь подтверждения администратора."
+msgstr ""
+
+msgid "Пароль"
+msgstr ""
+
+msgid "Пароль ещё раз"
+msgstr ""
+
+msgid "Кем вы работаете"
+msgstr ""
+
+msgid "Ваше подразделение (кафедра, факультет или центр)"
+msgstr ""
+
+msgid "Этот email уже зарегистрирован."
+msgstr ""
+
+msgid "Пароли не совпадают."
+msgstr ""
+
+msgid "Роль"
+msgstr ""
+
+msgid "Для заведующего и преподавателя выберите кафедру."
+msgstr ""
+
+msgid "Для декана выберите факультет."
+msgstr ""
+
+msgid "Администратор системы"
+msgstr ""
+
+msgid "Ректор / проректор"
+msgstr ""
+
+msgid "Директор Центра"
+msgstr ""
+
+msgid "Эксперт Центра"
+msgstr ""
+
+msgid "Декан"
+msgstr ""
+
+msgid "Заведующий кафедрой"
+msgstr ""
+
+msgid "Преподаватель"
+msgstr ""
+
+msgid "Внешний эксперт"
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "ФИО"
+msgstr ""
+
+msgid "должность"
+msgstr ""
+
+msgid "учёная степень"
+msgstr ""
+
+msgid "учёное звание"
+msgstr ""
+
+msgid "подразделение (заявка)"
+msgstr ""
+
+msgid "роль (заявка)"
+msgstr ""
+
+msgid "пользователь"
+msgstr ""
+
+msgid "пользователи"
+msgstr ""
+
+msgid "роль"
+msgstr ""
+
+msgid "подразделение"
+msgstr ""
+
+msgid "роли"
+msgstr ""
+
+#, python-format
+msgid "Доступ открыт: %(user)s"
+msgstr ""
+
+msgid "Роль добавлена."
+msgstr ""
+
+msgid "Роль снята."
+msgstr ""
+
+msgid "Нельзя закрыть доступ самому себе."
+msgstr ""
+
+msgid "Заявка отклонена."
+msgstr ""
+
+msgid "Доступ открыт."
+msgstr ""
+
+msgid "Доступ закрыт."
+msgstr ""
+
+msgid "Сохранено."
+msgstr ""
+
+msgid "Мои данные"
+msgstr ""
+
+msgid ""
+"Для этой оценки опишите меры по улучшению — так требует структура самоотчёта "
+"IAAR."
+msgstr ""
+
+msgid "Кто готовит весь стандарт"
+msgstr ""
+
+msgid "Сильная"
+msgstr ""
+
+msgid "Удовлетворительная"
+msgstr ""
+
+msgid "Предполагает улучшение"
+msgstr ""
+
+msgid "Неудовлетворительная"
+msgstr ""
+
+msgid "название"
+msgstr ""
+
+msgid "стандарт"
+msgstr ""
+
+msgid "образовательная программа"
+msgstr ""
+
+msgid "Например: 1-790101 Лечебное дело"
+msgstr ""
+
+msgid "факультет"
+msgstr ""
+
+msgid "визит экспертов / окончание действующей аккредитации"
+msgstr ""
+
+msgid "ответственный за подготовку"
+msgstr ""
+
+msgid "подготовка к аккредитации"
+msgstr ""
+
+msgid "самооценка"
+msgstr ""
+
+msgid "кто готовит"
+msgstr ""
+
+msgid "доказательства"
+msgstr ""
+
+msgid "Документы, приказы, протоколы, ссылки — что подтверждает соответствие."
+msgstr ""
+
+msgid "обоснование оценки"
+msgstr ""
+
+msgid "меры по улучшению"
+msgstr ""
+
+msgid ""
+"Обязательно для оценок «предполагает улучшение» и «неудовлетворительная»."
+msgstr ""
+
+msgid "название документа"
+msgstr ""
+
+msgid "файл"
+msgstr ""
+
+msgid "отказ в аккредитации"
+msgstr ""
+
+msgid "аккредитация на 7 лет"
+msgstr ""
+
+msgid "аккредитация на 5 лет"
+msgstr ""
+
+msgid "аккредитация на 3 года"
+msgstr ""
+
+msgid "аккредитация на 1 год"
+msgstr ""
+
+#, python-format
+msgid "Отчёт по самооценке: %(p)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Стандарт: %(s)s. Заготовка сформирована программой «Канон» %(d)s; текст "
+"разделов I и III (введение, SWOT-анализ) и выполнение рекомендаций прошлой "
+"аккредитации дописываются вручную."
+msgstr ""
+
+msgid "II. Соответствие стандартам"
+msgstr ""
+
+#, python-format
+msgid "Оценка: %(r)s"
+msgstr ""
+
+msgid "не оценено"
+msgstr ""
+
+#, python-format
+msgid "Доказательства: %(t)s"
+msgstr ""
+
+#, python-format
+msgid "Приложение: %(t)s"
+msgstr ""
+
+#, python-format
+msgid "Обоснование: %(t)s"
+msgstr ""
+
+#, python-format
+msgid "Меры по улучшению: %(t)s"
+msgstr ""
+
+msgid "Итоги по стандартам"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(code)s. %(title)s: сильных — %(s)s, удовлетворительных — %(sat)s, "
+"предполагают улучшение — %(i)s, неудовлетворительных — %(u)s, не оценено — "
+"%(n)s."
+msgstr ""
+
+msgid "IV. Заключение комиссии по самооценке"
+msgstr ""
+
+msgid "№"
+msgstr ""
+
+msgid "Критерий"
+msgstr ""
+
+#, python-format
+msgid ""
+"Оценено %(r)s из %(t)s критериев. Ориентир по правилам IAAR: %(l)s (решение "
+"принимает Совет IAAR)."
+msgstr ""
+
+msgid "Новая подготовка к аккредитации"
+msgstr ""
+
+msgid "Назначено."
+msgstr ""
+
+msgid "код"
+msgstr ""
+
+msgid "описание и признаки"
+msgstr ""
+
+msgid "типовые мероприятия (по одному в строке)"
+msgstr ""
+
+msgid "при отклонении каких показателей подсказывать"
+msgstr ""
+
+msgid "используется"
+msgstr ""
+
+msgid "проблема качества"
+msgstr ""
+
+msgid "проблемы качества"
+msgstr ""
+
+msgid "Черновик"
+msgstr ""
+
+msgid "На утверждении"
+msgstr ""
+
+msgid "Выполняется"
+msgstr ""
+
+msgid "Проверка результативности"
+msgstr ""
+
+msgid "Закрыт: помогло"
+msgstr ""
+
+msgid "Отменён"
+msgstr ""
+
+msgid "номер"
+msgstr ""
+
+msgid "находка"
+msgstr ""
+
+msgid "диагноз (проблема качества)"
+msgstr ""
+
+msgid "план"
+msgstr ""
+
+msgid "анализ причины"
+msgstr ""
+
+msgid ""
+"Почему это произошло? Без анализа причины план не подать на утверждение."
+msgstr ""
+
+msgid "ответственный за план"
+msgstr ""
+
+msgid "срок выполнения"
+msgstr ""
+
+msgid "статус"
+msgstr ""
+
+msgid "как поймём, что помогло"
+msgstr ""
+
+msgid ""
+"Например: доля ППС со степенью на повторной проверке не ниже порога уровня "
+"кафедры."
+msgstr ""
+
+msgid "оценка результативности"
+msgstr ""
+
+msgid "повторная проверка"
+msgstr ""
+
+msgid "план исправления"
+msgstr ""
+
+msgid "планы исправления"
+msgstr ""
+
+msgid "Срочная мера"
+msgstr ""
+
+msgid "Устранение причины"
+msgstr ""
+
+msgid "Предупреждение повторения"
+msgstr ""
+
+msgid "Улучшение"
+msgstr ""
+
+msgid "Запланировано"
+msgstr ""
+
+msgid "Выполнено"
+msgstr ""
+
+msgid "Отменено"
+msgstr ""
+
+msgid "вид"
+msgstr ""
+
+msgid "мероприятие"
+msgstr ""
+
+msgid "исполнитель"
+msgstr ""
+
+msgid "срок"
+msgstr ""
+
+msgid "что сделано"
+msgstr ""
+
+msgid "мероприятия"
+msgstr ""
+
+#, python-format
+msgid "Исправление: %(text)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"На повторной проверке «%(title)s» достигает порога уровня кафедры "
+"(%(threshold)s)."
+msgstr ""
+
+msgid ""
+"План создан. В него добавлены типовые мероприятия — проверьте и уточните их."
+msgstr ""
+
+#, python-format
+msgid "%(ref)s: план"
+msgstr ""
+
+msgid "Мероприятие не добавлено: заполните название и срок."
+msgstr ""
+
+msgid "Опишите, что сделано (или почему мероприятие отменено)."
+msgstr ""
+
+msgid "План подан на утверждение"
+msgstr ""
+
+msgid "План утверждён, выполняется"
+msgstr ""
+
+msgid "План возвращён на доработку"
+msgstr ""
+
+msgid "Мероприятия выполнены, ждёт оценки результативности"
+msgstr ""
+
+msgid "Результативно — план закрыт"
+msgstr ""
+
+msgid "Не помогло — план снова выполняется"
+msgstr ""
+
+msgid "План отменён"
+msgstr ""
+
+msgid "Это действие сейчас недоступно."
+msgstr ""
+
+msgid "Напишите комментарий: почему принято это решение."
+msgstr ""
+
+msgid "Чтобы подать план, нужны анализ причины и хотя бы одно мероприятие."
+msgstr ""
+
+msgid ""
+"Ещё есть невыполненные мероприятия: отметьте каждое как выполненное или "
+"отменённое."
+msgstr ""
+
+msgid "Ни одно мероприятие не выполнено."
+msgstr ""
+
+msgid "Повторная проверка назначена. Начните в ней сбор данных."
+msgstr ""
+
+msgid "Проблема качества"
+msgstr ""
+
+#, python-format
+msgid "по подтверждённым портфолио; преподавателей в системе: %(n)s"
+msgstr ""
+
+#, python-format
+msgid "подтверждённые статьи %(year)s г. в портфолио"
+msgstr ""
+
+msgid "внесено Центром"
+msgstr ""
+
+msgid "показатель"
+msgstr ""
+
+msgid "год"
+msgstr ""
+
+msgid "значение"
+msgstr ""
+
+msgid "источник / примечание"
+msgstr ""
+
+msgid "значение показателя за год"
+msgstr ""
+
+msgid "значения показателей за год"
+msgstr ""
+
+msgid "в норме"
+msgstr ""
+
+msgid "лёгкое отклонение"
+msgstr ""
+
+msgid "выраженное отклонение"
+msgstr ""
+
+msgid "порог не задан"
+msgstr ""
+
+msgid "нет данных"
+msgstr ""
+
+msgid "Тепловая карта"
+msgstr ""
+
+msgid "Кафедра"
+msgstr ""
+
+msgid "Отклонений"
+msgstr ""
+
+#, python-format
+msgid "Не проверялись: %(n)s кафедр"
+msgstr ""
+
+msgid "Стратегия 2030"
+msgstr ""
+
+msgid "Показатель"
+msgstr ""
+
+msgid "Ед."
+msgstr ""
+
+msgid "Цель 2027"
+msgstr ""
+
+msgid "Цель 2030"
+msgstr ""
+
+#, python-format
+msgid "Значение %(year)s"
+msgstr ""
+
+msgid "Состояние"
+msgstr ""
+
+msgid "Источник"
+msgstr ""
+
+msgid "Планы исправления"
+msgstr ""
+
+msgid "Диагноз"
+msgstr ""
+
+msgid "План"
+msgstr ""
+
+msgid "Статус"
+msgstr ""
+
+msgid "Срок"
+msgstr ""
+
+msgid "Просрочен"
+msgstr ""
+
+msgid "Ответственный"
+msgstr ""
+
+msgid "да"
+msgstr ""
+
+msgid "Опросы студентов"
+msgstr ""
+
+msgid "Опрос"
+msgstr ""
+
+msgid "Группа"
+msgstr ""
+
+msgid "Ответов"
+msgstr ""
+
+msgid "Итоги видны"
+msgstr ""
+
+msgid "нет (мало ответов)"
+msgstr ""
+
+#, python-format
+msgid "Годовой отчёт Центра стратегического развития за %(year)s год"
+msgstr ""
+
+#, python-format
+msgid ""
+"ТГМУ им. Абуали ибни Сино. Сформировано программой «Канон» %(date)s. Цифры — "
+"по данным, внесённым в программу; текстовый анализ дописывается Центром."
+msgstr ""
+
+msgid "1. Выполнение Стратегии развития до 2030 года"
+msgstr ""
+
+#, python-format
+msgid ""
+"Значения есть по %(filled)s из %(total)s показателей. Показатели 2.2, 2.3 и "
+"3.1 считаются по подтверждённым портфолио преподавателей, зарегистрированных "
+"в программе."
+msgstr ""
+
+msgid "2. Проверки кафедр"
+msgstr ""
+
+#, python-format
+msgid ""
+"За %(year)s год назначено проверок: %(planned)s, закрыто: %(closed)s. Кафедр "
+"с результатами: %(rows)s, не проверялись: %(unchecked)s."
+msgstr ""
+
+#, python-format
+msgid "отклонения — %(list)s"
+msgstr ""
+
+msgid "отклонений нет"
+msgstr ""
+
+msgid "3. Диагнозы и планы исправления"
+msgstr ""
+
+#, python-format
+msgid ""
+"Всего планов: %(total)s, открыто: %(open)s, закрыто результативно: "
+"%(closed)s, просрочено: %(overdue)s."
+msgstr ""
+
+msgid "4. Обратная связь студентов"
+msgstr ""
+
+#, python-format
+msgid ""
+"Опросов: %(camps)s, ответов: %(responses)s. Итоги учитываются только там, "
+"где ответов не меньше порога анонимности."
+msgstr ""
+
+msgid "5. Выводы и предложения"
+msgstr ""
+
+msgid "________________________________________________ (заполняет Центр)"
+msgstr ""
+
+msgid "весь университет"
+msgstr ""
+
+msgid "Введите число."
+msgstr ""
+
+msgid "Сколько кодов напечатать (по числу студентов в группе)"
+msgstr ""
+
+#, python-format
+msgid "%(title)s (в.%(number)s)"
+msgstr ""
+
+msgid ""
+"Не меньше 3. Пока ответов меньше, итоги не видны никому — так нельзя "
+"вычислить, кто что ответил."
+msgstr ""
+
+msgid "название опроса"
+msgstr ""
+
+msgid "анкета"
+msgstr ""
+
+msgid "кафедра"
+msgstr ""
+
+msgid "группа, курс, дисциплина"
+msgstr ""
+
+msgid "принимать ответы до (включительно)"
+msgstr ""
+
+msgid "показывать итоги не меньше чем при"
+msgstr ""
+
+msgid "приём ответов открыт"
+msgstr ""
+
+msgid "опрос студентов"
+msgstr ""
+
+msgid "опросы студентов"
+msgstr ""
+
+msgid "Не просмотрен"
+msgstr ""
+
+msgid "Показан кафедре"
+msgstr ""
+
+msgid "Скрыт"
+msgstr ""
+
+msgid ""
+"Нет опубликованной анкеты для студентов. Создайте её в разделе "
+"«Инструменты» (кто заполняет — студент)."
+msgstr ""
+
+msgid "Новый опрос студентов"
+msgstr ""
+
+msgid "Не получилось"
+msgstr ""
+
+msgid "Спасибо!"
+msgstr ""
+
+msgid "Ответ записан анонимно. Код больше не действует."
+msgstr ""
+
+msgid "Код не найден. Проверьте, что он введён без ошибок."
+msgstr ""
+
+msgid "По этому коду уже ответили. Каждый код действует один раз."
+msgstr ""
+
+msgid "Приём ответов в этом опросе закрыт."
+msgstr ""
+
+msgid "Ответьте, пожалуйста"
+msgstr ""
+
+msgid "Выберите вариант из списка"
+msgstr ""
+
+msgid "По этому коду уже ответили или опрос закрыт."
+msgstr ""
+
+msgid "Инструменты (по одному заполнению; добавить ещё можно позже)"
+msgstr ""
+
+#, python-format
+msgid "%(title)s (в.%(number)s) — заполняет: %(who)s"
+msgstr ""
+
+msgid "Инструмент"
+msgstr ""
+
+msgid "Уточнение"
+msgstr ""
+
+msgid "Например: «занятие доц. Н., 3 курс»."
+msgstr ""
+
+msgid "Назначена"
+msgstr ""
+
+msgid "Сбор данных"
+msgstr ""
+
+msgid "Разбор экспертом"
+msgstr ""
+
+msgid "Закрыта"
+msgstr ""
+
+msgid "Отменена"
+msgstr ""
+
+msgid "ведущий эксперт"
+msgstr ""
+
+msgid "срок сбора данных"
+msgstr ""
+
+msgid "повторная к проверке"
+msgstr ""
+
+msgid "цель и примечание"
+msgstr ""
+
+msgid "заключение эксперта"
+msgstr ""
+
+msgid "проверка"
+msgstr ""
+
+msgid "проверки"
+msgstr ""
+
+msgid "Не заполнено"
+msgstr ""
+
+msgid "Сдано"
+msgstr ""
+
+msgid "инструмент"
+msgstr ""
+
+msgid "уточнение"
+msgstr ""
+
+msgid "Например: «занятие доц. N, 3 курс»."
+msgstr ""
+
+msgid "нет"
+msgstr ""
+
+msgid "сколько заполнений учтено"
+msgstr ""
+
+msgid "Лёгкое отклонение"
+msgstr ""
+
+msgid "Выраженное отклонение"
+msgstr ""
+
+msgid "Замечание"
+msgstr ""
+
+msgid "Сильная сторона"
+msgstr ""
+
+msgid "описание"
+msgstr ""
+
+msgid "Назначить проверку"
+msgstr ""
+
+msgid "Начат сбор данных"
+msgstr ""
+
+msgid "Сбор закрыт, показатели посчитаны"
+msgstr ""
+
+msgid "Возвращено на сбор данных"
+msgstr ""
+
+msgid "Проверка закрыта"
+msgstr ""
+
+msgid "Проверка отменена"
+msgstr ""
+
+msgid "Ни одно заполнение не сдано — считать нечего."
+msgstr ""
+
+msgid "Напишите, что нужно дособрать."
+msgstr ""
+
+msgid "Пересчитано (например, после изменения порогов)."
+msgstr ""
+
+msgid "Обязательный пункт"
+msgstr ""
+
+msgid "Сдано. Спасибо!"
+msgstr ""
+
+msgid "Сохранено как черновик. Исправьте пункты, отмеченные красным."
+msgstr ""
+
+msgid "Черновик сохранён."
+msgstr ""
+
+msgid ""
+"Не сдано: исправьте пункты, отмеченные красным. Остальное можно сохранить "
+"черновиком."
+msgstr ""
+
+msgid "По находке уже есть план исправления — её нельзя удалить."
+msgstr ""
+
+msgid "Форма сбора данных (отчёт)"
+msgstr ""
+
+msgid "Чек-лист проверки"
+msgstr ""
+
+msgid "Протокол посещения занятия"
+msgstr ""
+
+msgid "Оценочный лист станции ОСКЭ"
+msgstr ""
+
+msgid "Анкета"
+msgstr ""
+
+msgid "Экзаменатор"
+msgstr ""
+
+msgid "Студент (анонимно)"
+msgstr ""
+
+msgid "Внешний эксперт, работодатель"
+msgstr ""
+
+msgid "кто заполняет"
+msgstr ""
+
+msgid "основание (документ)"
+msgstr ""
+
+msgid "ссылка на документ"
+msgstr ""
+
+msgid "инструменты"
+msgstr ""
+
+msgid "Опубликована"
+msgstr ""
+
+msgid "В архиве"
+msgstr ""
+
+msgid "версия"
+msgstr ""
+
+msgid "что изменено"
+msgstr ""
+
+msgid "версия инструмента"
+msgstr ""
+
+msgid "версии инструментов"
+msgstr ""
+
+msgid "Опубликовать можно только черновик."
+msgstr ""
+
+msgid "В инструменте нет ни одного пункта."
+msgstr ""
+
+msgid "Черновик уже есть — правьте его."
+msgstr ""
+
+msgid "раздел"
+msgstr ""
+
+msgid "раздел по-таджикски"
+msgstr ""
+
+msgid "пояснение"
+msgstr ""
+
+msgid "порядок"
+msgstr ""
+
+msgid "разделы"
+msgstr ""
+
+msgid "Да / нет"
+msgstr ""
+
+msgid "Шкала 1–5"
+msgstr ""
+
+msgid "Число"
+msgstr ""
+
+msgid "Выбор одного варианта"
+msgstr ""
+
+msgid "Текст"
+msgstr ""
+
+msgid "пункт (вопрос)"
+msgstr ""
+
+msgid "подсказка"
+msgstr ""
+
+msgid "пункт по-таджикски"
+msgstr ""
+
+msgid "подсказка по-таджикски"
+msgstr ""
+
+msgid "тип ответа"
+msgstr ""
+
+msgid "варианты (по одному в строке)"
+msgstr ""
+
+msgid "обязательный"
+msgstr ""
+
+msgid "вес (баллы)"
+msgstr ""
+
+msgid "показатель, который измеряет пункт"
+msgstr ""
+
+msgid "пункт"
+msgstr ""
+
+msgid "пункты"
+msgstr ""
+
+msgid "Для выбора нужно хотя бы два варианта."
+msgstr ""
+
+msgid "Такой код уже есть в этой версии."
+msgstr ""
+
+msgid "Доля, %: пункт ÷ пункт × 100"
+msgstr ""
+
+msgid "Доля пунктов «да», %"
+msgstr ""
+
+msgid "Набранные баллы, % от максимума"
+msgstr ""
+
+msgid "как считать"
+msgstr ""
+
+msgid "числитель"
+msgstr ""
+
+msgid "знаменатель"
+msgstr ""
+
+msgid "только раздел"
+msgstr ""
+
+msgid "Пусто — по всему инструменту."
+msgstr ""
+
+msgid "показатель нормы"
+msgstr ""
+
+msgid "расчётный показатель"
+msgstr ""
+
+msgid "расчётные показатели"
+msgstr ""
+
+msgid "Для доли нужны числитель и знаменатель."
+msgstr ""
+
+msgid "Выберите пункт с числовым ответом."
+msgstr ""
+
+msgid "Новый инструмент"
+msgstr ""
+
+#, python-format
+msgid "Инструмент: %(inst)s"
+msgstr ""
+
+msgid "Опубликованную версию менять нельзя. Создайте новую версию."
+msgstr ""
+
+msgid "Версия опубликована. Теперь её можно использовать в проверках."
+msgstr ""
+
+msgid "Раздел инструмента"
+msgstr ""
+
+#, python-format
+msgid "Пункт в разделе «%(section)s»"
+msgstr ""
+
+msgid "Расчётный показатель"
+msgstr ""
+
+msgid ""
+"Расчёт превращает ответы в число, которое программа сравнит с порогами нормы."
+msgstr ""
+
+#, python-format
+msgid "Удалить «%(obj)s»?"
+msgstr ""
+
+msgid "Удаляется только из черновика."
+msgstr ""
+
+msgid "Редакция"
+msgstr ""
+
+msgid "Действует с"
+msgstr ""
+
+msgid "Ссылка на документ"
+msgstr ""
+
+msgid "Слабый"
+msgstr ""
+
+msgid "Средний"
+msgstr ""
+
+msgid "Высокий"
+msgstr ""
+
+msgid "документ-источник"
+msgstr ""
+
+msgid "документы-источники"
+msgstr ""
+
+msgid "Действует"
+msgstr ""
+
+msgid "Утратила силу"
+msgstr ""
+
+msgid "редакция"
+msgstr ""
+
+msgid "действует с"
+msgstr ""
+
+msgid "редакции"
+msgstr ""
+
+msgid "Область"
+msgstr ""
+
+msgid "Стандарт"
+msgstr ""
+
+msgid "краткое изложение"
+msgstr ""
+
+msgid "раздел норм"
+msgstr ""
+
+msgid "разделы норм"
+msgstr ""
+
+msgid "Чем больше, тем лучше"
+msgstr ""
+
+msgid "Чем меньше, тем лучше"
+msgstr ""
+
+msgid "единица"
+msgstr ""
+
+msgid "направление"
+msgstr ""
+
+msgid "порог: слабый"
+msgstr ""
+
+msgid "порог: средний"
+msgstr ""
+
+msgid "порог: высокий"
+msgstr ""
+
+msgid "как измеряется"
+msgstr ""
+
+msgid "примечание"
+msgstr ""
+
+msgid "показатели"
+msgstr ""
+
+msgid "уровень"
+msgstr ""
+
+msgid "уровень строгости"
+msgstr ""
+
+msgid "уровни строгости"
+msgstr ""
+
+msgid "Новый документ-источник норм"
+msgstr ""
+
+#, python-format
+msgid "Новый раздел в «%(parent)s»"
+msgstr ""
+
+#, python-format
+msgid "Новая область: %(version)s"
+msgstr ""
+
+#, python-format
+msgid "Раздел %(code)s"
+msgstr ""
+
+msgid "Раздел удалён."
+msgstr ""
+
+#, python-format
+msgid "Удалить раздел «%(node)s»?"
+msgstr ""
+
+#, python-format
+msgid ""
+"Вместе с ним удалятся вложенные разделы и показатели (%(n)s). Отменить это "
+"нельзя."
+msgstr ""
+
+#, python-format
+msgid "Новый показатель в «%(node)s»"
+msgstr ""
+
+#, python-format
+msgid "Удалить показатель «%(ind)s»?"
+msgstr ""
+
+msgid "Отменить это нельзя."
+msgstr ""
+
+#, python-format
+msgid "Уровень строгости: %(framework)s"
+msgstr ""
+
+msgid ""
+"Уровень действует на выбранное подразделение и всё, что в него входит. Если "
+"нигде не задан — средний."
+msgstr ""
+
+msgid "Университет"
+msgstr ""
+
+msgid "Факультет"
+msgstr ""
+
+msgid "Центр"
+msgstr ""
+
+msgid "Отдел"
+msgstr ""
+
+msgid "краткое название"
+msgstr ""
+
+msgid "входит в"
+msgstr ""
+
+msgid "действует"
+msgstr ""
+
+msgid "подразделения"
+msgstr ""
+
+msgid "Укажите, куда входит подразделение."
+msgstr ""
+
+#, python-format
+msgid "«%(kind)s» не может входить в «%(parent)s»."
+msgstr ""
+
+msgid "Подразделение не может входить само в себя или в своё дочернее."
+msgstr ""
+
+#, python-format
+msgid "внутри есть подразделения (%(n)s)"
+msgstr ""
+
+#, python-format
+msgid "к нему привязаны сотрудники (%(n)s)"
+msgstr ""
+
+#, python-format
+msgid "у него есть проверки (%(n)s)"
+msgstr ""
+
+#, python-format
+msgid "Добавлено: %(name)s"
+msgstr ""
+
+msgid "Новое подразделение"
+msgstr ""
+
+#, python-format
+msgid "Изменить: %(name)s"
+msgstr ""
+
+#, python-format
+msgid "Удалено: %(name)s"
+msgstr ""
+
+msgid "Сначала восстановите вышестоящее подразделение."
+msgstr ""
+
+#, python-format
+msgid "Восстановлено: %(name)s"
+msgstr ""
+
+#, python-format
+msgid "Закрыто: %(name)s"
+msgstr ""
+
+msgid "Комментарий"
+msgstr ""
+
+msgid "Допустимы файлы: PDF, JPG, PNG, DOC, DOCX."
+msgstr ""
+
+#, python-format
+msgid "Файл больше %(mb)s МБ."
+msgstr ""
+
+msgid "Образование"
+msgstr ""
+
+msgid "Учёная степень, звание"
+msgstr ""
+
+msgid "Повышение квалификации"
+msgstr ""
+
+msgid "Сертифицированное обучение (медпедагогика, оценка компетенций и др.)"
+msgstr ""
+
+msgid "Стажировка, академическая мобильность"
+msgstr ""
+
+msgid "Публикация"
+msgstr ""
+
+msgid "Грант, международный проект"
+msgstr ""
+
+msgid "Наставничество, менторинг"
+msgstr ""
+
+msgid "Учебно-методическая работа"
+msgstr ""
+
+msgid "Награда"
+msgstr ""
+
+msgid "Другое"
+msgstr ""
+
+msgid "Scopus и Web of Science"
+msgstr ""
+
+msgid "РИНЦ"
+msgstr ""
+
+msgid "Перечень ВАК / журналы РТ"
+msgstr ""
+
+msgid "На проверке"
+msgstr ""
+
+msgid "Подтверждено"
+msgstr ""
+
+msgid "Возвращено"
+msgstr ""
+
+msgid "где / кем выдано"
+msgstr ""
+
+msgid "дата (начало)"
+msgstr ""
+
+msgid "дата окончания"
+msgstr ""
+
+msgid "часы"
+msgstr ""
+
+msgid "индексация"
+msgstr ""
+
+msgid "DOI или ссылка"
+msgstr ""
+
+msgid "подробности"
+msgstr ""
+
+msgid "подтверждающий файл"
+msgstr ""
+
+msgid "комментарий проверяющего"
+msgstr ""
+
+msgid "запись портфолио"
+msgstr ""
+
+msgid "портфолио"
+msgstr ""
+
+msgid "Окончание раньше начала."
+msgstr ""
+
+msgid "Индексация указывается только для публикаций."
+msgstr ""
+
+msgid "Запись добавлена и отправлена на проверку."
+msgstr ""
+
+msgid "Запись добавлена."
+msgstr ""
+
+msgid "Новая запись портфолио"
+msgstr ""
+
+msgid "Запись изменена и снова отправлена на проверку."
+msgstr ""
+
+msgid "Изменить запись"
+msgstr ""
+
+msgid "Запись удалена."
+msgstr ""
+
+#, python-format
+msgid "Удалить запись «%(title)s»?"
+msgstr ""
+
+msgid "Отправлено на проверку."
+msgstr ""
+
+msgid "Чтобы вернуть запись, напишите, что исправить."
+msgstr ""
+
+msgid "Подтверждено."
+msgstr ""
+
+msgid "Возвращено на исправление."
+msgstr ""
+
+msgid "Вход"
+msgstr ""
+
+msgid "Вход в «Канон»"
+msgstr ""
+
+msgid "Система качества обучения ТГМУ им. Абуали ибни Сино"
+msgstr ""
+
+msgid "Войти"
+msgstr ""
+
+msgid "Нет учётной записи?"
+msgstr ""
+
+msgid "Зарегистрироваться"
+msgstr ""
+
+msgid "Регистрация"
+msgstr ""
+
+msgid "Регистрация сотрудника"
+msgstr ""
+
+msgid ""
+"После отправки заявки доступ откроет администратор: он проверит роль и "
+"подразделение."
+msgstr ""
+
+msgid "Отправить заявку"
+msgstr ""
+
+msgid "Уже есть учётная запись — войти"
+msgstr ""
+
+msgid "Заявка отправлена"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(name)s, доступ откроется после подтверждения администратором. Войти можно "
+"будет по адресу %(email)s."
+msgstr ""
+
+msgid "На страницу входа"
+msgstr ""
+
+msgid "доступ открыт"
+msgstr ""
+
+msgid "доступ закрыт"
+msgstr ""
+
+#, python-format
+msgid ""
+"Заявка: роль «%(role)s», подразделение «%(unit)s». Проверьте и откройте "
+"доступ ниже."
+msgstr ""
+
+msgid "Роли"
+msgstr ""
+
+msgid "Снять"
+msgstr ""
+
+msgid "Ролей нет."
+msgstr ""
+
+msgid "Добавить роль"
+msgstr ""
+
+msgid "Открыть доступ с этой ролью"
+msgstr ""
+
+msgid "Портфолио"
+msgstr ""
+
+msgid "Закрыть доступ"
+msgstr ""
+
+msgid "Отклонить заявку"
+msgstr ""
+
+msgid "Открыть доступ"
+msgstr ""
+
+msgid "Пользователи"
+msgstr ""
+
+#, python-format
+msgid "Ждут подтверждения (%(n)s)"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Просит роль"
+msgstr ""
+
+msgid "Рассмотреть"
+msgstr ""
+
+msgid "Поиск по ФИО или email"
+msgstr ""
+
+msgid "Найти"
+msgstr ""
+
+msgid "нет роли"
+msgstr ""
+
+msgid "Никого не найдено."
+msgstr ""
+
+msgid "Доступ закрыт:"
+msgstr ""
+
+msgid ""
+"Это краткое изложение критерия. Точную формулировку сверяйте с документом "
+"IAAR."
+msgstr ""
+
+msgid "Документ"
+msgstr ""
+
+#, python-format
+msgid "Последнее изменение: %(who)s, %(when)s"
+msgstr ""
+
+msgid "Сохранить"
+msgstr ""
+
+msgid "Сохранить и к следующему не оценённому"
+msgstr ""
+
+msgid "Назад"
+msgstr ""
+
+msgid "Самооценка"
+msgstr ""
+
+msgid "Доказательства"
+msgstr ""
+
+msgid "Обоснование"
+msgstr ""
+
+msgid "Меры по улучшению"
+msgstr ""
+
+msgid "Документы-доказательства"
+msgstr ""
+
+msgid "Файлов нет."
+msgstr ""
+
+msgid "Загрузить"
+msgstr ""
+
+msgid ""
+"PDF, JPG, PNG, DOC, DOCX до 10 МБ. Файлы видят только участники подготовки и "
+"руководство."
+msgstr ""
+
+msgid "Аккредитация"
+msgstr ""
+
+msgid "ответственный"
+msgstr ""
+
+msgid "Заготовка самоотчёта (Word)"
+msgstr ""
+
+msgid "Изменить срок и ответственного"
+msgstr ""
+
+#, python-format
+msgid "сдать самоотчёт (за 8 недель до визита); осталось дней: %(n)s"
+msgstr ""
+
+msgid "критериев оценено"
+msgstr ""
+
+msgid "«предполагает улучшение»"
+msgstr ""
+
+msgid "«сильных»"
+msgstr ""
+
+msgid "Ориентир по правилам IAAR"
+msgstr ""
+
+#, python-format
+msgid ""
+"По %(r)s оценённым из %(t)s критериев. Решение принимает Совет IAAR; это "
+"самопроверка, а не прогноз агентства."
+msgstr ""
+
+msgid "По стандартам"
+msgstr ""
+
+msgid "Оценено"
+msgstr ""
+
+msgid "Сильных"
+msgstr ""
+
+msgid "Удовл."
+msgstr ""
+
+msgid "Неудовл."
+msgstr ""
+
+msgid "Внимание"
+msgstr ""
+
+msgid "Поручить стандарт"
+msgstr ""
+
+#, python-format
+msgid "без мер: %(n)s"
+msgstr ""
+
+#, python-format
+msgid "без доказательств: %(n)s"
+msgstr ""
+
+msgid "Назначить"
+msgstr ""
+
+msgid "Критерии"
+msgstr ""
+
+msgid "Показать"
+msgstr ""
+
+msgid "все"
+msgstr ""
+
+msgid "не оценённые"
+msgstr ""
+
+msgid "требуют улучшения"
+msgstr ""
+
+msgid "мои"
+msgstr ""
+
+#, python-format
+msgid "%(n)s документ"
+msgid_plural "%(n)s документов"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Ничего не найдено."
+msgstr ""
+
+msgid "Подготовка к аккредитации"
+msgstr ""
+
+msgid "+ Новая подготовка"
+msgstr ""
+
+msgid ""
+"Самооценка по каждому критерию стандарта, доказательства, ответственные, "
+"готовность и ориентировочный прогноз решения."
+msgstr ""
+
+msgid "Программа"
+msgstr ""
+
+msgid "Самоотчёт до"
+msgstr ""
+
+msgid "Ориентир"
+msgstr ""
+
+#, python-format
+msgid "осталось дней: %(n)s"
+msgstr ""
+
+msgid "Пока ничего не начато."
+msgstr ""
+
+msgid "Канон"
+msgstr ""
+
+msgid "ТГМУ"
+msgstr ""
+
+msgid "Панель"
+msgstr ""
+
+msgid "Структура"
+msgstr ""
+
+msgid "Нормы"
+msgstr ""
+
+msgid "Инструменты"
+msgstr ""
+
+msgid "Проверки"
+msgstr ""
+
+msgid "Моё портфолио"
+msgstr ""
+
+msgid "Проверка портфолио"
+msgstr ""
+
+msgid "Журнал"
+msgstr ""
+
+msgid "Выйти"
+msgstr ""
+
+msgid "просрочен"
+msgstr ""
+
+msgid "Диагноз и план"
+msgstr ""
+
+msgid "Диагноз и план исправления"
+msgstr ""
+
+msgid "По этому показателю программа подсказывает:"
+msgstr ""
+
+msgid "Подсказки отмечены ★ — окончательный диагноз выбирает эксперт."
+msgstr ""
+
+msgid "Подсказки нет — выберите проблему из справочника вручную."
+msgstr ""
+
+msgid ""
+"Типовые мероприятия выбранной проблемы добавятся в план автоматически — их "
+"можно исправить или удалить."
+msgstr ""
+
+msgid "Создать план"
+msgstr ""
+
+msgid "Отмена"
+msgstr ""
+
+#, python-format
+msgid "План исправления %(ref)s"
+msgstr ""
+
+msgid "ответственный:"
+msgstr ""
+
+msgid "Изменить план"
+msgstr ""
+
+msgid "Находка"
+msgstr ""
+
+msgid "Анализ причины"
+msgstr ""
+
+msgid "Не написан. Без анализа причины план не подать."
+msgstr ""
+
+msgid "Как поймём, что помогло:"
+msgstr ""
+
+msgid "Мероприятия"
+msgstr ""
+
+msgid "Мероприятие"
+msgstr ""
+
+msgid "Исполнитель"
+msgstr ""
+
+msgid "просрочено"
+msgstr ""
+
+msgid "Что сделано / почему отменено"
+msgstr ""
+
+msgid "Отменить"
+msgstr ""
+
+msgid "Удалить"
+msgstr ""
+
+msgid "Мероприятий нет."
+msgstr ""
+
+msgid "+ Добавить мероприятие"
+msgstr ""
+
+msgid "Добавить"
+msgstr ""
+
+msgid "Повторная проверка"
+msgstr ""
+
+msgid "Тот же показатель сейчас:"
+msgstr ""
+
+msgid "проверить нельзя"
+msgstr ""
+
+#, python-format
+msgid "(было: %(was)s %%)"
+msgstr ""
+
+msgid "Результат появится, когда в повторной проверке закроют сбор данных."
+msgstr ""
+
+msgid "Оценка результативности"
+msgstr ""
+
+msgid "Действия"
+msgstr ""
+
+msgid "Подать на утверждение"
+msgstr ""
+
+msgid "Мероприятия выполнены"
+msgstr ""
+
+msgid "Назначить повторную проверку"
+msgstr ""
+
+msgid "Утвердить план"
+msgstr ""
+
+msgid "Что доработать"
+msgstr ""
+
+msgid "Вернуть на доработку"
+msgstr ""
+
+msgid "Оценка результативности (обязательно)"
+msgstr ""
+
+msgid "На чём основан вывод: повторная проверка, показатель, документы"
+msgstr ""
+
+msgid "Помогло — закрыть план"
+msgstr ""
+
+msgid "Не помогло — снова в работу"
+msgstr ""
+
+msgid "Причина отмены"
+msgstr ""
+
+msgid "Отменить план"
+msgstr ""
+
+msgid "Только просмотр."
+msgstr ""
+
+msgid "История"
+msgstr ""
+
+msgid "Пусто."
+msgstr ""
+
+msgid "Справочник проблем качества"
+msgstr ""
+
+msgid ""
+"«Лечение»: по находке проверки ставится диагноз и составляется план — "
+"мероприятия, исполнители, сроки, проверка результативности."
+msgstr ""
+
+msgid "Показать:"
+msgstr ""
+
+msgid "открытые"
+msgstr ""
+
+msgid "просроченные"
+msgstr ""
+
+msgid "Планов нет. План создаётся из находки на странице проверки."
+msgstr ""
+
+msgid "Проблемы качества"
+msgstr ""
+
+msgid "+ Проблема"
+msgstr ""
+
+msgid ""
+"«Классификатор болезней образования»: типовые проблемы, их признаки и "
+"типовое лечение. По отклонению показателя программа подсказывает диагноз, а "
+"ставит его эксперт."
+msgstr ""
+
+msgid "Код"
+msgstr ""
+
+msgid "Проблема"
+msgstr ""
+
+msgid "Типовые мероприятия"
+msgstr ""
+
+msgid "Подсказывается по"
+msgstr ""
+
+msgid "Да, удалить"
+msgstr ""
+
+msgid "Страница устарела"
+msgstr ""
+
+msgid ""
+"Форма была открыта до нового входа в систему (или вход выполнен в другой "
+"вкладке), поэтому для защиты она не принята. Ничего не сохранилось."
+msgstr ""
+
+msgid "Вернитесь назад, обновите страницу (F5) и отправьте форму ещё раз."
+msgstr ""
+
+msgid "На главную"
+msgstr ""
+
+msgid "Панель руководства"
+msgstr ""
+
+#, python-format
+msgid "Панель · %(scope_name)s"
+msgstr ""
+
+msgid "Состояние качества обучения"
+msgstr ""
+
+msgid "Год"
+msgstr ""
+
+msgid "Годовой отчёт (Word)"
+msgstr ""
+
+msgid "Таблицы (Excel)"
+msgstr ""
+
+msgid "кафедр"
+msgstr ""
+
+#, python-format
+msgid "проверок в %(year)s г., закрыто %(inspections_closed)s"
+msgstr ""
+
+msgid "открытых планов исправления"
+msgstr ""
+
+#, python-format
+msgid "просрочено %(n)s"
+msgstr ""
+
+#, python-format
+msgid "ответов студентов; опросов: %(n)s"
+msgstr ""
+
+msgid "Тепловая карта кафедр"
+msgstr ""
+
+msgid ""
+"По последней посчитанной проверке и последнему опросу студентов каждой "
+"кафедры. Цвет — сравнение с уровнем строгости этой кафедры. Сверху — кафедры "
+"с наибольшим числом отклонений."
+msgstr ""
+
+msgid "норма"
+msgstr ""
+
+msgid "без цвета — порог не задан"
+msgstr ""
+
+msgid "· — нет данных"
+msgstr ""
+
+msgid "Посчитанных проверок пока нет."
+msgstr ""
+
+#, python-format
+msgid "Стратегия развития до 2030 года — %(year)s год"
+msgstr ""
+
+msgid ""
+"Цель 2027 г. — «средний» уровень, цель 2030 г. — «высокий». Значения 2.2, "
+"2.3 и 3.1 программа считает сама по подтверждённым портфолио (только по "
+"преподавателям, которые есть в системе); остальные вносит Центр."
+msgstr ""
+
+msgid "цель 2027 достигнута"
+msgstr ""
+
+msgid "ниже цели 2027"
+msgstr ""
+
+msgid "Внести вручную"
+msgstr ""
+
+msgid "Внести"
+msgstr ""
+
+msgid "Просроченные планы исправления"
+msgstr ""
+
+msgid "Частые диагнозы"
+msgstr ""
+
+#, python-format
+msgid ""
+"Значение по университету за %(year)s год. Цель 2027: %(medium)s, цель 2030: "
+"%(high)s %(unit)s."
+msgstr ""
+
+#, python-format
+msgid "Значение (%(unit)s)"
+msgstr ""
+
+msgid "Оставьте пустым и сохраните, чтобы удалить значение."
+msgstr ""
+
+msgid "Например: приказ, отчёт отдела кадров, база Scopus"
+msgstr ""
+
+#, python-format
+msgid "Коды — %(title)s"
+msgstr ""
+
+#, python-format
+msgid "Листок с кодами: %(title)s"
+msgstr ""
+
+msgid ""
+"Распечатайте (Ctrl + P), разрежьте по пунктиру и раздайте студентам "
+"<b>вслепую</b> — не записывая, кому какой код. Каждый код действует один раз."
+msgstr ""
+
+#, python-format
+msgid "Неиспользованных кодов: %(n)s."
+msgstr ""
+
+msgid "← к опросу"
+msgstr ""
+
+#, python-format
+msgid ""
+"Наведите камеру телефона на QR или откройте<br>%(entry)s и введите код. "
+"Ответ анонимный."
+msgstr ""
+
+msgid "Неиспользованных кодов нет — добавьте на странице опроса."
+msgstr ""
+
+#, python-format
+msgid "Опрос студентов · %(instrument)s"
+msgstr ""
+
+#, python-format
+msgid "приём до %(d)s"
+msgstr ""
+
+msgid "приём закрыт"
+msgstr ""
+
+msgid "Листок с кодами (QR)"
+msgstr ""
+
+msgid "Закрыть приём"
+msgstr ""
+
+msgid "Открыть приём"
+msgstr ""
+
+msgid "ответов"
+msgstr ""
+
+msgid "кодов использовано"
+msgstr ""
+
+msgid "минимум ответов для показа итогов"
+msgstr ""
+
+msgid "+ Добавить коды"
+msgstr ""
+
+msgid "Итоги пока скрыты"
+msgstr ""
+
+#, python-format
+msgid "Ответили %(n)s, а итоги показываются начиная с %(min)s ответов."
+msgstr ""
+
+msgid "Так нельзя догадаться, кто что ответил."
+msgstr ""
+
+msgid "Показатели"
+msgstr ""
+
+msgid "посчитать нельзя"
+msgstr ""
+
+msgid "не привязан к норме"
+msgstr ""
+
+msgid "порог не задан — проверить нельзя"
+msgstr ""
+
+msgid "Ответы по пунктам"
+msgstr ""
+
+#, python-format
+msgid "ответов: %(n)s"
+msgstr ""
+
+#, python-format
+msgid "Средняя оценка: <b>%(mean)s</b> из 5"
+msgstr ""
+
+#, python-format
+msgid "«Да»: <b>%(pct)s %%</b>"
+msgstr ""
+
+msgid "Показать кафедре"
+msgstr ""
+
+msgid "Скрыть"
+msgstr ""
+
+msgid "Комментариев нет."
+msgstr ""
+
+msgid "Комментариев, одобренных Центром, пока нет."
+msgstr ""
+
+msgid ""
+"Комментарии студентов кафедра видит только после того, как Центр отметит "
+"«Показать кафедре» (например, скрываются оскорбления и имена)."
+msgstr ""
+
+msgid "+ Новый опрос"
+msgstr ""
+
+msgid ""
+"Анонимная обратная связь: студент отвечает по одноразовому коду с листка "
+"(QR). Ответ не связан с кодом и с человеком; итоги видны только при "
+"достаточном числе ответов."
+msgstr ""
+
+msgid "Приём"
+msgstr ""
+
+#, python-format
+msgid "до %(d)s"
+msgstr ""
+
+msgid "закрыт"
+msgstr ""
+
+msgid "Опросов пока нет."
+msgstr ""
+
+msgid "Анкета для студентов"
+msgstr ""
+
+msgid ""
+"Введите код с листка, который вам выдали. Ответ анонимный: программа не "
+"знает, кто вы."
+msgstr ""
+
+msgid "Продолжить"
+msgstr ""
+
+msgid "Анонимная анкета"
+msgstr ""
+
+#, python-format
+msgid ""
+"Программа не сохраняет, кто и когда ответил. Ваш код после ответа просто "
+"гасится. Кафедра увидит только общие итоги, если ответят не меньше %(n)s "
+"человек."
+msgstr ""
+
+msgid "Ответьте, пожалуйста, на отмеченные вопросы."
+msgstr ""
+
+msgid "Да"
+msgstr ""
+
+msgid "Нет"
+msgstr ""
+
+msgid "1 — совсем нет, 5 — полностью да"
+msgstr ""
+
+msgid "Не пишите имён — так ответ останется анонимным"
+msgstr ""
+
+msgid "Отправить анонимно"
+msgstr ""
+
+msgid "Главная"
+msgstr ""
+
+#, python-format
+msgid "Здравствуйте, %(name)s"
+msgstr ""
+
+msgid "Роль ещё не назначена."
+msgstr ""
+
+#, python-format
+msgid "Ждут подтверждения доступа: <b>%(pending_users)s</b>."
+msgstr ""
+
+msgid "Открыть"
+msgstr ""
+
+#, python-format
+msgid "Записей портфолио на проверке: <b>%(to_review)s</b>."
+msgstr ""
+
+msgid "Проверить"
+msgstr ""
+
+#, python-format
+msgid "У вас просроченные мероприятия (%(n)s):"
+msgstr ""
+
+#, python-format
+msgid "срок %(d)s"
+msgstr ""
+
+msgid "факультетов"
+msgstr ""
+
+#, python-format
+msgid "показателей в %(frameworks)s документах"
+msgstr ""
+
+#, python-format
+msgid ", просрочено %(overdue_plans)s"
+msgstr ""
+
+msgid "записей в моём портфолио"
+msgstr ""
+
+msgid "Цикл качества"
+msgstr ""
+
+msgid ""
+"Нормы → инструменты → проверка кафедры → находки → диагноз и план "
+"исправления → повторная проверка.\n"
+"Дальше появятся анонимное окно студентов и панели руководства."
+msgstr ""
+
+msgid "Проверка"
+msgstr ""
+
+#, python-format
+msgid "срок сбора %(date)s"
+msgstr ""
+
+msgid "ведущий эксперт:"
+msgstr ""
+
+msgid "не назначен"
+msgstr ""
+
+msgid "Начать сбор данных"
+msgstr ""
+
+msgid "Закрыть сбор и посчитать"
+msgstr ""
+
+msgid "Пересчитать"
+msgstr ""
+
+#, python-format
+msgid "Заполнения (%(done)s из %(total)s сдано)"
+msgstr ""
+
+msgid "Кто заполняет"
+msgstr ""
+
+msgid "Заполнить"
+msgstr ""
+
+msgid "Посмотреть"
+msgstr ""
+
+msgid ""
+"Заполнять можно после того, как ведущий эксперт нажмёт «Начать сбор данных»."
+msgstr ""
+
+msgid "Добавить заполнение"
+msgstr ""
+
+msgid "Например, ещё одно посещение занятия или ещё одна станция ОСКЭ."
+msgstr ""
+
+msgid "Несколько заполнений одного инструмента усредняются."
+msgstr ""
+
+msgid "Карта здоровья"
+msgstr ""
+
+msgid "Паутинка показателей"
+msgstr ""
+
+msgid "Значение"
+msgstr ""
+
+msgid "Норма для кафедры"
+msgstr ""
+
+#, python-format
+msgid "уровень «%(lvl)s»"
+msgstr ""
+
+#, python-format
+msgid "порог %(thr)s"
+msgstr ""
+
+msgid ""
+"Синяя область — факт, красный пунктир — порог уровня строгости, заданного "
+"для этой кафедры."
+msgstr ""
+
+msgid ""
+"Точки: зелёная — норма, жёлтая — лёгкое отклонение, красная — выраженное, "
+"серая — порога нет."
+msgstr ""
+
+msgid "Находки"
+msgstr ""
+
+msgid "найдено программой"
+msgstr ""
+
+msgid "Отклонений не найдено."
+msgstr ""
+
+msgid "Добавить находку эксперта"
+msgstr ""
+
+msgid "Завершение"
+msgstr ""
+
+msgid "Заключение эксперта"
+msgstr ""
+
+msgid "Закрыть проверку"
+msgstr ""
+
+msgid "Или вернуть на сбор данных — что дособрать?"
+msgstr ""
+
+msgid "Вернуть на сбор"
+msgstr ""
+
+msgid ""
+"По каждой находке можно поставить диагноз и составить план исправления — "
+"кнопка «Диагноз и план»."
+msgstr ""
+
+msgid "Заключение"
+msgstr ""
+
+#, python-format
+msgid "версия %(num)s"
+msgstr ""
+
+msgid "основание:"
+msgstr ""
+
+msgid "Заполнять можно, пока идёт сбор данных."
+msgstr ""
+
+msgid "Сдать"
+msgstr ""
+
+msgid "Сохранить черновик"
+msgstr ""
+
+msgid "Пункты со звёздочкой обязательны для сдачи."
+msgstr ""
+
+msgid "Черновик можно сохранить в любой момент."
+msgstr ""
+
+msgid "Проверки кафедр"
+msgstr ""
+
+msgid ""
+"«Обследование»: инструменты заполняются, показатели сравниваются с нормой, "
+"отклонения становятся находками."
+msgstr ""
+
+msgid "Эксперт"
+msgstr ""
+
+msgid "Проверок пока нет."
+msgstr ""
+
+msgid ""
+"«Методы обследования»: формы отчётов, чек-листы, протоколы посещения, "
+"станции ОСКЭ, анкеты."
+msgstr ""
+
+msgid "Каждый пункт и каждый расчёт привязан к показателю нормы."
+msgstr ""
+
+msgid "Вид"
+msgstr ""
+
+msgid "Версия"
+msgstr ""
+
+msgid "Основание:"
+msgstr ""
+
+#, python-format
+msgid "действует: в.%(num)s"
+msgstr ""
+
+#, python-format
+msgid "черновик в.%(num)s"
+msgstr ""
+
+msgid "Инструментов пока нет."
+msgstr ""
+
+msgid "Пробное заполнение"
+msgstr ""
+
+msgid "Заполните, чтобы увидеть, как программа посчитает показатели."
+msgstr ""
+
+msgid "Ничего не сохраняется."
+msgstr ""
+
+msgid "Результат расчёта"
+msgstr ""
+
+msgid "Сравнение с нормой"
+msgstr ""
+
+msgid "ниже всех порогов"
+msgstr ""
+
+msgid "слабый уровень"
+msgstr ""
+
+msgid "средний уровень"
+msgstr ""
+
+msgid "высокий уровень"
+msgstr ""
+
+#, python-format
+msgid "пороги %(t)s"
+msgstr ""
+
+msgid "У инструмента нет расчётных показателей."
+msgstr ""
+
+msgid "Посчитать"
+msgstr ""
+
+#, python-format
+msgid "заполняет: %(resp)s"
+msgstr ""
+
+#, python-format
+msgid "Версия %(num)s"
+msgstr ""
+
+#, python-format
+msgid "опубликована %(date)s"
+msgstr ""
+
+msgid "черновик"
+msgstr ""
+
+msgid "в архиве"
+msgstr ""
+
+#, python-format
+msgid "в.%(num)s"
+msgstr ""
+
+msgid "Опубликовать"
+msgstr ""
+
+msgid "Создать новую версию"
+msgstr ""
+
+msgid "Описание"
+msgstr ""
+
+msgid ""
+"Опубликованная версия не меняется, чтобы старые проверки остались понятными."
+msgstr ""
+
+msgid "Для правок создайте новую версию."
+msgstr ""
+
+msgid "Изменить"
+msgstr ""
+
+msgid "необязательный"
+msgstr ""
+
+msgid "показатель:"
+msgstr ""
+
+#, python-format
+msgid "вес %(w)s"
+msgstr ""
+
+msgid "Пунктов нет."
+msgstr ""
+
+msgid "Раздел"
+msgstr ""
+
+msgid "Расчётные показатели"
+msgstr ""
+
+msgid "расчёт"
+msgstr ""
+
+msgid "Как из ответов получается число, которое сравнивается с порогами нормы."
+msgstr ""
+
+#, python-format
+msgid "раздел «%(sec)s»"
+msgstr ""
+
+msgid "Расчётов нет."
+msgstr ""
+
+msgid "Журнал изменений"
+msgstr ""
+
+msgid "Последние 300 записей: кто, когда и что поменял."
+msgstr ""
+
+msgid "Когда"
+msgstr ""
+
+msgid "Кто"
+msgstr ""
+
+msgid "Что"
+msgstr ""
+
+msgid "Пока пусто."
+msgstr ""
+
+msgid "Справочник норм"
+msgstr ""
+
+msgid "Новый документ-источник"
+msgstr ""
+
+msgid ""
+"Документ → область → стандарт → критерий → показатель. У каждого показателя "
+"три порога: слабый, средний, высокий."
+msgstr ""
+
+msgid "Действующая редакция"
+msgstr ""
+
+msgid "Показателей"
+msgstr ""
+
+#, python-format
+msgid "с %(date)s"
+msgstr ""
+
+msgid "Пусто. Загрузите начальные данные:"
+msgstr ""
+
+#, python-format
+msgid "Показатель %(code)s"
+msgstr ""
+
+msgid "История изменений"
+msgstr ""
+
+msgid "Изменений не было."
+msgstr ""
+
+#, python-format
+msgid "Редакция %(ver)s"
+msgstr ""
+
+msgid "документ"
+msgstr ""
+
+msgid "Раздел / показатель"
+msgstr ""
+
+msgid "чем меньше, тем лучше"
+msgstr ""
+
+msgid "Измеряет:"
+msgstr ""
+
+msgid "Разделов пока нет."
+msgstr ""
+
+msgid ""
+"«—» — порог не задан: по этому уровню показатель проверить нельзя, программа "
+"так и напишет, а не будет угадывать."
+msgstr ""
+
+msgid "Уровень строгости по подразделениям"
+msgstr ""
+
+msgid "Задать уровень"
+msgstr ""
+
+msgid ""
+"Где не задано — действует настройка вышестоящего подразделения, а если нигде "
+"— средний уровень."
+msgstr ""
+
+msgid "Убрать"
+msgstr ""
+
+msgid "Последние изменения порогов"
+msgstr ""
+
+#, python-format
+msgid "Удалить «%(name)s»?"
+msgstr ""
+
+#, python-format
+msgid "Удалить нельзя: %(reasons)s."
+msgstr ""
+
+msgid ""
+"Чтобы не потерять историю, подразделение можно <b>закрыть</b>: оно исчезнет "
+"из списков, но данные и отчёты сохранятся.\n"
+"  Или сначала перенесите вложенные подразделения и сотрудников."
+msgstr ""
+
+msgid "Закрыть подразделение"
+msgstr ""
+
+msgid "Подразделение пустое, его можно удалить совсем. Отменить это нельзя."
+msgstr ""
+
+msgid "закрыто"
+msgstr ""
+
+msgid "Добавить внутрь"
+msgstr ""
+
+msgid "Закрыть"
+msgstr ""
+
+msgid "Восстановить"
+msgstr ""
+
+#, python-format
+msgid "Входят (%(n)s)"
+msgstr ""
+
+msgid "Проверок не было."
+msgstr ""
+
+msgid "Сотрудники в системе"
+msgstr ""
+
+msgid ""
+"Пока никто не привязан. Сотрудники регистрируются сами, доступ открывает "
+"администратор."
+msgstr ""
+
+msgid "Структура университета"
+msgstr ""
+
+msgid "Добавить подразделение"
+msgstr ""
+
+#, python-format
+msgid "Факультетов: %(f)s · кафедр: %(d)s · центров: %(c)s"
+msgstr ""
+
+msgid "скрыть закрытые"
+msgstr ""
+
+msgid "показать закрытые"
+msgstr ""
+
+msgid "внутрь"
+msgstr ""
+
+msgid ""
+"Структура пуста. Загрузите начальные данные командой <code>python manage.py "
+"load_initial_data</code>."
+msgstr ""
+
+msgid "Запись уже подтверждена. После изменения она снова уйдёт на проверку."
+msgstr ""
+
+#, python-format
+msgid "Возвращено: %(c)s"
+msgstr ""
+
+msgid ""
+"Файл: PDF, JPG, PNG, DOC или DOCX, до 10 МБ. Файл видят только вы, "
+"руководители вашего подразделения и Центр."
+msgstr ""
+
+msgid "Сохранить и отправить на проверку"
+msgstr ""
+
+msgid "Записи преподавателей вашего подразделения, ожидающие подтверждения."
+msgstr ""
+
+msgid "Запись"
+msgstr ""
+
+msgid "Решение"
+msgstr ""
+
+msgid "Файл"
+msgstr ""
+
+msgid "без файла"
+msgstr ""
+
+msgid "Комментарий (обязателен при возврате)"
+msgstr ""
+
+msgid "Подтвердить"
+msgstr ""
+
+msgid "Вернуть"
+msgstr ""
+
+msgid "Нет записей на проверке."
+msgstr ""
+
+#, python-format
+msgid "Портфолио — %(name)s"
+msgstr ""
+
+msgid "Портфолио преподавателя"
+msgstr ""
+
+msgid "Добавить запись"
+msgstr ""
+
+#, python-format
+msgid "всего записей, подтверждено %(n)s"
+msgstr ""
+
+msgid "статей Scopus / WoS (показатель 3.1 Стратегии)"
+msgstr ""
+
+msgid "сертифицированное обучение (2.2)"
+msgstr ""
+
+msgid "стажировки и мобильность (2.3)"
+msgstr ""
+
+msgid "В сводке учитываются только подтверждённые записи."
+msgstr ""
+
+#, python-format
+msgid "%(h)s ч"
+msgstr ""
+
+msgid "Подтверждающий файл"
+msgstr ""
+
+#, python-format
+msgid "Комментарий проверяющего: %(c)s"
+msgstr ""
+
+msgid "На проверку"
+msgstr ""
+
+msgid "Записей пока нет."
+msgstr ""
+
+msgid ""
+"Добавьте образование, повышение квалификации, публикации, стажировки — всё, "
+"что подтверждает вашу работу."
+msgstr ""

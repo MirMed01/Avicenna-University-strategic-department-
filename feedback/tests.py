@@ -168,3 +168,15 @@ class ManageTests(Base):
         from inspections.forms import InspectionForm
 
         self.assertNotIn(self.v, list(InspectionForm().fields["instruments"].queryset))
+
+
+class TajikTests(Base):
+    def test_student_sees_tajik_question_when_language_tg(self):
+        self.sc.text_tg = "Фаҳмо буд?"
+        self.sc.save()
+        url = reverse("student:vote", args=[self.codes[0]])
+        self.assertContains(self.client.get(url), "Понятно?")
+        self.client.post(reverse("set_language"), {"language": "tg", "next": url})
+        r = self.client.get(url)
+        self.assertContains(r, "Фаҳмо буд?")
+        self.assertContains(r, "Рекомендуете?")  # нет перевода — показывается русский текст, а не пусто

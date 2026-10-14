@@ -125,6 +125,7 @@ class InstrumentVersion(models.Model):
 class Section(models.Model):
     version = models.ForeignKey(InstrumentVersion, on_delete=models.CASCADE, related_name="sections")
     title = models.CharField(_("раздел"), max_length=255)
+    title_tg = models.CharField(_("раздел по-таджикски"), max_length=255, blank=True)
     text = models.TextField(_("пояснение"), blank=True)
     order = models.PositiveIntegerField(_("порядок"), default=0)
 
@@ -132,6 +133,11 @@ class Section(models.Model):
         ordering = ["order", "id"]
         verbose_name = _("раздел")
         verbose_name_plural = _("разделы")
+
+    def localized_title(self):
+        from django.utils.translation import get_language
+
+        return self.title_tg if (get_language() or "").startswith("tg") and self.title_tg else self.title
 
     def __str__(self):
         return self.title
@@ -149,6 +155,9 @@ class Item(models.Model):
     code = models.CharField(_("код"), max_length=30)
     text = models.CharField(_("пункт (вопрос)"), max_length=500)
     help = models.CharField(_("подсказка"), max_length=500, blank=True)
+    # Таджикский вариант для анкет студентов: показывается, если выбран таджикский язык.
+    text_tg = models.CharField(_("пункт по-таджикски"), max_length=500, blank=True)
+    help_tg = models.CharField(_("подсказка по-таджикски"), max_length=500, blank=True)
     type = models.CharField(_("тип ответа"), max_length=10, choices=Type.choices)
     options = models.TextField(_("варианты (по одному в строке)"), blank=True)
     required = models.BooleanField(_("обязательный"), default=True)
@@ -165,6 +174,16 @@ class Item(models.Model):
 
     def __str__(self):
         return f"{self.code} {self.text}"
+
+    def localized_text(self):
+        from django.utils.translation import get_language
+
+        return self.text_tg if (get_language() or "").startswith("tg") and self.text_tg else self.text
+
+    def localized_help(self):
+        from django.utils.translation import get_language
+
+        return self.help_tg if (get_language() or "").startswith("tg") and self.help_tg else self.help
 
     def option_list(self):
         return [o.strip() for o in self.options.splitlines() if o.strip()]

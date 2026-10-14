@@ -21,13 +21,13 @@ class InstrumentForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ["title", "text", "order"]
+        fields = ["title", "title_tg", "text", "order"]
 
 
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ["code", "text", "help", "type", "options", "required", "weight", "indicator", "order"]
+        fields = ["code", "text", "text_tg", "help", "help_tg", "type", "options", "required", "weight", "indicator", "order"]
 
     def __init__(self, *args, section=None, **kwargs):
         super().__init__(*args, **kwargs)

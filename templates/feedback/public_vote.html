@@ -6,9 +6,9 @@
 <p class="small">{% blocktranslate with n=c.min_respondents %}Программа не сохраняет, кто и когда ответил. Ваш код после ответа просто гасится. Кафедра увидит только общие итоги, если ответят не меньше {{ n }} человек.{% endblocktranslate %}</p></div>
 {% if has_errors %}<div class="msg error">{% translate "Ответьте, пожалуйста, на отмеченные вопросы." %}</div>{% endif %}
 <form method="post" class="f" style="max-width:760px">{% csrf_token %}
-{% for s, items in sections %}<div class="card"><h2>{{ s.title }}</h2>
-{% for it, val, err in items %}<div><label for="i{{ it.pk }}">{{ it.text }}{% if it.required %} <span class="err">*</span>{% endif %}</label>
-{% if it.help %}<div class="help">{{ it.help }}</div>{% endif %}
+{% for s, items in sections %}<div class="card"><h2>{{ s.localized_title }}</h2>
+{% for it, val, err in items %}<div><label for="i{{ it.pk }}">{{ it.localized_text }}{% if it.required %} <span class="err">*</span>{% endif %}</label>
+{% if it.localized_help %}<div class="help">{{ it.localized_help }}</div>{% endif %}
 {% if it.type == "yes_no" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}" style="max-width:200px"><option value="">—</option>
 <option value="yes" {% if val == "yes" %}selected{% endif %}>{% translate "Да" %}</option><option value="no" {% if val == "no" %}selected{% endif %}>{% translate "Нет" %}</option></select>
 {% elif it.type == "scale" %}<div class="row" role="radiogroup">{% for n in "12345" %}<label style="display:inline-flex;gap:4px;font-weight:400"><input type="radio" name="i{{ it.pk }}" value="{{ n }}" {% if val == n %}checked{% endif %}> {{ n }}</label>{% endfor %}
