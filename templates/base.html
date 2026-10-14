@@ -1,5 +1,5 @@
-{% load static %}<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+{% load static i18n %}{% get_current_language as LANG %}<!doctype html>
+<html lang="{{ LANG }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{% block title %}Канон{% endblock %} · ТГМУ</title>
 <link rel="stylesheet" href="{% static 'kanon.css' %}"></head>
 <body>
@@ -19,6 +19,8 @@
     <span class="me"><a href="{% url 'accounts:profile' %}">{{ user.full_name|default:user.email }}</a>
       <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Выйти</button></form></span>
   {% endif %}
+  <form class="lang" method="post" action="{% url 'set_language' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+    {% get_available_languages as LANGS %}{% for code, name in LANGS %}<button name="language" value="{{ code }}" {% if code == LANG %}aria-current="true"{% endif %}>{{ name }}</button>{% endfor %}</form>
 </div></header>
 <main>
   {% for m in messages %}<div class="msg {{ m.tags }}">{{ m }}</div>{% endfor %}

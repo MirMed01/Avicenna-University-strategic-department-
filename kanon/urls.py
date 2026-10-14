@@ -23,5 +23,6 @@ urlpatterns = [
     path("feedback/", include("feedback.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("s/", include((public_urlpatterns, "feedback"), namespace="student")),
+    path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", admin.site.urls),
 ]
