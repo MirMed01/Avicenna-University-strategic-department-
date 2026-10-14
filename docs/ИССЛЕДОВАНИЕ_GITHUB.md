@@ -22,7 +22,7 @@
 | [Ilios](https://github.com/ilios/ilios) + формат MedBiquitous Curriculum Inventory | MIT | Идея и формат: программа → курс → занятие → цели → компетенции. Позже возможна интеграция | Карта программы |
 | [CASS](https://github.com/cassproject/CASS) | Apache-2.0 | Идея: рамки компетенций (CanMEDS, EPA) хранить как данные, а не в коде | Нормативы |
 | [Apache Superset](https://github.com/apache/superset) | Apache-2.0 | Готовый сервис рядом: панели показателей для ректора и директора | Панели |
-| [Moodle](https://github.com/moodle/moodle) | GPL-3.0 | Интеграция через веб-службы: оценки и результаты тестов. Сначала узнать, стоит ли Moodle в ТГМУ | Мониторинг учёбы |
+| [Moodle](https://github.com/moodle/moodle) | GPL-3.0 | Интеграция через веб-службы: оценки и результаты тестов. Сначала узнать, стоит ли Moodle в ТГМУ | Мониторинг учёбы **Не нужно: Moodle в ТГМУ нет (15.10.2026).** |
 
 ## Что запасным вариантом или не берём
 
