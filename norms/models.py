@@ -42,7 +42,7 @@ class FrameworkVersion(models.Model):
     version = models.CharField(_("редакция"), max_length=50)
     effective_from = models.DateField(_("действует с"), null=True, blank=True)
     status = models.CharField(_("статус"), max_length=10, choices=Status.choices, default=Status.ACTIVE)
-    source_url = models.URLField(_("ссылка на документ"), blank=True)
+    source_url = models.URLField(_("ссылка на документ"), max_length=1000, blank=True)
 
     class Meta:
         unique_together = ("framework", "version")

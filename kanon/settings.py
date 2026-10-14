@@ -125,5 +125,20 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-if not DEBUG:
-    SESSION_COOKIE_SECURE = CSRF_COOKIE_SECURE = os.environ.get("KANON_HTTPS", "1") == "1"
+if not DEBUG and os.environ.get("KANON_HTTPS", "1") == "1":
+    # Рабочий сервер за nginx с HTTPS (deploy/nginx-kanon.conf): nginx сам ставит X-Forwarded-Proto.
+    SESSION_COOKIE_SECURE = CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
+    # HSTS: начинаем с одного дня; увеличить (KANON_HSTS_SECONDS=31536000), когда HTTPS проверен.
+    SECURE_HSTS_SECONDS = int(os.environ.get("KANON_HSTS_SECONDS", "86400"))
+    # HSTS только для адреса «Канона»: на поддомены и в список preload — нет, это навязало бы HTTPS
+    # всему сайту университета (tajmedun.tj и его поддоменам), а это не наше решение.
+    SILENCED_SYSTEM_CHECKS = ["security.W005", "security.W021"]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "root": {"handlers": ["console"], "level": "WARNING"},
+}

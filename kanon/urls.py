@@ -11,6 +11,7 @@ admin.site.site_header = "Канон — администрирование"
 urlpatterns = [
     path("", core_views.home, name="home"),
     path("journal/", core_views.journal, name="journal"),
+    path("health/", core_views.health, name="health"),
     path("login/", login_view, name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("accounts/", include("accounts.urls")),

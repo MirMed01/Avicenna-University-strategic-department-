@@ -58,3 +58,13 @@ def journal(request):
 def csrf_failure(request, reason=""):
     """Вместо технической страницы Django — понятное объяснение: форма устарела после нового входа."""
     return render(request, "csrf_failure.html", status=403)
+
+
+def health(request):
+    """Для проверки сервера: отвечает «ok», если программа и база работают."""
+    from django.db import connection
+    from django.http import HttpResponse
+
+    with connection.cursor() as c:
+        c.execute("SELECT 1")
+    return HttpResponse("ok", content_type="text/plain")

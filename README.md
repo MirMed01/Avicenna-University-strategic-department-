@@ -39,6 +39,10 @@ export KANON_DEBUG=1                      # только для разработ
 `KANON_ALLOWED_HOSTS`, `KANON_CSRF_ORIGINS`, `KANON_MEDIA_ROOT`, `KANON_PUBLIC_URL` (адрес для QR-кодов студентам),
 `KANON_USE_X_FORWARDED_HOST=1` (если сервер стоит за прокси).
 
+## Установка на сервер
+
+Пошагово для IT-отдела — [`docs/УСТАНОВКА.md`](docs/УСТАНОВКА.md) (файлы в `deploy/`).
+
 ## Документы
 
 - Концепция (модель «норма → инструмент → проверка → диагноз → лечение»), роли и этапы — [`docs/КОНЦЕПЦИЯ.md`](docs/КОНЦЕПЦИЯ.md)

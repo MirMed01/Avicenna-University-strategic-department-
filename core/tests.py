@@ -177,3 +177,26 @@ class TajikSmokeTests(TestCase):
         r = self.client.get(f"/s/{code}/")
         self.assertContains(r, "Машғулиятҳои кафедра")
         self.assertNotContains(r, "Отправить анонимно")
+
+
+class SeedFitsDatabaseTests(TestCase):
+    """Дефект, найденный на PostgreSQL: ссылка IAAR длиннее 200 символов. SQLite длину не проверяет — проверяем сами."""
+
+    def test_all_seed_values_fit_field_lengths(self):
+        from django.apps import apps
+
+        call_command("load_initial_data", stdout=StringIO())
+        too_long = []
+        for model in apps.get_models():
+            for f in model._meta.concrete_fields:
+                if getattr(f, "max_length", None) and f.get_internal_type() in ("CharField", "URLField", "SlugField", "EmailField", "FileField"):
+                    for pk, v in model.objects.values_list("pk", f.attname):
+                        if v and len(str(v)) > f.max_length:
+                            too_long.append(f"{model.__name__}.{f.name} #{pk}: {len(str(v))} > {f.max_length}")
+        self.assertEqual(too_long, [])
+
+
+class HealthTests(TestCase):
+    def test_health_without_login(self):
+        r = self.client.get("/health/")
+        self.assertEqual((r.status_code, r.content), (200, b"ok"))

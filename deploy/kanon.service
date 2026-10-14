@@ -1,0 +1,18 @@
+# systemd: /etc/systemd/system/kanon.service
+[Unit]
+Description=Kanon (Qanun) — система качества обучения ТГМУ
+After=network.target postgresql.service
+
+[Service]
+User=kanon
+Group=kanon
+WorkingDirectory=/srv/kanon/app
+EnvironmentFile=/etc/kanon/kanon.env
+ExecStart=/srv/kanon/app/.venv/bin/gunicorn kanon.wsgi:application --bind 127.0.0.1:8001 --workers 3 --timeout 60 --access-logfile -
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
