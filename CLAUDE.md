@@ -17,9 +17,12 @@
   `inspections` (проверки, находки, «паутинка»; права — `inspections/access.py`),
   `capa` (проблемы качества, планы исправления),
   `feedback` (анонимные опросы студентов — `feedback/voting.py`; не добавлять связь кода с ответом, время ответа, IP),
-  `dashboard` (панель, Стратегия 2030, отчёты Excel/Word — `dashboard/data.py`, `dashboard/reports.py`), `core` (журнал изменений, начальные данные).
+  `dashboard` (панель, Стратегия 2030, отчёты Excel/Word — `dashboard/data.py`, `dashboard/reports.py`),
+  `accreditation` (самооценка по IAAR, прогноз — `accreditation/readiness.py`), `core` (журнал изменений, начальные данные).
 - Каждое изменение справочников пишется в журнал (`core.models.log`).
 - Порог не задан → «проверить нельзя», а не «норма». Удаление с историей → предлагать «закрыть».
+- Интерфейс на двух языках (ru/tg): весь новый текст — через `gettext` / `{% translate %}` (правила и словарь —
+  `docs/ПЕРЕВОД.md`); после правок: `makemessages -l tg --ignore=".venv/*"`, перевести, `compilemessages`, закоммитить .po и .mo.
 
 ## Проверка
 - Тесты: `KANON_DEBUG=1 .venv/bin/python manage.py test` (все должны пройти перед коммитом).

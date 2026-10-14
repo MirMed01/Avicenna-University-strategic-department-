@@ -109,3 +109,71 @@ class CsrfFailureTests(TestCase):
         self.assertEqual(r.status_code, 403)
         self.assertContains(r, "Страница устарела", status_code=403)
         self.assertNotContains(r, "CSRF", status_code=403)
+
+
+@override_settings(DEBUG=True)
+class TajikSmokeTests(TestCase):
+    """Все основные страницы открываются на таджикском; выгрузки работают; ключевые надписи переведены."""
+
+    @classmethod
+    def setUpTestData(cls):
+        import tempfile
+        from pathlib import Path
+
+        call_command("load_initial_data", stdout=StringIO())
+        with override_settings(BASE_DIR=Path(tempfile.mkdtemp())):
+            call_command("setup_demo", stdout=StringIO())
+
+    def tg(self, email):
+        self.client.force_login(User.objects.get(email=email))
+        self.client.post("/i18n/setlang/", {"language": "tg", "next": "/"})
+
+    def test_pages_render_in_tajik(self):
+        from accreditation.models import Cycle
+        from capa.models import Problem
+        from feedback.models import Campaign
+        from inspections.models import Inspection
+        from instruments.models import Instrument
+        from org.models import OrgUnit
+
+        self.tg("director@demo.local")
+        insp = Inspection.objects.first()
+        urls = ["/", "/dashboard/", "/structure/", f"/structure/{OrgUnit.objects.filter(kind='department').first().pk}/",
+                "/norms/", "/instruments/", f"/instruments/{Instrument.objects.first().current_version().pk}/",
+                f"/instruments/{Instrument.objects.first().current_version().pk}/try/",
+                "/inspections/", f"/inspections/{insp.pk}/", f"/inspections/tasks/{insp.tasks.first().pk}/",
+                "/plans/", "/plans/problems/", "/feedback/", f"/feedback/{Campaign.objects.first().pk}/",
+                f"/feedback/{Campaign.objects.first().pk}/codes/", "/accreditation/", f"/accreditation/{Cycle.objects.first().pk}/",
+                "/portfolio/", "/portfolio/new/", "/accounts/users/", "/journal/", "/inspections/new/", "/feedback/new/"]
+        for url in urls:
+            r = self.client.get(url)
+            self.assertEqual(r.status_code, 200, url)
+        home = self.client.get("/").content.decode()
+        for ru, tg in (("Структура", "Сохтор"), ("Проверки", "Санҷишҳо")):
+            self.assertIn(tg, home)
+        self.assertIn('lang="tg"', home)
+
+    def test_exports_in_tajik(self):
+        from io import BytesIO
+
+        from openpyxl import load_workbook
+
+        from accreditation.models import Cycle
+
+        self.tg("rector@demo.local")
+        x = self.client.get("/dashboard/export.xlsx")
+        self.assertEqual(x.status_code, 200)
+        names = load_workbook(BytesIO(x.content)).sheetnames
+        self.assertTrue(all(len(n) <= 31 for n in names))
+        self.assertNotIn("Тепловая карта", names)
+        self.assertEqual(self.client.get("/dashboard/report.docx").status_code, 200)
+        self.assertEqual(self.client.get(f"/accreditation/{Cycle.objects.first().pk}/report.docx").status_code, 200)
+
+    def test_student_page_in_tajik(self):
+        from feedback.models import AccessCode
+
+        code = AccessCode.objects.filter(used=False).first().code
+        self.client.post("/i18n/setlang/", {"language": "tg", "next": "/"})
+        r = self.client.get(f"/s/{code}/")
+        self.assertContains(r, "Машғулиятҳои кафедра")
+        self.assertNotContains(r, "Отправить анонимно")
