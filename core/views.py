@@ -29,6 +29,18 @@ def home(request):
                 role=Role.TEACHER, org_unit__in=units_in_scope(u, (Role.HEAD, Role.DEAN))).values("user_id")
             q = PortfolioEntry.objects.filter(status=PortfolioEntry.Status.SUBMITTED, owner_id__in=teachers)
         ctx["to_review"] = q.exclude(owner=u).count()
+    from django.db.models import Q
+    from django.utils import timezone
+
+    from capa.access import visible_plans
+    from capa.models import Action
+
+    ctx["my_overdue"] = Action.objects.filter(
+        Q(responsible=u) | Q(plan__owner=u), state=Action.State.PLANNED, due_date__lt=timezone.localdate(),
+        plan__state="in_progress").select_related("plan")
+    plans = visible_plans(u)
+    ctx["open_plans"] = plans.exclude(state__in=["closed", "cancelled"]).count()
+    ctx["overdue_plans"] = sum(1 for p in plans if p.overdue)
     return render(request, "home.html", ctx)
 
 

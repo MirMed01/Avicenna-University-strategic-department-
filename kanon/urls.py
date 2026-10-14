@@ -18,5 +18,6 @@ urlpatterns = [
     path("portfolio/", include("portfolio.urls")),
     path("instruments/", include("instruments.urls")),
     path("inspections/", include("inspections.urls")),
+    path("plans/", include("capa.urls")),
     path("admin/", admin.site.urls),
 ]

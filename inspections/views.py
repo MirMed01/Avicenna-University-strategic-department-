@@ -52,7 +52,7 @@ def detail(request, pk):
     lead = can_lead(request.user, insp)
     return render(request, "inspections/detail.html", {
         "insp": insp, "tasks": tasks, "results": results, "radar": radar(results),
-        "findings": insp.findings.select_related("created_by"), "lead": lead,
+        "findings": insp.findings.select_related("created_by", "plan"), "lead": lead,
         "finding_form": FindingForm(), "task_form": AddTaskForm(),
         "submitted": sum(1 for t, _ in tasks if t.status == Task.Status.SUBMITTED)})
 
@@ -214,6 +214,9 @@ def delete_finding(request, pk):
     f = get_object_or_404(Finding, pk=pk, auto=False)
     if not can_lead(request.user, f.inspection) or f.inspection.state != St.REVIEW or request.method != "POST":
         raise PermissionDenied
+    if hasattr(f, "plan"):
+        messages.error(request, "По находке уже есть план исправления — её нельзя удалить.")
+        return redirect("inspections:detail", f.inspection_id)
     log(request.user, "delete", f.inspection, f"«{f.inspection}»: удалена находка — {f.text[:80]}")
     f.delete()
     return redirect("inspections:detail", f.inspection_id)

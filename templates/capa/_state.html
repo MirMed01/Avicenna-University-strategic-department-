@@ -1,0 +1,1 @@
+<span class="pill {% if s == 'closed' %}ok{% elif s == 'cancelled' %}{% elif s == 'draft' %}{% else %}warn{% endif %}">{{ label }}</span>{% if overdue %} <span class="pill bad">просрочен</span>{% endif %}

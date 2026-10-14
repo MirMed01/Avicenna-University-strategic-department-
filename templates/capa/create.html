@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Диагноз и план{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'inspections:detail' finding.inspection_id %}">{{ finding.inspection.title }} — {{ finding.inspection.org_unit }}</a> ›</p>
+<h1>Диагноз и план исправления</h1>
+<div class="card"><b>{{ finding.get_severity_display }}</b><div>{{ finding.text }}</div></div>
+{% if suggested %}<div class="msg">По этому показателю программа подсказывает: {% for p in suggested %}<b>{{ p }}</b>{% if not forloop.last %}; {% endif %}{% endfor %}. Подсказки отмечены ★ — окончательный диагноз выбирает эксперт.</div>
+{% else %}<p class="muted small">Подсказки нет — выберите проблему из справочника вручную.</p>{% endif %}
+<form method="post" class="f card">{% csrf_token %}{% include "_fields.html" %}
+<p class="help">Типовые мероприятия выбранной проблемы добавятся в план автоматически — их можно исправить или удалить.</p>
+<div class="row"><button class="btn">Создать план</button><a class="btn ghost" href="{% url 'inspections:detail' finding.inspection_id %}">Отмена</a></div></form>
+{% endblock %}

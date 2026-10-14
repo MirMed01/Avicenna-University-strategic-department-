@@ -5,13 +5,16 @@
 <p class="muted">{% for r in my_roles %}{{ r.get_role_display }} — {{ r.org_unit }}{% if not forloop.last %}; {% endif %}{% empty %}Роль ещё не назначена.{% endfor %}</p>
 {% if pending_users %}<div class="msg">Ждут подтверждения доступа: <b>{{ pending_users }}</b>. <a href="{% url 'accounts:users' %}">Открыть</a></div>{% endif %}
 {% if to_review %}<div class="msg">Записей портфолио на проверке: <b>{{ to_review }}</b>. <a href="{% url 'portfolio:queue' %}">Проверить</a></div>{% endif %}
+{% if my_overdue %}<div class="msg error"><b>У вас просроченные мероприятия ({{ my_overdue|length }}):</b>
+{% for a in my_overdue %}<div><a href="{% url 'capa:detail' a.plan_id %}">{{ a.plan.ref }}</a> — {{ a.title|truncatechars:90 }}, срок {{ a.due_date|date:"d.m.Y" }}</div>{% endfor %}</div>{% endif %}
 <div class="grid">
   <a class="stat" href="{% url 'org:tree' %}"><b>{{ faculties }}</b><span>факультетов</span></a>
   <a class="stat" href="{% url 'org:tree' %}"><b>{{ departments }}</b><span>кафедр</span></a>
   <a class="stat" href="{% url 'norms:index' %}"><b>{{ indicators }}</b><span>показателей в {{ frameworks }} документах</span></a>
+  <a class="stat" href="{% url 'capa:index' %}"><b>{{ open_plans }}</b><span>открытых планов исправления{% if overdue_plans %}, просрочено {{ overdue_plans }}{% endif %}</span></a>
   <a class="stat" href="{% url 'portfolio:my' %}"><b>{{ my_entries }}</b><span>записей в моём портфолио</span></a>
 </div>
-<div class="card"><h2>Что уже работает (этап 1)</h2>
-<p>Структура университета с правкой, справочник норм с тремя уровнями строгости, портфолио преподавателя с подтверждением, роли и журнал изменений.
-Проверки кафедр, диагнозы и планы исправления появятся на следующих этапах.</p></div>
+<div class="card"><h2>Цикл качества</h2>
+<p>Нормы → инструменты → проверка кафедры → находки → диагноз и план исправления → повторная проверка.
+Дальше появятся анонимное окно студентов и панели руководства.</p></div>
 {% endblock %}

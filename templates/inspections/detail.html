@@ -60,7 +60,9 @@
 <div class="card"><h2>Находки</h2>
 {% for f in findings %}<div class="row between" style="border-left:3px solid {% if f.severity == 'severe' %}var(--bad){% elif f.severity == 'mild' %}var(--warn){% elif f.severity == 'strength' %}var(--ok){% else %}var(--line){% endif %};padding:4px 10px">
 <div><b>{{ f.get_severity_display }}</b>{% if f.auto %} <span class="small muted">· найдено программой</span>{% else %} <span class="small muted">· {{ f.created_by }}</span>{% endif %}<div>{{ f.text }}</div></div>
-{% if lead and insp.state == "review" and not f.auto %}<form method="post" action="{% url 'inspections:delete_finding' f.pk %}">{% csrf_token %}<button class="btn small ghost">✕</button></form>{% endif %}</div>
+<div class="row">{% if f.plan %}<a class="btn small ghost" href="{% url 'capa:detail' f.plan.pk %}">{{ f.plan.ref }}: {{ f.plan.get_state_display|lower }}</a>
+{% elif lead and f.severity != "strength" %}<a class="btn small" href="{% url 'capa:create' f.pk %}">Диагноз и план</a>{% endif %}
+{% if lead and insp.state == "review" and not f.auto and not f.plan %}<form method="post" action="{% url 'inspections:delete_finding' f.pk %}">{% csrf_token %}<button class="btn small ghost">✕</button></form>{% endif %}</div></div>
 {% empty %}<p class="muted">Отклонений не найдено.</p>{% endfor %}
 {% if lead and insp.state == "review" %}
 <form method="post" action="{% url 'inspections:add_finding' insp.pk %}" class="f">{% csrf_token %}{% include "_fields.html" with form=finding_form %}
@@ -76,6 +78,6 @@
 <form method="post" action="{% url 'inspections:transition' insp.pk 'reopen' %}" class="f" style="margin-top:8px">{% csrf_token %}
 <div><label for="comment">Или вернуть на сбор данных — что дособрать?</label><input type="text" id="comment" name="comment"></div>
 <button class="btn ghost">Вернуть на сбор</button></form>
-<p class="small muted">Планы исправления по находкам появятся на следующем этапе.</p></div>
+<p class="small muted">По каждой находке можно поставить диагноз и составить план исправления — кнопка «Диагноз и план».</p></div>
 {% elif insp.conclusion %}<div class="card"><h2>Заключение</h2><p>{{ insp.conclusion|linebreaksbr }}</p></div>{% endif %}
 {% endblock %}

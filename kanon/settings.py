@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "portfolio",
     "instruments",
     "inspections",
+    "capa",
 ]
 
 MIDDLEWARE = [

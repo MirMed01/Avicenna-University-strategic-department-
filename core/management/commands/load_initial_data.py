@@ -31,6 +31,7 @@ class Command(BaseCommand):
         self.strategy()
         self.skeletons()
         self.instruments()
+        self.problems()
 
     def _unit(self, kind, name, parent, order=0):
         unit, created = OrgUnit.objects.get_or_create(kind=kind, name=name, parent=parent, defaults={"order": order})
@@ -115,3 +116,16 @@ class Command(BaseCommand):
                                        numerator=items.get(num), denominator=items.get(den), indicator=indicators.get(ind))
             ver.publish()
         self.stdout.write(f"Инструменты: добавлено {made}.")
+
+    def problems(self):
+        from capa.models import Problem
+
+        made = 0
+        for p in _load("problems.json")["problems"]:
+            obj, new = Problem.objects.get_or_create(code=p["code"], defaults={
+                "title": p["title"], "description": p["description"], "typical_actions": "\n".join(p["actions"])})
+            if new:
+                made += 1
+                for fw, code in p["indicators"]:
+                    obj.indicators.add(*Indicator.objects.filter(node__version__framework__code=fw, code=code))
+        self.stdout.write(f"Справочник проблем качества: добавлено {made}.")
