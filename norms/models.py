@@ -1,12 +1,13 @@
 from decimal import Decimal
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Level(models.TextChoices):
-    WEAK = "weak", "Слабый"
-    MEDIUM = "medium", "Средний"
-    HIGH = "high", "Высокий"
+    WEAK = "weak", _("Слабый")
+    MEDIUM = "medium", _("Средний")
+    HIGH = "high", _("Высокий")
 
 
 LEVEL_ORDER = [Level.WEAK, Level.MEDIUM, Level.HIGH]
@@ -15,14 +16,14 @@ LEVEL_ORDER = [Level.WEAK, Level.MEDIUM, Level.HIGH]
 class Framework(models.Model):
     """Документ-источник норм: WFME, ESG, ISO, IAAR, Стратегия ТГМУ…"""
 
-    code = models.SlugField("код", max_length=40, unique=True)
-    title = models.CharField("название", max_length=255)
-    description = models.TextField("описание", blank=True)
+    code = models.SlugField(_("код"), max_length=40, unique=True)
+    title = models.CharField(_("название"), max_length=255)
+    description = models.TextField(_("описание"), blank=True)
 
     class Meta:
         ordering = ["title"]
-        verbose_name = "документ-источник"
-        verbose_name_plural = "документы-источники"
+        verbose_name = _("документ-источник")
+        verbose_name_plural = _("документы-источники")
 
     def __str__(self):
         return self.title
@@ -33,21 +34,21 @@ class Framework(models.Model):
 
 class FrameworkVersion(models.Model):
     class Status(models.TextChoices):
-        DRAFT = "draft", "Черновик"
-        ACTIVE = "active", "Действует"
-        RETIRED = "retired", "Утратила силу"
+        DRAFT = "draft", _("Черновик")
+        ACTIVE = "active", _("Действует")
+        RETIRED = "retired", _("Утратила силу")
 
     framework = models.ForeignKey(Framework, on_delete=models.CASCADE, related_name="versions")
-    version = models.CharField("редакция", max_length=50)
-    effective_from = models.DateField("действует с", null=True, blank=True)
-    status = models.CharField("статус", max_length=10, choices=Status.choices, default=Status.ACTIVE)
-    source_url = models.URLField("ссылка на документ", blank=True)
+    version = models.CharField(_("редакция"), max_length=50)
+    effective_from = models.DateField(_("действует с"), null=True, blank=True)
+    status = models.CharField(_("статус"), max_length=10, choices=Status.choices, default=Status.ACTIVE)
+    source_url = models.URLField(_("ссылка на документ"), blank=True)
 
     class Meta:
         unique_together = ("framework", "version")
         ordering = ["framework", "-effective_from"]
-        verbose_name = "редакция"
-        verbose_name_plural = "редакции"
+        verbose_name = _("редакция")
+        verbose_name_plural = _("редакции")
 
     def __str__(self):
         return f"{self.framework.title}, ред. {self.version}"
@@ -57,22 +58,22 @@ class NormNode(models.Model):
     """Узел дерева норм: область → стандарт → критерий. Глубина у разных документов разная."""
 
     class Kind(models.TextChoices):
-        AREA = "area", "Область"
-        STANDARD = "standard", "Стандарт"
-        CRITERION = "criterion", "Критерий"
+        AREA = "area", _("Область")
+        STANDARD = "standard", _("Стандарт")
+        CRITERION = "criterion", _("Критерий")
 
     version = models.ForeignKey(FrameworkVersion, on_delete=models.CASCADE, related_name="nodes")
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="children")
-    kind = models.CharField("вид", max_length=10, choices=Kind.choices)
-    code = models.CharField("код", max_length=30)
-    title = models.CharField("название", max_length=500)
-    text = models.TextField("краткое изложение", blank=True)
+    kind = models.CharField(_("вид"), max_length=10, choices=Kind.choices)
+    code = models.CharField(_("код"), max_length=30)
+    title = models.CharField(_("название"), max_length=500)
+    text = models.TextField(_("краткое изложение"), blank=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ["order", "code"]
-        verbose_name = "раздел норм"
-        verbose_name_plural = "разделы норм"
+        verbose_name = _("раздел норм")
+        verbose_name_plural = _("разделы норм")
 
     def __str__(self):
         return f"{self.code} {self.title}"
@@ -82,25 +83,25 @@ class Indicator(models.Model):
     """Показатель с тремя порогами («референсными значениями»)."""
 
     class Direction(models.TextChoices):
-        HIGHER = "higher_better", "Чем больше, тем лучше"
-        LOWER = "lower_better", "Чем меньше, тем лучше"
+        HIGHER = "higher_better", _("Чем больше, тем лучше")
+        LOWER = "lower_better", _("Чем меньше, тем лучше")
 
-    node = models.ForeignKey(NormNode, verbose_name="раздел", on_delete=models.CASCADE, related_name="indicators")
-    code = models.CharField("код", max_length=30)
-    title = models.CharField("показатель", max_length=500)
-    unit = models.CharField("единица", max_length=30, blank=True)
-    direction = models.CharField("направление", max_length=15, choices=Direction.choices, default=Direction.HIGHER)
-    threshold_weak = models.DecimalField("порог: слабый", max_digits=12, decimal_places=2, null=True, blank=True)
-    threshold_medium = models.DecimalField("порог: средний", max_digits=12, decimal_places=2, null=True, blank=True)
-    threshold_high = models.DecimalField("порог: высокий", max_digits=12, decimal_places=2, null=True, blank=True)
-    measurement = models.TextField("как измеряется", blank=True)
-    note = models.TextField("примечание", blank=True)
+    node = models.ForeignKey(NormNode, verbose_name=_("раздел"), on_delete=models.CASCADE, related_name="indicators")
+    code = models.CharField(_("код"), max_length=30)
+    title = models.CharField(_("показатель"), max_length=500)
+    unit = models.CharField(_("единица"), max_length=30, blank=True)
+    direction = models.CharField(_("направление"), max_length=15, choices=Direction.choices, default=Direction.HIGHER)
+    threshold_weak = models.DecimalField(_("порог: слабый"), max_digits=12, decimal_places=2, null=True, blank=True)
+    threshold_medium = models.DecimalField(_("порог: средний"), max_digits=12, decimal_places=2, null=True, blank=True)
+    threshold_high = models.DecimalField(_("порог: высокий"), max_digits=12, decimal_places=2, null=True, blank=True)
+    measurement = models.TextField(_("как измеряется"), blank=True)
+    note = models.TextField(_("примечание"), blank=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ["order", "code"]
-        verbose_name = "показатель"
-        verbose_name_plural = "показатели"
+        verbose_name = _("показатель")
+        verbose_name_plural = _("показатели")
 
     def __str__(self):
         return f"{self.code} {self.title}"
@@ -141,12 +142,12 @@ class LevelAssignment(models.Model):
 
     org_unit = models.ForeignKey("org.OrgUnit", on_delete=models.CASCADE, related_name="level_assignments")
     framework = models.ForeignKey(Framework, on_delete=models.CASCADE)
-    level = models.CharField("уровень", max_length=10, choices=Level.choices)
+    level = models.CharField(_("уровень"), max_length=10, choices=Level.choices)
 
     class Meta:
         unique_together = ("org_unit", "framework")
-        verbose_name = "уровень строгости"
-        verbose_name_plural = "уровни строгости"
+        verbose_name = _("уровень строгости")
+        verbose_name_plural = _("уровни строгости")
 
 
 def effective_level(org_unit, framework, default=Level.MEDIUM):

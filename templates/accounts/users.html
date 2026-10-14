@@ -1,19 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Пользователи{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Пользователи" %}{% endblock %}
 {% block content %}
-<h1>Пользователи</h1>
+<h1>{% translate "Пользователи" %}</h1>
 {% if pending %}
-<div class="card"><h2>Ждут подтверждения ({{ pending|length }})</h2>
-<div class="tbl"><table><thead><tr><th>ФИО</th><th>Email</th><th>Просит роль</th><th>Подразделение</th><th></th></tr></thead><tbody>
+<div class="card"><h2>{% blocktranslate with n=pending|length %}Ждут подтверждения ({{ n }}){% endblocktranslate %}</h2>
+<div class="tbl"><table><thead><tr><th>{% translate "ФИО" %}</th><th>{% translate "Email" %}</th><th>{% translate "Просит роль" %}</th><th>{% translate "Подразделение" %}</th><th></th></tr></thead><tbody>
 {% for u in pending %}<tr><td>{{ u.full_name }}</td><td>{{ u.email }}</td><td>{{ u.get_requested_role_display }}</td><td>{{ u.requested_unit|default:"—" }}</td>
-<td><a class="btn small" href="{% url 'accounts:user_detail' u.pk %}">Рассмотреть</a></td></tr>{% endfor %}
+<td><a class="btn small" href="{% url 'accounts:user_detail' u.pk %}">{% translate "Рассмотреть" %}</a></td></tr>{% endfor %}
 </tbody></table></div></div>
 {% endif %}
-<form class="row" method="get"><input type="text" name="q" value="{{ q }}" placeholder="Поиск по ФИО или email" style="max-width:320px"><button class="btn ghost">Найти</button></form>
-<div class="tbl"><table><thead><tr><th>ФИО</th><th>Email</th><th>Роли</th></tr></thead><tbody>
+<form class="row" method="get"><input type="text" name="q" value="{{ q }}" placeholder="{% translate 'Поиск по ФИО или email' %}" style="max-width:320px"><button class="btn ghost">{% translate "Найти" %}</button></form>
+<div class="tbl"><table><thead><tr><th>{% translate "ФИО" %}</th><th>{% translate "Email" %}</th><th>{% translate "Роли" %}</th></tr></thead><tbody>
 {% for u in users %}<tr><td><a href="{% url 'accounts:user_detail' u.pk %}">{{ u.full_name }}</a></td><td>{{ u.email }}</td>
-<td class="small">{% for r in u.roles.all %}{{ r.get_role_display }} — {{ r.org_unit }}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="muted">нет роли</span>{% endfor %}</td></tr>
-{% empty %}<tr><td colspan="3" class="muted">Никого не найдено.</td></tr>{% endfor %}
+<td class="small">{% for r in u.roles.all %}{{ r.get_role_display }} — {{ r.org_unit }}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="muted">{% translate "нет роли" %}</span>{% endfor %}</td></tr>
+{% empty %}<tr><td colspan="3" class="muted">{% translate "Никого не найдено." %}</td></tr>{% endfor %}
 </tbody></table></div>
-{% if inactive %}<p class="muted small">Доступ закрыт: {% for u in inactive %}<a href="{% url 'accounts:user_detail' u.pk %}">{{ u.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
+{% if inactive %}<p class="muted small">{% translate "Доступ закрыт:" %} {% for u in inactive %}<a href="{% url 'accounts:user_detail' u.pk %}">{{ u.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>{% endif %}
 {% endblock %}

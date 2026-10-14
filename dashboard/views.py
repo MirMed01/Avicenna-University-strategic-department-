@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from accounts.decorators import manager_required
 from accounts.models import Role
@@ -20,7 +21,7 @@ from .models import IndicatorValue
 
 def _scope(user):
     if has_role(user, *VIEW_ALL):
-        return OrgUnit.objects.all(), "весь университет"
+        return OrgUnit.objects.all(), _("весь университет")
     units = units_in_scope(user, (Role.DEAN, Role.HEAD))
     if not units.exists():
         raise PermissionDenied
@@ -59,7 +60,7 @@ def strategy_value(request, indicator_pk):
         try:
             value = Decimal(raw)
         except InvalidOperation:
-            messages.error(request, "Введите число.")
+            messages.error(request, _("Введите число."))
         else:
             IndicatorValue.objects.update_or_create(indicator=ind, year=year, defaults={
                 "value": value, "note": request.POST.get("note", "").strip()[:255], "entered_by": request.user})

@@ -1,41 +1,41 @@
-{% extends "base.html" %}{% load kanon %}
-{% block title %}Панель руководства{% endblock %}
+{% extends "base.html" %}{% load kanon i18n %}
+{% block title %}{% translate "Панель руководства" %}{% endblock %}
 {% block content %}
-<div class="row between"><div><span class="kind">Панель · {{ scope_name }}</span><h1>Состояние качества обучения</h1></div>
-<form method="get" class="row"><label for="year" class="small">Год</label><input type="number" id="year" name="year" value="{{ year }}" style="max-width:100px"><button class="btn small ghost">Показать</button></form></div>
-{% if can_export %}<div class="row"><a class="btn" href="{% url 'dashboard:docx' %}?year={{ year }}">Годовой отчёт (Word)</a>
-<a class="btn ghost" href="{% url 'dashboard:xlsx' %}?year={{ year }}">Таблицы (Excel)</a></div>{% endif %}
+<div class="row between"><div><span class="kind">{% blocktranslate %}Панель · {{ scope_name }}{% endblocktranslate %}</span><h1>{% translate "Состояние качества обучения" %}</h1></div>
+<form method="get" class="row"><label for="year" class="small">{% translate "Год" %}</label><input type="number" id="year" name="year" value="{{ year }}" style="max-width:100px"><button class="btn small ghost">{% translate "Показать" %}</button></form></div>
+{% if can_export %}<div class="row"><a class="btn" href="{% url 'dashboard:docx' %}?year={{ year }}">{% translate "Годовой отчёт (Word)" %}</a>
+<a class="btn ghost" href="{% url 'dashboard:xlsx' %}?year={{ year }}">{% translate "Таблицы (Excel)" %}</a></div>{% endif %}
 
 <div class="grid">
-  <div class="stat"><b>{{ departments }}</b><span>кафедр</span></div>
-  <div class="stat"><b>{{ inspections_year }}</b><span>проверок в {{ year }} г., закрыто {{ inspections_closed }}</span></div>
-  <a class="stat" href="{% url 'capa:index' %}"><b>{{ plans.open }}</b><span>открытых планов исправления{% if plans.overdue %}, <span class="err">просрочено {{ plans.overdue|length }}</span>{% endif %}</span></a>
-  <a class="stat" href="{% url 'feedback:index' %}"><b>{{ responses }}</b><span>ответов студентов; опросов: {{ campaigns|length }}</span></a>
+  <div class="stat"><b>{{ departments }}</b><span>{% translate "кафедр" %}</span></div>
+  <div class="stat"><b>{{ inspections_year }}</b><span>{% blocktranslate %}проверок в {{ year }} г., закрыто {{ inspections_closed }}{% endblocktranslate %}</span></div>
+  <a class="stat" href="{% url 'capa:index' %}"><b>{{ plans.open }}</b><span>{% translate "открытых планов исправления" %}{% if plans.overdue %}, <span class="err">{% blocktranslate with n=plans.overdue|length %}просрочено {{ n }}{% endblocktranslate %}</span>{% endif %}</span></a>
+  <a class="stat" href="{% url 'feedback:index' %}"><b>{{ responses }}</b><span>{% blocktranslate with n=campaigns|length %}ответов студентов; опросов: {{ n }}{% endblocktranslate %}</span></a>
 </div>
 
-<div class="card"><h2>Тепловая карта кафедр</h2>
-<p class="small muted">По последней посчитанной проверке и последнему опросу студентов каждой кафедры. Цвет — сравнение с уровнем строгости этой кафедры. Сверху — кафедры с наибольшим числом отклонений.</p>
-{% if heat.rows %}<div class="tbl"><table class="heat"><thead><tr><th>Кафедра</th>{% for c, t in heat.codes|zip_titles:heat.titles %}<th class="num" title="{{ t }}">{{ c }}</th>{% endfor %}</tr></thead><tbody>
+<div class="card"><h2>{% translate "Тепловая карта кафедр" %}</h2>
+<p class="small muted">{% translate "По последней посчитанной проверке и последнему опросу студентов каждой кафедры. Цвет — сравнение с уровнем строгости этой кафедры. Сверху — кафедры с наибольшим числом отклонений." %}</p>
+{% if heat.rows %}<div class="tbl"><table class="heat"><thead><tr><th>{% translate "Кафедра" %}</th>{% for c, t in heat.codes|zip_titles:heat.titles %}<th class="num" title="{{ t }}">{{ c }}</th>{% endfor %}</tr></thead><tbody>
 {% for row in heat.rows %}<tr><td>{% if row.inspection %}<a href="{% url 'inspections:detail' row.inspection.pk %}">{{ row.unit.name }}</a>{% else %}{{ row.unit.name }}{% endif %}</td>
 {% for c in row.line %}<td class="num {% if c.status == 'ok' %}c-ok{% elif c.status == 'mild' %}c-warn{% elif c.status == 'severe' %}c-bad{% endif %}">{% if c %}{{ c.value|num }}{% else %}·{% endif %}</td>{% endfor %}</tr>{% endfor %}
 </tbody></table></div>
-<div class="row small" style="margin-top:8px"><span class="pill ok">норма</span><span class="pill warn">лёгкое отклонение</span><span class="pill bad">выраженное отклонение</span><span class="pill">без цвета — порог не задан</span><span class="muted">· — нет данных</span></div>
-{% else %}<p class="muted">Посчитанных проверок пока нет.</p>{% endif %}
-{% if heat.unchecked %}<details><summary class="small">Не проверялись: {{ heat.unchecked|length }} кафедр</summary><p class="small">{% for u in heat.unchecked %}<a href="{% url 'org:detail' u.pk %}">{{ u.name }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p></details>{% endif %}
+<div class="row small" style="margin-top:8px"><span class="pill ok">{% translate "норма" %}</span><span class="pill warn">{% translate "лёгкое отклонение" %}</span><span class="pill bad">{% translate "выраженное отклонение" %}</span><span class="pill">{% translate "без цвета — порог не задан" %}</span><span class="muted">{% translate "· — нет данных" %}</span></div>
+{% else %}<p class="muted">{% translate "Посчитанных проверок пока нет." %}</p>{% endif %}
+{% if heat.unchecked %}<details><summary class="small">{% blocktranslate with n=heat.unchecked|length %}Не проверялись: {{ n }} кафедр{% endblocktranslate %}</summary><p class="small">{% for u in heat.unchecked %}<a href="{% url 'org:detail' u.pk %}">{{ u.name }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p></details>{% endif %}
 </div>
 
-{% if strategy %}<div class="card" id="strategy"><h2>Стратегия развития до 2030 года — {{ year }} год</h2>
-<p class="small muted">Цель 2027 г. — «средний» уровень, цель 2030 г. — «высокий». Значения 2.2, 2.3 и 3.1 программа считает сама по подтверждённым портфолио (только по преподавателям, которые есть в системе); остальные вносит Центр.</p>
-<div class="tbl"><table><thead><tr><th>№</th><th>Показатель</th><th class="num">2027</th><th class="num">2030</th><th class="num">{{ year }}</th><th>Состояние</th>{% if can_manage %}<th></th>{% endif %}</tr></thead><tbody>
+{% if strategy %}<div class="card" id="strategy"><h2>{% blocktranslate %}Стратегия развития до 2030 года — {{ year }} год{% endblocktranslate %}</h2>
+<p class="small muted">{% translate "Цель 2027 г. — «средний» уровень, цель 2030 г. — «высокий». Значения 2.2, 2.3 и 3.1 программа считает сама по подтверждённым портфолио (только по преподавателям, которые есть в системе); остальные вносит Центр." %}</p>
+<div class="tbl"><table><thead><tr><th>№</th><th>{% translate "Показатель" %}</th><th class="num">2027</th><th class="num">2030</th><th class="num">{{ year }}</th><th>{% translate "Состояние" %}</th>{% if can_manage %}<th></th>{% endif %}</tr></thead><tbody>
 {% for r in strategy %}<tr><td class="num">{{ r.ind.code }}</td><td>{{ r.ind.title }}{% if r.source %}<div class="small muted">{{ r.source }}</div>{% endif %}{% if r.ind.note and r.ind.threshold_medium is None %}<div class="small muted">{{ r.ind.note }}</div>{% endif %}</td>
 <td class="num">{{ r.ind.threshold_medium|num }}</td><td class="num">{{ r.ind.threshold_high|num }}</td><td class="num">{{ r.value|num }}{% if r.value is not None and r.ind.unit == "%" %} %{% endif %}</td>
-<td>{% if r.status == "nodata" %}<span class="pill">нет данных</span>{% elif r.status == "unknown" %}<span class="pill">проверить нельзя</span>{% elif r.status == "ok" %}<span class="pill ok">цель 2027 достигнута</span>{% elif r.status == "mild" %}<span class="pill warn">ниже цели 2027</span>{% else %}<span class="pill bad">ниже цели 2027</span>{% endif %}</td>
-{% if can_manage %}<td><a class="btn small ghost" href="{% url 'dashboard:strategy_value' r.ind.pk %}?year={{ year }}">{% if r.auto %}Внести вручную{% else %}Внести{% endif %}</a></td>{% endif %}</tr>{% endfor %}
+<td>{% if r.status == "nodata" %}<span class="pill">{% translate "нет данных" %}</span>{% elif r.status == "unknown" %}<span class="pill">{% translate "проверить нельзя" %}</span>{% elif r.status == "ok" %}<span class="pill ok">{% translate "цель 2027 достигнута" %}</span>{% elif r.status == "mild" %}<span class="pill warn">{% translate "ниже цели 2027" %}</span>{% else %}<span class="pill bad">{% translate "ниже цели 2027" %}</span>{% endif %}</td>
+{% if can_manage %}<td><a class="btn small ghost" href="{% url 'dashboard:strategy_value' r.ind.pk %}?year={{ year }}">{% if r.auto %}{% translate "Внести вручную" %}{% else %}{% translate "Внести" %}{% endif %}</a></td>{% endif %}</tr>{% endfor %}
 </tbody></table></div></div>{% endif %}
 
-{% if plans.overdue %}<div class="card"><h2>Просроченные планы исправления</h2>
-{% for p in plans.overdue %}<div><a href="{% url 'capa:detail' p.pk %}">{{ p.ref }}</a> · {{ p.org_unit }} · {{ p.problem }} · срок {{ p.due_date|date:"d.m.Y" }} · {{ p.owner|default:"—" }}</div>{% endfor %}</div>{% endif %}
+{% if plans.overdue %}<div class="card"><h2>{% translate "Просроченные планы исправления" %}</h2>
+{% for p in plans.overdue %}<div><a href="{% url 'capa:detail' p.pk %}">{{ p.ref }}</a> · {{ p.org_unit }} · {{ p.problem }} · {% translate "срок" %} {{ p.due_date|date:"d.m.Y" }} · {{ p.owner|default:"—" }}</div>{% endfor %}</div>{% endif %}
 
-{% if problems %}<div class="card"><h2>Частые диагнозы</h2>
+{% if problems %}<div class="card"><h2>{% translate "Частые диагнозы" %}</h2>
 {% for name, n in problems %}<div class="row between small" style="border-bottom:1px solid var(--line);padding:4px 0"><span>{{ name }}</span><b>{{ n }}</b></div>{% endfor %}</div>{% endif %}
 {% endblock %}

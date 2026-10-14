@@ -1,0 +1,1 @@
+{% load i18n %}{% if r == "strong" %}<span class="pill ok">{{ label }}</span>{% elif r == "satisfactory" %}<span class="pill ok">{{ label }}</span>{% elif r == "improve" %}<span class="pill warn">{{ label }}</span>{% elif r == "unsatisfactory" %}<span class="pill bad">{{ label }}</span>{% else %}<span class="pill">{% translate "не оценено" %}</span>{% endif %}

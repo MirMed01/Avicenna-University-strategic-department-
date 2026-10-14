@@ -1,24 +1,24 @@
-{% extends "base.html" %}{% load kanon %}
-{% block title %}Пробное заполнение — {{ v.instrument.title }}{% endblock %}
+{% extends "base.html" %}{% load kanon i18n %}
+{% block title %}{% translate "Пробное заполнение" %} — {{ v.instrument.title }}{% endblock %}
 {% block content %}
 <p class="small"><a href="{% url 'instruments:version' v.pk %}">{{ v }}</a> ›</p>
-<h1>Пробное заполнение</h1>
-<p class="muted">Заполните, чтобы увидеть, как программа посчитает показатели. <b>Ничего не сохраняется.</b></p>
+<h1>{% translate "Пробное заполнение" %}</h1>
+<p class="muted">{% translate "Заполните, чтобы увидеть, как программа посчитает показатели." %} <b>{% translate "Ничего не сохраняется." %}</b></p>
 
 {% if results is not None %}
-<div class="card"><h2>Результат расчёта</h2>
-<div class="tbl"><table><thead><tr><th>Показатель</th><th class="num">Значение</th><th>Сравнение с нормой</th></tr></thead><tbody>
+<div class="card"><h2>{% translate "Результат расчёта" %}</h2>
+<div class="tbl"><table><thead><tr><th>{% translate "Показатель" %}</th><th class="num">{% translate "Значение" %}</th><th>{% translate "Сравнение с нормой" %}</th></tr></thead><tbody>
 {% for r in results %}<tr><td>{{ r.d.code }} {{ r.d.title }}<div class="small muted">{{ r.note }}</div></td>
 <td class="num">{% if r.value is not None %}{{ r.value|num }} %{% else %}—{% endif %}</td>
-<td>{% if r.value is None %}<span class="pill warn">посчитать нельзя</span>
-{% elif not r.d.indicator %}<span class="small muted">не привязан к норме</span>
-{% elif r.level is None %}<span class="pill">порог не задан — проверить нельзя</span>
-{% elif r.level == "below" %}<span class="pill bad">ниже всех порогов</span>
-{% elif r.level == "weak" %}<span class="pill warn">слабый уровень</span>
-{% elif r.level == "medium" %}<span class="pill ok">средний уровень</span>
-{% else %}<span class="pill ok">высокий уровень</span>{% endif %}
-{% if r.d.indicator %}<div class="small muted">пороги {{ r.d.indicator.thresholds_text }}</div>{% endif %}</td></tr>
-{% empty %}<tr><td class="muted">У инструмента нет расчётных показателей.</td></tr>{% endfor %}
+<td>{% if r.value is None %}<span class="pill warn">{% translate "посчитать нельзя" %}</span>
+{% elif not r.d.indicator %}<span class="small muted">{% translate "не привязан к норме" %}</span>
+{% elif r.level is None %}<span class="pill">{% translate "порог не задан — проверить нельзя" %}</span>
+{% elif r.level == "below" %}<span class="pill bad">{% translate "ниже всех порогов" %}</span>
+{% elif r.level == "weak" %}<span class="pill warn">{% translate "слабый уровень" %}</span>
+{% elif r.level == "medium" %}<span class="pill ok">{% translate "средний уровень" %}</span>
+{% else %}<span class="pill ok">{% translate "высокий уровень" %}</span>{% endif %}
+{% if r.d.indicator %}<div class="small muted">{% blocktranslate with t=r.d.indicator.thresholds_text %}пороги {{ t }}{% endblocktranslate %}</div>{% endif %}</td></tr>
+{% empty %}<tr><td class="muted">{% translate "У инструмента нет расчётных показателей." %}</td></tr>{% endfor %}
 </tbody></table></div></div>
 {% endif %}
 
@@ -29,7 +29,7 @@
 <div><label for="i{{ it.pk }}">{{ it.text }}</label>
 {% if it.help %}<div class="help">{{ it.help }}</div>{% endif %}
 {% if it.type == "yes_no" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}" style="max-width:160px"><option value="">—</option>
-<option value="yes" {% if val == "yes" %}selected{% endif %}>Да</option><option value="no" {% if val == "no" %}selected{% endif %}>Нет</option></select>
+<option value="yes" {% if val == "yes" %}selected{% endif %}>{% translate "Да" %}</option><option value="no" {% if val == "no" %}selected{% endif %}>{% translate "Нет" %}</option></select>
 {% elif it.type == "scale" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}" style="max-width:160px"><option value="">—</option>
 {% for n in "12345" %}<option value="{{ n }}" {% if val == n %}selected{% endif %}>{{ n }}</option>{% endfor %}</select>
 {% elif it.type == "number" %}<input type="text" inputmode="decimal" id="i{{ it.pk }}" name="i{{ it.pk }}" value="{{ val }}" style="max-width:200px">
@@ -38,6 +38,6 @@
 {% if err %}<div class="err">{{ err }}</div>{% endif %}</div>
 {% endfor %}</div>
 {% endfor %}
-<div><button class="btn">Посчитать</button></div>
+<div><button class="btn">{% translate "Посчитать" %}</button></div>
 </form>
 {% endblock %}

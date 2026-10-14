@@ -1,14 +1,14 @@
-{% extends "base.html" %}
-{% block title %}Проблемы качества{% endblock %}
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Проблемы качества" %}{% endblock %}
 {% block content %}
-<p class="small"><a href="{% url 'capa:index' %}">Планы исправления</a> ›</p>
-<div class="row between"><h1>Справочник проблем качества</h1>{% if can_manage %}<a class="btn" href="{% url 'capa:problem_create' %}">+ Проблема</a>{% endif %}</div>
-<p class="muted">«Классификатор болезней образования»: типовые проблемы, их признаки и типовое лечение. По отклонению показателя программа подсказывает диагноз, а ставит его эксперт.</p>
-<div class="tbl"><table><thead><tr><th>Код</th><th>Проблема</th><th>Типовые мероприятия</th><th>Подсказывается по</th></tr></thead><tbody>
+<p class="small"><a href="{% url 'capa:index' %}">{% translate "Планы исправления" %}</a> ›</p>
+<div class="row between"><h1>{% translate "Справочник проблем качества" %}</h1>{% if can_manage %}<a class="btn" href="{% url 'capa:problem_create' %}">{% translate "+ Проблема" %}</a>{% endif %}</div>
+<p class="muted">{% translate "«Классификатор болезней образования»: типовые проблемы, их признаки и типовое лечение. По отклонению показателя программа подсказывает диагноз, а ставит его эксперт." %}</p>
+<div class="tbl"><table><thead><tr><th>{% translate "Код" %}</th><th>{% translate "Проблема" %}</th><th>{% translate "Типовые мероприятия" %}</th><th>{% translate "Подсказывается по" %}</th></tr></thead><tbody>
 {% for p in problems %}<tr class="{% if not p.is_active %}closed{% endif %}"><td class="num">{{ p.code }}</td>
 <td>{% if can_manage %}<a href="{% url 'capa:problem_edit' p.pk %}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}<div class="small muted">{{ p.description }}</div></td>
 <td class="small">{% for a in p.action_list %}• {{ a }}<br>{% endfor %}</td>
 <td class="small">{% for i in p.indicators.all %}{{ i.code }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td></tr>
-{% empty %}<tr><td colspan="4" class="muted">Пусто.</td></tr>{% endfor %}
+{% empty %}<tr><td colspan="4" class="muted">{% translate "Пусто." %}</td></tr>{% endfor %}
 </tbody></table></div>
 {% endblock %}

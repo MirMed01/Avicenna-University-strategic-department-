@@ -1,15 +1,15 @@
-{% extends "base.html" %}
-{% block title %}Планы исправления{% endblock %}
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Планы исправления" %}{% endblock %}
 {% block content %}
-<div class="row between"><h1>Планы исправления</h1><a class="btn ghost" href="{% url 'capa:problems' %}">Справочник проблем качества</a></div>
-<p class="muted">«Лечение»: по находке проверки ставится диагноз и составляется план — мероприятия, исполнители, сроки, проверка результативности.</p>
-<p class="small">Показать: {% if show == "open" %}<b>открытые</b>{% else %}<a href="?show=open">открытые</a>{% endif %} ·
-{% if show == "overdue" %}<b>просроченные</b>{% else %}<a href="?show=overdue">просроченные</a>{% endif %} ·
-{% if show == "all" %}<b>все</b>{% else %}<a href="?show=all">все</a>{% endif %}</p>
-<div class="tbl"><table><thead><tr><th>№</th><th>План</th><th>Подразделение</th><th>Статус</th><th>Срок</th><th>Ответственный</th></tr></thead><tbody>
+<div class="row between"><h1>{% translate "Планы исправления" %}</h1><a class="btn ghost" href="{% url 'capa:problems' %}">{% translate "Справочник проблем качества" %}</a></div>
+<p class="muted">{% translate "«Лечение»: по находке проверки ставится диагноз и составляется план — мероприятия, исполнители, сроки, проверка результативности." %}</p>
+<p class="small">{% translate "Показать:" %} {% if show == "open" %}<b>{% translate "открытые" %}</b>{% else %}<a href="?show=open">{% translate "открытые" %}</a>{% endif %} ·
+{% if show == "overdue" %}<b>{% translate "просроченные" %}</b>{% else %}<a href="?show=overdue">{% translate "просроченные" %}</a>{% endif %} ·
+{% if show == "all" %}<b>{% translate "все" %}</b>{% else %}<a href="?show=all">{% translate "все" %}</a>{% endif %}</p>
+<div class="tbl"><table><thead><tr><th>№</th><th>{% translate "План" %}</th><th>{% translate "Подразделение" %}</th><th>{% translate "Статус" %}</th><th>{% translate "Срок" %}</th><th>{% translate "Ответственный" %}</th></tr></thead><tbody>
 {% for p in plans %}<tr><td class="num">{{ p.ref }}</td><td><a href="{% url 'capa:detail' p.pk %}">{{ p.title|truncatechars:90 }}</a><div class="small muted">{{ p.problem }}</div></td>
 <td>{{ p.finding.inspection.org_unit }}</td><td>{% include "capa/_state.html" with s=p.state label=p.get_state_display overdue=p.overdue %}</td>
 <td class="num">{{ p.due_date|date:"d.m.Y" }}</td><td>{{ p.owner|default:"—" }}</td></tr>
-{% empty %}<tr><td colspan="6" class="muted">Планов нет. План создаётся из находки на странице проверки.</td></tr>{% endfor %}
+{% empty %}<tr><td colspan="6" class="muted">{% translate "Планов нет. План создаётся из находки на странице проверки." %}</td></tr>{% endfor %}
 </tbody></table></div>
 {% endblock %}

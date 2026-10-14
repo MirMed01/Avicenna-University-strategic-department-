@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 
 from accounts.decorators import manager_required
 from accounts.models import Role
@@ -62,9 +63,9 @@ def create(request):
     if form.is_valid():
         unit = form.save()
         log(request.user, "create", unit, f"Добавлено: {unit.get_kind_display()} «{unit.name}» в «{unit.parent}»")
-        messages.success(request, f"Добавлено: {unit.name}")
+        messages.success(request, _("Добавлено: %(name)s") % {"name": unit.name})
         return redirect("org:detail", unit.pk)
-    return render(request, "form.html", {"form": form, "title": "Новое подразделение", "back": request.META.get("HTTP_REFERER")})
+    return render(request, "form.html", {"form": form, "title": _("Новое подразделение"), "back": request.META.get("HTTP_REFERER")})
 
 
 @manager_required
@@ -75,9 +76,9 @@ def edit(request, pk):
     if form.is_valid():
         unit = form.save()
         log(request.user, "update", unit, f"Изменено: было {before}, стало «{unit.name}» в «{unit.parent}»")
-        messages.success(request, "Сохранено.")
+        messages.success(request, _("Сохранено."))
         return redirect("org:detail", unit.pk)
-    return render(request, "form.html", {"form": form, "title": f"Изменить: {unit.name}"})
+    return render(request, "form.html", {"form": form, "title": _("Изменить: %(name)s") % {"name": unit.name}})
 
 
 @manager_required
@@ -89,7 +90,7 @@ def delete(request, pk):
         with transaction.atomic():
             log(request.user, "delete", unit, f"Удалено: {unit.get_kind_display()} «{unit.name}» из «{parent}»")
             unit.delete()
-        messages.success(request, f"Удалено: {unit.name}")
+        messages.success(request, _("Удалено: %(name)s") % {"name": unit.name})
         return redirect("org:detail", parent.pk) if parent else redirect("org:tree")
     return render(request, "org/delete.html", {"unit": unit, "blockers": blockers})
 
@@ -101,11 +102,11 @@ def toggle_active(request, pk):
         units = unit.descendants()
         new = not unit.is_active
         if new and unit.parent and not unit.parent.is_active:
-            messages.error(request, "Сначала восстановите вышестоящее подразделение.")
+            messages.error(request, _("Сначала восстановите вышестоящее подразделение."))
             return redirect("org:detail", pk)
         # Закрытие закрывает и вложенные; восстановление — только само подразделение.
         (units if not new else OrgUnit.objects.filter(pk=pk)).update(is_active=new)
         log(request.user, "archive" if not new else "restore", unit,
             f"{'Закрыто' if not new else 'Восстановлено'}: «{unit.name}»")
-        messages.success(request, ("Восстановлено: " if new else "Закрыто: ") + unit.name)
+        messages.success(request, (_("Восстановлено: %(name)s") if new else _("Закрыто: %(name)s")) % {"name": unit.name})
     return redirect("org:detail", pk)

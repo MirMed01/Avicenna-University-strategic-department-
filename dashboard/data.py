@@ -3,6 +3,7 @@
 from decimal import Decimal
 
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from accounts.models import Role, RoleAssignment
 from capa.models import Plan
@@ -79,11 +80,11 @@ def auto_values(year):
     pubs = PortfolioEntry.objects.filter(
         status=PortfolioEntry.Status.VERIFIED, kind=EntryKind.PUBLICATION, date_start__year=year,
         indexing__in=[Indexing.SCOPUS, Indexing.WOS, Indexing.SCOPUS_WOS]).count()
-    note = f"по подтверждённым портфолио; преподавателей в системе: {n}"
+    note = _("по подтверждённым портфолио; преподавателей в системе: %(n)s") % {"n": n}
     return {
         "2.2": (share(EntryKind.CERTIFICATION), note),
         "2.3": (share(EntryKind.MOBILITY), note),
-        "3.1": (Decimal(pubs), f"подтверждённые статьи {year} г. в портфолио"),
+        "3.1": (Decimal(pubs), _("подтверждённые статьи %(year)s г. в портфолио") % {"year": year}),
     }
 
 
@@ -96,7 +97,7 @@ def strategy(year):
     rows = []
     for ind in Indicator.objects.filter(node__version=fw.active_version()).order_by("node__order", "order"):
         if ind.pk in manual:
-            value, source, auto_flag = manual[ind.pk].value, manual[ind.pk].note or "внесено Центром", False
+            value, source, auto_flag = manual[ind.pk].value, manual[ind.pk].note or _("внесено Центром"), False
         elif ind.code in auto and auto[ind.code][0] is not None:
             value, source, auto_flag = auto[ind.code][0], auto[ind.code][1], True
         else:

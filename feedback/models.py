@@ -14,6 +14,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 # Без похожих символов (0/O, 1/I/L), чтобы код можно было ввести с листка.
 ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
@@ -24,22 +25,22 @@ def new_code():
 
 
 class Campaign(models.Model):
-    title = models.CharField("название опроса", max_length=255)
-    version = models.ForeignKey("instruments.InstrumentVersion", verbose_name="анкета", on_delete=models.PROTECT)
-    org_unit = models.ForeignKey("org.OrgUnit", verbose_name="кафедра", on_delete=models.PROTECT, related_name="campaigns")
-    label = models.CharField("группа, курс, дисциплина", max_length=255, blank=True)
-    closes_on = models.DateField("принимать ответы до (включительно)")
-    min_respondents = models.PositiveIntegerField("показывать итоги не меньше чем при", default=5,
+    title = models.CharField(_("название опроса"), max_length=255)
+    version = models.ForeignKey("instruments.InstrumentVersion", verbose_name=_("анкета"), on_delete=models.PROTECT)
+    org_unit = models.ForeignKey("org.OrgUnit", verbose_name=_("кафедра"), on_delete=models.PROTECT, related_name="campaigns")
+    label = models.CharField(_("группа, курс, дисциплина"), max_length=255, blank=True)
+    closes_on = models.DateField(_("принимать ответы до (включительно)"))
+    min_respondents = models.PositiveIntegerField(_("показывать итоги не меньше чем при"), default=5,
                                                   validators=[MinValueValidator(3)])
-    is_open = models.BooleanField("приём ответов открыт", default=True)
+    is_open = models.BooleanField(_("приём ответов открыт"), default=True)
     response_count = models.PositiveIntegerField(default=0, editable=False)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = "опрос студентов"
-        verbose_name_plural = "опросы студентов"
+        verbose_name = _("опрос студентов")
+        verbose_name_plural = _("опросы студентов")
 
     def __str__(self):
         return f"{self.title} — {self.org_unit}"
@@ -81,9 +82,9 @@ class Counter(models.Model):
 
 class TextAnswer(models.Model):
     class Decision(models.TextChoices):
-        UNDECIDED = "undecided", "Не просмотрен"
-        PUBLIC = "public", "Показан кафедре"
-        HIDDEN = "hidden", "Скрыт"
+        UNDECIDED = "undecided", _("Не просмотрен")
+        PUBLIC = "public", _("Показан кафедре")
+        HIDDEN = "hidden", _("Скрыт")
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="texts")

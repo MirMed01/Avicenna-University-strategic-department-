@@ -1,4 +1,6 @@
 from django import forms
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 from accounts.models import Role, User
 from instruments.models import InstrumentVersion
@@ -9,7 +11,7 @@ from .models import Finding, Inspection
 
 class InspectionForm(forms.ModelForm):
     instruments = forms.ModelMultipleChoiceField(
-        InstrumentVersion.objects.none(), label="Инструменты (по одному заполнению; добавить ещё можно позже)",
+        InstrumentVersion.objects.none(), label=_("Инструменты (по одному заполнению; добавить ещё можно позже)"),
         widget=forms.CheckboxSelectMultiple)
 
     class Meta:
@@ -26,17 +28,18 @@ class InspectionForm(forms.ModelForm):
             is_active=True, roles__role__in=[Role.EXPERT, Role.DIRECTOR]).distinct()
         self.fields["instruments"].queryset = InstrumentVersion.objects.filter(
             status=InstrumentVersion.Status.PUBLISHED).exclude(instrument__respondent="student").select_related("instrument").order_by("instrument__title")
-        self.fields["instruments"].label_from_instance = lambda v: f"{v.instrument.title} (в.{v.number}) — заполняет: {v.instrument.get_respondent_display().lower()}"
+        self.fields["instruments"].label_from_instance = lambda v: gettext("%(title)s (в.%(number)s) — заполняет: %(who)s") % {
+            "title": v.instrument.title, "number": v.number, "who": v.instrument.get_respondent_display().lower()}
 
 
 class AddTaskForm(forms.Form):
     version = forms.ModelChoiceField(InstrumentVersion.objects.filter(status=InstrumentVersion.Status.PUBLISHED).exclude(
-        instrument__respondent="student"), label="Инструмент")
-    label = forms.CharField(label="Уточнение", required=False, help_text="Например: «занятие доц. Н., 3 курс».")
+        instrument__respondent="student"), label=_("Инструмент"))
+    label = forms.CharField(label=_("Уточнение"), required=False, help_text=_("Например: «занятие доц. Н., 3 курс»."))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["version"].label_from_instance = lambda v: f"{v.instrument.title} (в.{v.number})"
+        self.fields["version"].label_from_instance = lambda v: gettext("%(title)s (в.%(number)s)") % {"title": v.instrument.title, "number": v.number}
 
 
 class FindingForm(forms.ModelForm):

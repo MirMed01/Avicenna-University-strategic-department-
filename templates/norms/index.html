@@ -1,14 +1,14 @@
-{% extends "base.html" %}
-{% block title %}Нормы{% endblock %}
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Нормы" %}{% endblock %}
 {% block content %}
-<div class="row between"><h1>Справочник норм</h1>
-  {% if can_manage %}<a class="btn" href="{% url 'norms:framework_create' %}">+ Новый документ-источник</a>{% endif %}</div>
-<p class="muted">Документ → область → стандарт → критерий → показатель. У каждого показателя три порога: слабый, средний, высокий.</p>
-<div class="tbl"><table><thead><tr><th>Документ</th><th>Действующая редакция</th><th class="num">Показателей</th></tr></thead><tbody>
+<div class="row between"><h1>{% translate "Справочник норм" %}</h1>
+  {% if can_manage %}<a class="btn" href="{% url 'norms:framework_create' %}">+ {% translate "Новый документ-источник" %}</a>{% endif %}</div>
+<p class="muted">{% translate "Документ → область → стандарт → критерий → показатель. У каждого показателя три порога: слабый, средний, высокий." %}</p>
+<div class="tbl"><table><thead><tr><th>{% translate "Документ" %}</th><th>{% translate "Действующая редакция" %}</th><th class="num">{% translate "Показателей" %}</th></tr></thead><tbody>
 {% for f, v, n in rows %}<tr><td>{% if v %}<a href="{% url 'norms:version' v.pk %}">{{ f.title }}</a>{% else %}{{ f.title }}{% endif %}
 <div class="small muted">{{ f.description|truncatechars:160 }}</div></td>
-<td>{% if v %}{{ v.version }}{% if v.effective_from %} (с {{ v.effective_from|date:"d.m.Y" }}){% endif %}{% else %}<span class="muted">нет</span>{% endif %}</td>
+<td>{% if v %}{{ v.version }}{% if v.effective_from %} ({% blocktranslate with date=v.effective_from|date:"d.m.Y" %}с {{ date }}{% endblocktranslate %}){% endif %}{% else %}<span class="muted">{% translate "нет" %}</span>{% endif %}</td>
 <td class="num">{{ n }}</td></tr>
-{% empty %}<tr><td colspan="3" class="muted">Пусто. Загрузите начальные данные: <code>python manage.py load_initial_data</code>.</td></tr>{% endfor %}
+{% empty %}<tr><td colspan="3" class="muted">{% translate "Пусто. Загрузите начальные данные:" %} <code>python manage.py load_initial_data</code>.</td></tr>{% endfor %}
 </tbody></table></div>
 {% endblock %}

@@ -4,6 +4,8 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
+from django.utils.translation import gettext_noop
 
 from accounts.decorators import manager_required
 from core.models import log
@@ -34,7 +36,7 @@ def create(request):
                 Task.objects.create(inspection=insp, version=v)
             log(request.user, "create", insp, f"Назначена проверка «{insp}»")
         return redirect("inspections:detail", insp.pk)
-    return render(request, "form.html", {"form": form, "title": "Назначить проверку"})
+    return render(request, "form.html", {"form": form, "title": _("Назначить проверку")})
 
 
 def _get(request, pk):
@@ -58,11 +60,12 @@ def detail(request, pk):
 
 
 TRANSITIONS = {
-    "start": (St.PLANNED, St.COLLECTING, "Начат сбор данных"),
-    "review": (St.COLLECTING, St.REVIEW, "Сбор закрыт, показатели посчитаны"),
-    "reopen": (St.REVIEW, St.COLLECTING, "Возвращено на сбор данных"),
-    "close": (St.REVIEW, St.CLOSED, "Проверка закрыта"),
-    "cancel": (None, St.CANCELLED, "Проверка отменена"),
+    # gettext_noop: в журнал текст идёт по-русски, а сообщение на экране переводится при показе.
+    "start": (St.PLANNED, St.COLLECTING, gettext_noop("Начат сбор данных")),
+    "review": (St.COLLECTING, St.REVIEW, gettext_noop("Сбор закрыт, показатели посчитаны")),
+    "reopen": (St.REVIEW, St.COLLECTING, gettext_noop("Возвращено на сбор данных")),
+    "close": (St.REVIEW, St.CLOSED, gettext_noop("Проверка закрыта")),
+    "cancel": (None, St.CANCELLED, gettext_noop("Проверка отменена")),
 }
 
 
@@ -73,13 +76,13 @@ def transition(request, pk, action):
         raise PermissionDenied
     src, dst, text = TRANSITIONS[action]
     if (src and insp.state != src) or insp.state in (St.CLOSED, St.CANCELLED):
-        messages.error(request, "Это действие сейчас недоступно.")
+        messages.error(request, _("Это действие сейчас недоступно."))
         return redirect("inspections:detail", pk)
     if action == "review" and not insp.tasks.filter(status=Task.Status.SUBMITTED).exists():
-        messages.error(request, "Ни одно заполнение не сдано — считать нечего.")
+        messages.error(request, _("Ни одно заполнение не сдано — считать нечего."))
         return redirect("inspections:detail", pk)
     if action == "reopen" and not request.POST.get("comment", "").strip():
-        messages.error(request, "Напишите, что нужно дособрать.")
+        messages.error(request, _("Напишите, что нужно дособрать."))
         return redirect("inspections:detail", pk)
     with transaction.atomic():
         if action == "review":
@@ -91,7 +94,7 @@ def transition(request, pk, action):
         insp.save()
         comment = request.POST.get("comment", "").strip()
         log(request.user, action, insp, f"«{insp}»: {text}" + (f". {comment}" if comment else ""))
-    messages.success(request, text + ".")
+    messages.success(request, _(text) + ".")
     return redirect("inspections:detail", pk)
 
 
@@ -101,7 +104,7 @@ def recalc(request, pk):
     if not can_lead(request.user, insp) or request.method != "POST" or insp.state != St.REVIEW:
         raise PermissionDenied
     calculate(insp)
-    messages.success(request, "Пересчитано (например, после изменения порогов).")
+    messages.success(request, _("Пересчитано (например, после изменения порогов)."))
     return redirect("inspections:detail", pk)
 
 
@@ -138,9 +141,9 @@ def fill(request, task_pk):
                 errors[it.pk] = str(e)
             else:
                 if submit and it.required and values[it.pk] is None:
-                    errors[it.pk] = "Обязательный пункт"
+                    errors[it.pk] = _("Обязательный пункт")
                 if it.type == it.Type.CHOICE and values[it.pk] is not None and values[it.pk] not in it.option_list():
-                    errors[it.pk] = "Выберите вариант из списка"
+                    errors[it.pk] = _("Выберите вариант из списка")
         if not errors or not submit:
             with transaction.atomic():
                 for it in items:
@@ -155,15 +158,15 @@ def fill(request, task_pk):
                 task.save()
             if task.status == Task.Status.SUBMITTED:
                 log(request.user, "submit", insp, f"«{insp}»: сдано «{task}»")
-                messages.success(request, "Сдано. Спасибо!")
+                messages.success(request, _("Сдано. Спасибо!"))
                 return redirect("inspections:detail", insp.pk)
             if errors:
-                messages.error(request, "Сохранено как черновик. Исправьте пункты, отмеченные красным.")
+                messages.error(request, _("Сохранено как черновик. Исправьте пункты, отмеченные красным."))
             else:
-                messages.success(request, "Черновик сохранён.")
+                messages.success(request, _("Черновик сохранён."))
             saved = {a.item_id: a for a in task.answers.all()}
         else:
-            messages.error(request, "Не сдано: исправьте пункты, отмеченные красным. Остальное можно сохранить черновиком.")
+            messages.error(request, _("Не сдано: исправьте пункты, отмеченные красным. Остальное можно сохранить черновиком."))
     raw = lambda it: request.POST.get(f"i{it.pk}", "") if request.method == "POST" else _raw(saved.get(it.pk))
     sections = []
     for s in task.version.sections.all():
@@ -215,7 +218,7 @@ def delete_finding(request, pk):
     if not can_lead(request.user, f.inspection) or f.inspection.state != St.REVIEW or request.method != "POST":
         raise PermissionDenied
     if hasattr(f, "plan"):
-        messages.error(request, "По находке уже есть план исправления — её нельзя удалить.")
+        messages.error(request, _("По находке уже есть план исправления — её нельзя удалить."))
         return redirect("inspections:detail", f.inspection_id)
     log(request.user, "delete", f.inspection, f"«{f.inspection}»: удалена находка — {f.text[:80]}")
     f.delete()

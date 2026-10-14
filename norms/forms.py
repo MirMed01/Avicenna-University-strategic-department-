@@ -1,12 +1,13 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import Framework, FrameworkVersion, Indicator, LevelAssignment, NormNode
 
 
 class FrameworkForm(forms.ModelForm):
-    version = forms.CharField(label="Редакция", max_length=50)
-    effective_from = forms.DateField(label="Действует с", required=False, widget=forms.DateInput(attrs={"type": "date"}))
-    source_url = forms.URLField(label="Ссылка на документ", required=False)
+    version = forms.CharField(label=_("Редакция"), max_length=50)
+    effective_from = forms.DateField(label=_("Действует с"), required=False, widget=forms.DateInput(attrs={"type": "date"}))
+    source_url = forms.URLField(label=_("Ссылка на документ"), required=False)
 
     class Meta:
         model = Framework

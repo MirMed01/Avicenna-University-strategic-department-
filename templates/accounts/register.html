@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Регистрация{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Регистрация" %}{% endblock %}
 {% block content %}
 <div class="auth card" style="max-width:620px">
-  <h1>Регистрация сотрудника</h1>
-  <p class="muted small">После отправки заявки доступ откроет администратор: он проверит роль и подразделение.</p>
+  <h1>{% translate "Регистрация сотрудника" %}</h1>
+  <p class="muted small">{% translate "После отправки заявки доступ откроет администратор: он проверит роль и подразделение." %}</p>
   <form method="post" class="f">{% csrf_token %}{% include "_fields.html" %}
-    <button class="btn">Отправить заявку</button></form>
-  <p class="small"><a href="{% url 'login' %}">Уже есть учётная запись — войти</a></p>
+    <button class="btn">{% translate "Отправить заявку" %}</button></form>
+  <p class="small"><a href="{% url 'login' %}">{% translate "Уже есть учётная запись — войти" %}</a></p>
 </div>
 {% endblock %}

@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load i18n %}
 {% block title %}{{ task }}{% endblock %}
 {% block content %}
 <p class="small"><a href="{% url 'inspections:detail' insp.pk %}">{{ insp.title }} — {{ insp.org_unit }}</a> ›</p>
 <h1>{{ task.version.instrument.title }}</h1>
-<p class="muted">{% if task.label %}{{ task.label }} · {% endif %}версия {{ task.version.number }} · {{ task.get_status_display }}
-{% if task.version.instrument.source_title %} · основание: {{ task.version.instrument.source_title }}{% endif %}</p>
-{% if not editable %}<div class="msg">Только просмотр.{% if insp.state != "collecting" %} Заполнять можно, пока идёт сбор данных.{% endif %}</div>{% endif %}
+<p class="muted">{% if task.label %}{{ task.label }} · {% endif %}{% blocktranslate with num=task.version.number %}версия {{ num }}{% endblocktranslate %} · {{ task.get_status_display }}
+{% if task.version.instrument.source_title %} · {% translate "основание:" %} {{ task.version.instrument.source_title }}{% endif %}</p>
+{% if not editable %}<div class="msg">{% translate "Только просмотр." %}{% if insp.state != "collecting" %} {% translate "Заполнять можно, пока идёт сбор данных." %}{% endif %}</div>{% endif %}
 <form method="post" class="f" style="max-width:none">{% csrf_token %}
 {% for s, items in sections %}
 <div class="card"><h2>{{ s.title }}</h2>{% if s.text %}<p class="small muted">{{ s.text }}</p>{% endif %}
@@ -14,7 +14,7 @@
 {% if it.help %}<div class="help">{{ it.help }}</div>{% endif %}
 {% if not editable %}<div>{{ ans.display|default:"—" }}</div>
 {% elif it.type == "yes_no" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}" style="max-width:160px"><option value="">—</option>
-<option value="yes" {% if val == "yes" %}selected{% endif %}>Да</option><option value="no" {% if val == "no" %}selected{% endif %}>Нет</option></select>
+<option value="yes" {% if val == "yes" %}selected{% endif %}>{% translate "Да" %}</option><option value="no" {% if val == "no" %}selected{% endif %}>{% translate "Нет" %}</option></select>
 {% elif it.type == "scale" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}" style="max-width:160px"><option value="">—</option>
 {% for n in "12345" %}<option value="{{ n }}" {% if val == n %}selected{% endif %}>{{ n }}</option>{% endfor %}</select>
 {% elif it.type == "number" %}<input type="text" inputmode="decimal" id="i{{ it.pk }}" name="i{{ it.pk }}" value="{{ val }}" style="max-width:200px">
@@ -23,9 +23,9 @@
 {% if err %}<div class="err">{{ err }}</div>{% endif %}</div>
 {% endfor %}</div>
 {% endfor %}
-{% if editable %}<div class="row"><button class="btn" name="submit" value="1">Сдать</button>
-<button class="btn ghost" name="draft" value="1">Сохранить черновик</button>
-<a class="btn ghost" href="{% url 'inspections:detail' insp.pk %}">Назад</a></div>
-<p class="small muted">Пункты со звёздочкой обязательны для сдачи. Черновик можно сохранить в любой момент.</p>{% endif %}
+{% if editable %}<div class="row"><button class="btn" name="submit" value="1">{% translate "Сдать" %}</button>
+<button class="btn ghost" name="draft" value="1">{% translate "Сохранить черновик" %}</button>
+<a class="btn ghost" href="{% url 'inspections:detail' insp.pk %}">{% translate "Назад" %}</a></div>
+<p class="small muted">{% translate "Пункты со звёздочкой обязательны для сдачи." %} {% translate "Черновик можно сохранить в любой момент." %}</p>{% endif %}
 </form>
 {% endblock %}

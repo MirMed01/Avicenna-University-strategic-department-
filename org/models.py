@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.utils.translation import gettext_lazy as _
 
 
 class OrgUnit(models.Model):
@@ -9,11 +10,11 @@ class OrgUnit(models.Model):
     """
 
     class Kind(models.TextChoices):
-        UNIVERSITY = "university", "Университет"
-        FACULTY = "faculty", "Факультет"
-        DEPARTMENT = "department", "Кафедра"
-        CENTER = "center", "Центр"
-        DIVISION = "division", "Отдел"
+        UNIVERSITY = "university", _("Университет")
+        FACULTY = "faculty", _("Факультет")
+        DEPARTMENT = "department", _("Кафедра")
+        CENTER = "center", _("Центр")
+        DIVISION = "division", _("Отдел")
 
     # Кто может быть родителем у какого вида подразделения.
     ALLOWED_PARENTS = {
@@ -24,20 +25,20 @@ class OrgUnit(models.Model):
         Kind.DIVISION: (Kind.UNIVERSITY, Kind.CENTER),
     }
 
-    kind = models.CharField("вид", max_length=20, choices=Kind.choices)
-    name = models.CharField("название", max_length=255)
-    short_name = models.CharField("краткое название", max_length=100, blank=True)
+    kind = models.CharField(_("вид"), max_length=20, choices=Kind.choices)
+    name = models.CharField(_("название"), max_length=255)
+    short_name = models.CharField(_("краткое название"), max_length=100, blank=True)
     parent = models.ForeignKey(
-        "self", verbose_name="входит в", null=True, blank=True, on_delete=models.PROTECT, related_name="children"
+        "self", verbose_name=_("входит в"), null=True, blank=True, on_delete=models.PROTECT, related_name="children"
     )
     path = models.CharField(max_length=255, db_index=True, editable=False, default="")
-    is_active = models.BooleanField("действует", default=True)
-    order = models.PositiveIntegerField("порядок", default=0)
+    is_active = models.BooleanField(_("действует"), default=True)
+    order = models.PositiveIntegerField(_("порядок"), default=0)
 
     class Meta:
         ordering = ["order", "name"]
-        verbose_name = "подразделение"
-        verbose_name_plural = "подразделения"
+        verbose_name = _("подразделение")
+        verbose_name_plural = _("подразделения")
 
     def __str__(self):
         return self.name
@@ -50,14 +51,15 @@ class OrgUnit(models.Model):
         allowed = self.ALLOWED_PARENTS.get(self.kind, ())
         if self.parent is None:
             if self.kind != self.Kind.UNIVERSITY:
-                raise ValidationError({"parent": "Укажите, куда входит подразделение."})
+                raise ValidationError({"parent": _("Укажите, куда входит подразделение.")})
             return
         if self.parent.kind not in allowed:
             raise ValidationError(
-                {"parent": f"«{self.get_kind_display()}» не может входить в «{self.parent.get_kind_display()}»."}
+                {"parent": _("«%(kind)s» не может входить в «%(parent)s».") % {
+                    "kind": self.get_kind_display(), "parent": self.parent.get_kind_display()}}
             )
         if self.pk and (self.parent_id == self.pk or self.parent.path.startswith(self.path or "\0")):
-            raise ValidationError({"parent": "Подразделение не может входить само в себя или в своё дочернее."})
+            raise ValidationError({"parent": _("Подразделение не может входить само в себя или в своё дочернее.")})
 
     @transaction.atomic
     def save(self, *args, **kwargs):
@@ -84,11 +86,11 @@ class OrgUnit(models.Model):
         """Причины, по которым подразделение нельзя удалить (тогда его можно только закрыть)."""
         reasons = []
         if self.children.exists():
-            reasons.append(f"внутри есть подразделения ({self.children.count()})")
+            reasons.append(_("внутри есть подразделения (%(n)s)") % {"n": self.children.count()})
         n = self.role_assignments.count()
         if n:
-            reasons.append(f"к нему привязаны сотрудники ({n})")
+            reasons.append(_("к нему привязаны сотрудники (%(n)s)") % {"n": n})
         k = self.inspections.count()
         if k:
-            reasons.append(f"у него есть проверки ({k})")
+            reasons.append(_("у него есть проверки (%(n)s)") % {"n": k})
         return reasons

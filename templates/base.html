@@ -1,23 +1,24 @@
 {% load static i18n %}{% get_current_language as LANG %}<!doctype html>
 <html lang="{{ LANG }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{% block title %}Канон{% endblock %} · ТГМУ</title>
+<title>{% block title %}{% translate "Канон" %}{% endblock %} · {% translate "ТГМУ" %}</title>
 <link rel="stylesheet" href="{% static 'kanon.css' %}"></head>
 <body>
 <header class="top"><div class="in">
   <a class="brand" href="{% url 'home' %}">Канон<small>Қонун · QANUN</small></a>
   {% if user.is_authenticated %}
-    {% if can_view_all or is_verifier %}<a href="{% url 'dashboard:index' %}">Панель</a>{% endif %}
-    <a href="{% url 'org:tree' %}">Структура</a>
-    <a href="{% url 'norms:index' %}">Нормы</a>
-    <a href="{% url 'instruments:index' %}">Инструменты</a>
-    <a href="{% url 'inspections:index' %}">Проверки</a>
-    <a href="{% url 'capa:index' %}">Планы исправления</a>
-    <a href="{% url 'feedback:index' %}">Опросы студентов</a>
-    <a href="{% url 'portfolio:my' %}">Моё портфолио</a>
-    {% if is_verifier %}<a href="{% url 'portfolio:queue' %}">Проверка портфолио</a>{% endif %}
-    {% if can_manage %}<a href="{% url 'accounts:users' %}">Пользователи</a><a href="{% url 'journal' %}">Журнал</a>{% endif %}
+    {% if can_view_all or is_verifier %}<a href="{% url 'dashboard:index' %}">{% translate "Панель" %}</a>{% endif %}
+    <a href="{% url 'org:tree' %}">{% translate "Структура" %}</a>
+    <a href="{% url 'norms:index' %}">{% translate "Нормы" %}</a>
+    <a href="{% url 'instruments:index' %}">{% translate "Инструменты" %}</a>
+    <a href="{% url 'inspections:index' %}">{% translate "Проверки" %}</a>
+    <a href="{% url 'capa:index' %}">{% translate "Планы исправления" %}</a>
+    <a href="{% url 'accreditation:index' %}">{% translate "Аккредитация" %}</a>
+    <a href="{% url 'feedback:index' %}">{% translate "Опросы студентов" %}</a>
+    <a href="{% url 'portfolio:my' %}">{% translate "Моё портфолио" %}</a>
+    {% if is_verifier %}<a href="{% url 'portfolio:queue' %}">{% translate "Проверка портфолио" %}</a>{% endif %}
+    {% if can_manage %}<a href="{% url 'accounts:users' %}">{% translate "Пользователи" %}</a><a href="{% url 'journal' %}">{% translate "Журнал" %}</a>{% endif %}
     <span class="me"><a href="{% url 'accounts:profile' %}">{{ user.full_name|default:user.email }}</a>
-      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Выйти</button></form></span>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>{% translate "Выйти" %}</button></form></span>
   {% endif %}
   <form class="lang" method="post" action="{% url 'set_language' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
     {% get_available_languages as LANGS %}{% for code, name in LANGS %}<button name="language" value="{{ code }}" {% if code == LANG %}aria-current="true"{% endif %}>{{ name }}</button>{% endfor %}</form>

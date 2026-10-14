@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from django.db import transaction
 from django.db.models import F
+from django.utils.translation import gettext as _
 
 from instruments.models import Derived, Item
 from instruments.scoring import parse
@@ -20,11 +21,11 @@ class VoteError(Exception):
 def find_campaign(code):
     ac = AccessCode.objects.select_related("campaign__version").filter(code=code.strip().upper()).first()
     if ac is None:
-        raise VoteError("Код не найден. Проверьте, что он введён без ошибок.")
+        raise VoteError(_("Код не найден. Проверьте, что он введён без ошибок."))
     if ac.used:
-        raise VoteError("По этому коду уже ответили. Каждый код действует один раз.")
+        raise VoteError(_("По этому коду уже ответили. Каждый код действует один раз."))
     if not ac.campaign.accepting:
-        raise VoteError("Приём ответов в этом опросе закрыт.")
+        raise VoteError(_("Приём ответов в этом опросе закрыт."))
     return ac.campaign
 
 
@@ -40,9 +41,9 @@ def validate(campaign, data):
             errors[it.pk] = str(e)
             continue
         if v is None and it.required:
-            errors[it.pk] = "Ответьте, пожалуйста"
+            errors[it.pk] = _("Ответьте, пожалуйста")
         elif it.type == Item.Type.CHOICE and v is not None and v not in it.option_list():
-            errors[it.pk] = "Выберите вариант из списка"
+            errors[it.pk] = _("Выберите вариант из списка")
         else:
             answers[it] = v
     return answers, errors
@@ -54,7 +55,7 @@ def submit(code, answers):
     with transaction.atomic():
         used = AccessCode.objects.filter(code=code, used=False, campaign__is_open=True).update(used=True)
         if used != 1:
-            raise VoteError("По этому коду уже ответили или опрос закрыт.")
+            raise VoteError(_("По этому коду уже ответили или опрос закрыт."))
         campaign = Campaign.objects.select_for_update().get(codes__code=code)
         for it, v in answers.items():
             if v is None:

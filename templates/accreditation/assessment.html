@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{{ a.criterion.code }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'accreditation:detail' a.cycle_id %}#c{{ a.pk }}">{{ a.cycle }}</a> › {{ std.code }}. {{ std.title }}</p>
+<span class="kind">{% translate "Критерий" %} {{ a.criterion.code }}{% if a.criterion.parent %} · {{ a.criterion.parent.title }}{% endif %}</span>
+<h1>{{ a.criterion.text|default:a.criterion.title }}</h1>
+<p class="small muted">{% translate "Это краткое изложение критерия. Точную формулировку сверяйте с документом IAAR." %}
+{% if a.cycle.version.source_url %}<a href="{{ a.cycle.version.source_url }}" target="_blank" rel="noopener">{% translate "Документ" %}</a>{% endif %}</p>
+{% if a.updated_by %}<p class="small muted">{% blocktranslate with who=a.updated_by when=a.updated_at|date:"d.m.Y H:i" %}Последнее изменение: {{ who }}, {{ when }}{% endblocktranslate %}</p>{% endif %}
+
+{% if editable %}<form method="post" class="f card">{% csrf_token %}{% include "_fields.html" %}
+<div class="row"><button class="btn">{% translate "Сохранить" %}</button><button class="btn ghost" name="next" value="1">{% translate "Сохранить и к следующему не оценённому" %}</button>
+<a class="btn ghost" href="{% url 'accreditation:detail' a.cycle_id %}#c{{ a.pk }}">{% translate "Назад" %}</a></div></form>
+{% else %}<div class="card"><p><b>{% translate "Самооценка" %}:</b> {% include "accreditation/_rating.html" with r=a.rating label=a.get_rating_display %}</p>
+{% if a.evidence %}<p><b>{% translate "Доказательства" %}:</b> {{ a.evidence|linebreaksbr }}</p>{% endif %}
+{% if a.justification %}<p><b>{% translate "Обоснование" %}:</b> {{ a.justification|linebreaksbr }}</p>{% endif %}
+{% if a.measures %}<p><b>{% translate "Меры по улучшению" %}:</b> {{ a.measures|linebreaksbr }}</p>{% endif %}</div>{% endif %}
+
+<div class="card"><h2>{% translate "Документы-доказательства" %}</h2>
+{% for f in a.files.all %}<div><a href="{% url 'accreditation:file' f.pk %}" target="_blank">{{ f.title }}</a> <span class="small muted">{{ f.uploaded_by }}, {{ f.uploaded_at|date:"d.m.Y" }}</span></div>
+{% empty %}<p class="muted small">{% translate "Файлов нет." %}</p>{% endfor %}
+{% if editable %}<form method="post" action="{% url 'accreditation:upload' a.pk %}" enctype="multipart/form-data" class="f" style="margin-top:8px">{% csrf_token %}
+{% include "_fields.html" with form=file_form %}<button class="btn small ghost">{% translate "Загрузить" %}</button>
+<p class="help">{% translate "PDF, JPG, PNG, DOC, DOCX до 10 МБ. Файлы видят только участники подготовки и руководство." %}</p></form>{% endif %}</div>
+{% endblock %}

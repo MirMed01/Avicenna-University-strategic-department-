@@ -1,22 +1,23 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}{{ target.full_name }}{% endblock %}
 {% block content %}
 <div class="row between"><h1>{{ target.full_name }}</h1>
-  {% if target.is_active %}<span class="pill ok">доступ открыт</span>{% else %}<span class="pill warn">доступ закрыт</span>{% endif %}</div>
+  {% if target.is_active %}<span class="pill ok">{% translate "доступ открыт" %}</span>{% else %}<span class="pill warn">{% translate "доступ закрыт" %}</span>{% endif %}</div>
 <p class="muted">{{ target.email }}{% if target.position %} · {{ target.position }}{% endif %}{% if target.academic_degree %} · {{ target.academic_degree }}{% endif %}</p>
-{% if target.requested_role %}<div class="msg">Заявка: роль «{{ target.get_requested_role_display }}», подразделение «{{ target.requested_unit|default:'—' }}». Проверьте и откройте доступ ниже.</div>{% endif %}
-<div class="card"><h2>Роли</h2>
+{% if target.requested_role %}<div class="msg">{% blocktranslate with role=target.get_requested_role_display unit=target.requested_unit|default:'—' %}Заявка: роль «{{ role }}», подразделение «{{ unit }}». Проверьте и откройте доступ ниже.{% endblocktranslate %}</div>{% endif %}
+<div class="card"><h2>{% translate "Роли" %}</h2>
 <div class="tbl"><table><tbody>
 {% for r in roles %}<tr><td>{{ r.get_role_display }}</td><td>{{ r.org_unit }}</td>
-<td><form method="post" action="{% url 'accounts:role_remove' target.pk r.pk %}">{% csrf_token %}<button class="btn small ghost">Снять</button></form></td></tr>
-{% empty %}<tr><td class="muted">Ролей нет.</td></tr>{% endfor %}
+<td><form method="post" action="{% url 'accounts:role_remove' target.pk r.pk %}">{% csrf_token %}<button class="btn small ghost">{% translate "Снять" %}</button></form></td></tr>
+{% empty %}<tr><td class="muted">{% translate "Ролей нет." %}</td></tr>{% endfor %}
 </tbody></table></div>
 <form method="post" class="f">{% csrf_token %}{% include "_fields.html" %}
-<button class="btn">{% if target.is_active %}Добавить роль{% else %}Открыть доступ с этой ролью{% endif %}</button></form>
+<button class="btn">{% if target.is_active %}{% translate "Добавить роль" %}{% else %}{% translate "Открыть доступ с этой ролью" %}{% endif %}</button></form>
 </div>
 <div class="row">
-  <a class="btn ghost" href="{% url 'portfolio:show' target.pk %}">Портфолио</a>
+  <a class="btn ghost" href="{% url 'portfolio:show' target.pk %}">{% translate "Портфолио" %}</a>
   <form method="post" action="{% url 'accounts:toggle_user' target.pk %}">{% csrf_token %}
-  <button class="btn {% if target.is_active %}danger{% else %}ghost{% endif %}">{% if target.is_active %}Закрыть доступ{% elif not target.last_login and not roles %}Отклонить заявку{% else %}Открыть доступ{% endif %}</button></form>
+  <button class="btn {% if target.is_active %}danger{% else %}ghost{% endif %}">{% if target.is_active %}{% translate "Закрыть доступ" %}{% elif not target.last_login and not roles %}{% translate "Отклонить заявку" %}{% else %}{% translate "Открыть доступ" %}{% endif %}</button></form>
 </div>
 {% endblock %}

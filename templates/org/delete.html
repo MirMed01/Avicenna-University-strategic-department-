@@ -1,17 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block content %}
 <div class="card">
-<h1>Удалить «{{ unit.name }}»?</h1>
+<h1>{% blocktranslate with name=unit.name %}Удалить «{{ name }}»?{% endblocktranslate %}</h1>
 {% if blockers %}
-  <p>Удалить нельзя: {{ blockers|join:"; " }}.</p>
-  <p class="muted">Чтобы не потерять историю, подразделение можно <b>закрыть</b>: оно исчезнет из списков, но данные и отчёты сохранятся.
-  Или сначала перенесите вложенные подразделения и сотрудников.</p>
-  <div class="row"><form method="post" action="{% url 'org:toggle' unit.pk %}">{% csrf_token %}<button class="btn">Закрыть подразделение</button></form>
-  <a class="btn ghost" href="{% url 'org:detail' unit.pk %}">Отмена</a></div>
+  <p>{% blocktranslate with reasons=blockers|join:"; " %}Удалить нельзя: {{ reasons }}.{% endblocktranslate %}</p>
+  <p class="muted">{% blocktranslate %}Чтобы не потерять историю, подразделение можно <b>закрыть</b>: оно исчезнет из списков, но данные и отчёты сохранятся.
+  Или сначала перенесите вложенные подразделения и сотрудников.{% endblocktranslate %}</p>
+  <div class="row"><form method="post" action="{% url 'org:toggle' unit.pk %}">{% csrf_token %}<button class="btn">{% translate "Закрыть подразделение" %}</button></form>
+  <a class="btn ghost" href="{% url 'org:detail' unit.pk %}">{% translate "Отмена" %}</a></div>
 {% else %}
-  <p>Подразделение пустое, его можно удалить совсем. Отменить это нельзя.</p>
-  <form method="post" class="row">{% csrf_token %}<button class="btn danger">Да, удалить</button>
-  <a class="btn ghost" href="{% url 'org:detail' unit.pk %}">Отмена</a></form>
+  <p>{% translate "Подразделение пустое, его можно удалить совсем. Отменить это нельзя." %}</p>
+  <form method="post" class="row">{% csrf_token %}<button class="btn danger">{% translate "Да, удалить" %}</button>
+  <a class="btn ghost" href="{% url 'org:detail' unit.pk %}">{% translate "Отмена" %}</a></form>
 {% endif %}
 </div>
 {% endblock %}

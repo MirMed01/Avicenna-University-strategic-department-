@@ -1,11 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Вход{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Вход" %}{% endblock %}
 {% block content %}
 <div class="auth card">
-  <h1>Вход в «Канон»</h1>
-  <p class="muted small">Система качества обучения ТГМУ им. Абуали ибни Сино</p>
+  <h1>{% translate "Вход в «Канон»" %}</h1>
+  <p class="muted small">{% translate "Система качества обучения ТГМУ им. Абуали ибни Сино" %}</p>
   <form method="post" class="f">{% csrf_token %}{% include "_fields.html" %}
-    <button class="btn">Войти</button></form>
-  <p class="small">Нет учётной записи? <a href="{% url 'accounts:register' %}">Зарегистрироваться</a></p>
+    <button class="btn">{% translate "Войти" %}</button></form>
+  <p class="small">{% translate "Нет учётной записи?" %} <a href="{% url 'accounts:register' %}">{% translate "Зарегистрироваться" %}</a></p>
 </div>
 {% endblock %}

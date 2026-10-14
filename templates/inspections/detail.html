@@ -1,39 +1,39 @@
-{% extends "base.html" %}{% load kanon %}
+{% extends "base.html" %}{% load kanon i18n %}
 {% block title %}{{ insp.title }}{% endblock %}
 {% block content %}
-<p class="small"><a href="{% url 'inspections:index' %}">Проверки</a> › <a href="{% url 'org:detail' insp.org_unit_id %}">{{ insp.org_unit }}</a></p>
-<div class="row between"><div><span class="kind">Проверка</span><h1>{{ insp.title }}</h1>
+<p class="small"><a href="{% url 'inspections:index' %}">{% translate "Проверки" %}</a> › <a href="{% url 'org:detail' insp.org_unit_id %}">{{ insp.org_unit }}</a></p>
+<div class="row between"><div><span class="kind">{% translate "Проверка" %}</span><h1>{{ insp.title }}</h1>
 <p class="muted">{{ insp.org_unit }} · {% include "inspections/_state.html" with s=insp.state label=insp.get_state_display %}
-{% if insp.due_date %} · срок сбора {{ insp.due_date|date:"d.m.Y" }}{% endif %} · ведущий эксперт: {{ insp.lead_expert|default:"не назначен" }}</p></div>
+{% if insp.due_date %} · {% blocktranslate with date=insp.due_date|date:"d.m.Y" %}срок сбора {{ date }}{% endblocktranslate %}{% endif %} · {% translate "ведущий эксперт:" %} {% translate "не назначен" as nobody %}{{ insp.lead_expert|default:nobody }}</p></div>
 {% if lead %}<div class="row">
-  {% if insp.state == "planned" %}<form method="post" action="{% url 'inspections:transition' insp.pk 'start' %}">{% csrf_token %}<button class="btn">Начать сбор данных</button></form>{% endif %}
-  {% if insp.state == "collecting" %}<form method="post" action="{% url 'inspections:transition' insp.pk 'review' %}">{% csrf_token %}<button class="btn">Закрыть сбор и посчитать</button></form>{% endif %}
-  {% if insp.state == "review" %}<form method="post" action="{% url 'inspections:recalc' insp.pk %}">{% csrf_token %}<button class="btn ghost">Пересчитать</button></form>{% endif %}
-  {% if insp.state != "closed" and insp.state != "cancelled" %}<form method="post" action="{% url 'inspections:transition' insp.pk 'cancel' %}">{% csrf_token %}<button class="btn ghost">Отменить</button></form>{% endif %}
+  {% if insp.state == "planned" %}<form method="post" action="{% url 'inspections:transition' insp.pk 'start' %}">{% csrf_token %}<button class="btn">{% translate "Начать сбор данных" %}</button></form>{% endif %}
+  {% if insp.state == "collecting" %}<form method="post" action="{% url 'inspections:transition' insp.pk 'review' %}">{% csrf_token %}<button class="btn">{% translate "Закрыть сбор и посчитать" %}</button></form>{% endif %}
+  {% if insp.state == "review" %}<form method="post" action="{% url 'inspections:recalc' insp.pk %}">{% csrf_token %}<button class="btn ghost">{% translate "Пересчитать" %}</button></form>{% endif %}
+  {% if insp.state != "closed" and insp.state != "cancelled" %}<form method="post" action="{% url 'inspections:transition' insp.pk 'cancel' %}">{% csrf_token %}<button class="btn ghost">{% translate "Отменить" %}</button></form>{% endif %}
 </div>{% endif %}</div>
 {% if insp.note %}<p>{{ insp.note|linebreaksbr }}</p>{% endif %}
 
-<div class="card"><h2>Заполнения ({{ submitted }} из {{ tasks|length }} сдано)</h2>
-<div class="tbl"><table><thead><tr><th>Инструмент</th><th>Кто заполняет</th><th>Статус</th><th></th></tr></thead><tbody>
+<div class="card"><h2>{% blocktranslate with done=submitted total=tasks|length %}Заполнения ({{ done }} из {{ total }} сдано){% endblocktranslate %}</h2>
+<div class="tbl"><table><thead><tr><th>{% translate "Инструмент" %}</th><th>{% translate "Кто заполняет" %}</th><th>{% translate "Статус" %}</th><th></th></tr></thead><tbody>
 {% for t, can in tasks %}<tr><td>{{ t.version.instrument.title }}{% if t.label %}<div class="small muted">{{ t.label }}</div>{% endif %}</td>
 <td>{{ t.version.instrument.get_respondent_display }}</td>
 <td><span class="pill {% if t.status == 'submitted' %}ok{% elif t.status == 'draft' %}warn{% endif %}">{{ t.get_status_display }}</span>
 {% if t.filled_by %}<div class="small muted">{{ t.filled_by }}{% if t.submitted_at %}, {{ t.submitted_at|date:"d.m.Y" }}{% endif %}</div>{% endif %}</td>
-<td class="row">{% if can and t.status != "submitted" %}<a class="btn small" href="{% url 'inspections:fill' t.pk %}">Заполнить</a>
-{% else %}<a class="btn small ghost" href="{% url 'inspections:fill' t.pk %}">Посмотреть</a>{% endif %}
-{% if lead and insp.state == "collecting" and t.status == "submitted" %}<form method="post" action="{% url 'inspections:reopen_task' t.pk %}">{% csrf_token %}<button class="btn small ghost">Вернуть на доработку</button></form>{% endif %}</td></tr>
+<td class="row">{% if can and t.status != "submitted" %}<a class="btn small" href="{% url 'inspections:fill' t.pk %}">{% translate "Заполнить" %}</a>
+{% else %}<a class="btn small ghost" href="{% url 'inspections:fill' t.pk %}">{% translate "Посмотреть" %}</a>{% endif %}
+{% if lead and insp.state == "collecting" and t.status == "submitted" %}<form method="post" action="{% url 'inspections:reopen_task' t.pk %}">{% csrf_token %}<button class="btn small ghost">{% translate "Вернуть на доработку" %}</button></form>{% endif %}</td></tr>
 {% endfor %}</tbody></table></div>
-{% if insp.state == "planned" %}<p class="small muted">Заполнять можно после того, как ведущий эксперт нажмёт «Начать сбор данных».</p>{% endif %}
+{% if insp.state == "planned" %}<p class="small muted">{% translate "Заполнять можно после того, как ведущий эксперт нажмёт «Начать сбор данных»." %}</p>{% endif %}
 {% if lead and insp.state == "planned" or lead and insp.state == "collecting" %}
 <form method="post" action="{% url 'inspections:add_task' insp.pk %}" class="row">{% csrf_token %}
-{{ task_form.version }} {{ task_form.label }} <button class="btn small ghost">+ Добавить заполнение</button></form>
-<p class="small muted">Например, ещё одно посещение занятия или ещё одна станция ОСКЭ. Несколько заполнений одного инструмента усредняются.</p>{% endif %}
+{{ task_form.version }} {{ task_form.label }} <button class="btn small ghost">+ {% translate "Добавить заполнение" %}</button></form>
+<p class="small muted">{% translate "Например, ещё одно посещение занятия или ещё одна станция ОСКЭ." %} {% translate "Несколько заполнений одного инструмента усредняются." %}</p>{% endif %}
 </div>
 
 {% if results %}
-<div class="card"><h2>Карта здоровья</h2>
+<div class="card"><h2>{% translate "Карта здоровья" %}</h2>
 <div class="row" style="align-items:flex-start;gap:24px">
-{% if radar %}<svg viewBox="0 0 {{ radar.size }} 400" width="100%" style="max-width:460px" role="img" aria-label="Паутинка показателей">
+{% if radar %}<svg viewBox="0 0 {{ radar.size }} 400" width="100%" style="max-width:460px" role="img" aria-label="{% translate "Паутинка показателей" %}">
   {% for ring in radar.rings %}<polygon points="{{ ring }}" fill="none" stroke="var(--line)"/>{% endfor %}
   {% for a in radar.axes %}<line x1="{{ radar.cx }}" y1="{{ radar.cy }}" x2="{{ a.x }}" y2="{{ a.y }}" stroke="var(--line)"/>
   <text x="{{ a.lx }}" y="{{ a.ly }}" text-anchor="{{ a.anchor }}" font-size="12" fill="var(--muted)">{{ a.label }}</text>{% endfor %}
@@ -42,42 +42,42 @@
   {% for a in radar.axes %}<circle cx="{{ a.vx }}" cy="{{ a.vy }}" r="5" stroke="var(--paper)" stroke-width="1.5"
     fill="{% if a.status == 'ok' %}var(--ok){% elif a.status == 'mild' %}var(--warn){% elif a.status == 'severe' %}var(--bad){% else %}var(--muted){% endif %}"><title>{{ a.title }}: {{ a.value|num }} %</title></circle>{% endfor %}
 </svg>{% endif %}
-<div style="flex:1;min-width:280px" class="tbl"><table><thead><tr><th>Показатель</th><th class="num">Значение</th><th>Норма для кафедры</th></tr></thead><tbody>
+<div style="flex:1;min-width:280px" class="tbl"><table><thead><tr><th>{% translate "Показатель" %}</th><th class="num">{% translate "Значение" %}</th><th>{% translate "Норма для кафедры" %}</th></tr></thead><tbody>
 {% for r in results %}<tr><td>{{ r.title }}<div class="small muted">{{ r.note }}</div></td>
 <td class="num">{% if r.value is not None %}{{ r.value|num }} %{% else %}—{% endif %}</td>
-<td>{% if r.value is None %}<span class="pill warn">посчитать нельзя</span>
-{% elif not r.indicator %}<span class="small muted">не привязан к норме</span>
-{% elif r.status == "unknown" %}<span class="pill">порог не задан — проверить нельзя</span>
-{% elif r.status == "ok" %}<span class="pill ok">в норме</span>{% elif r.status == "mild" %}<span class="pill warn">лёгкое отклонение</span>
-{% else %}<span class="pill bad">выраженное отклонение</span>{% endif %}
-{% if r.expected_level %}<div class="small muted">уровень «{{ r.get_expected_level_display|lower }}»{% if r.expected_threshold is not None %}, порог {{ r.expected_threshold|num }}{% endif %}</div>{% endif %}</td></tr>
+<td>{% if r.value is None %}<span class="pill warn">{% translate "посчитать нельзя" %}</span>
+{% elif not r.indicator %}<span class="small muted">{% translate "не привязан к норме" %}</span>
+{% elif r.status == "unknown" %}<span class="pill">{% translate "порог не задан — проверить нельзя" %}</span>
+{% elif r.status == "ok" %}<span class="pill ok">{% translate "в норме" %}</span>{% elif r.status == "mild" %}<span class="pill warn">{% translate "лёгкое отклонение" %}</span>
+{% else %}<span class="pill bad">{% translate "выраженное отклонение" %}</span>{% endif %}
+{% if r.expected_level %}<div class="small muted">{% blocktranslate with lvl=r.get_expected_level_display|lower %}уровень «{{ lvl }}»{% endblocktranslate %}{% if r.expected_threshold is not None %}, {% blocktranslate with thr=r.expected_threshold|num %}порог {{ thr }}{% endblocktranslate %}{% endif %}</div>{% endif %}</td></tr>
 {% endfor %}</tbody></table></div></div>
-{% if radar %}<p class="small muted">Синяя область — факт, красный пунктир — порог уровня строгости, заданного для этой кафедры. Точки: зелёная — норма, жёлтая — лёгкое отклонение, красная — выраженное, серая — порога нет.</p>{% endif %}
+{% if radar %}<p class="small muted">{% translate "Синяя область — факт, красный пунктир — порог уровня строгости, заданного для этой кафедры." %} {% translate "Точки: зелёная — норма, жёлтая — лёгкое отклонение, красная — выраженное, серая — порога нет." %}</p>{% endif %}
 </div>
 {% endif %}
 
 {% if insp.state == "review" or insp.state == "closed" %}
-<div class="card"><h2>Находки</h2>
+<div class="card"><h2>{% translate "Находки" %}</h2>
 {% for f in findings %}<div class="row between" style="border-left:3px solid {% if f.severity == 'severe' %}var(--bad){% elif f.severity == 'mild' %}var(--warn){% elif f.severity == 'strength' %}var(--ok){% else %}var(--line){% endif %};padding:4px 10px">
-<div><b>{{ f.get_severity_display }}</b>{% if f.auto %} <span class="small muted">· найдено программой</span>{% else %} <span class="small muted">· {{ f.created_by }}</span>{% endif %}<div>{{ f.text }}</div></div>
+<div><b>{{ f.get_severity_display }}</b>{% if f.auto %} <span class="small muted">· {% translate "найдено программой" %}</span>{% else %} <span class="small muted">· {{ f.created_by }}</span>{% endif %}<div>{{ f.text }}</div></div>
 <div class="row">{% if f.plan %}<a class="btn small ghost" href="{% url 'capa:detail' f.plan.pk %}">{{ f.plan.ref }}: {{ f.plan.get_state_display|lower }}</a>
-{% elif lead and f.severity != "strength" %}<a class="btn small" href="{% url 'capa:create' f.pk %}">Диагноз и план</a>{% endif %}
+{% elif lead and f.severity != "strength" %}<a class="btn small" href="{% url 'capa:create' f.pk %}">{% translate "Диагноз и план" %}</a>{% endif %}
 {% if lead and insp.state == "review" and not f.auto and not f.plan %}<form method="post" action="{% url 'inspections:delete_finding' f.pk %}">{% csrf_token %}<button class="btn small ghost">✕</button></form>{% endif %}</div></div>
-{% empty %}<p class="muted">Отклонений не найдено.</p>{% endfor %}
+{% empty %}<p class="muted">{% translate "Отклонений не найдено." %}</p>{% endfor %}
 {% if lead and insp.state == "review" %}
 <form method="post" action="{% url 'inspections:add_finding' insp.pk %}" class="f">{% csrf_token %}{% include "_fields.html" with form=finding_form %}
-<button class="btn small ghost">+ Добавить находку эксперта</button></form>{% endif %}
+<button class="btn small ghost">+ {% translate "Добавить находку эксперта" %}</button></form>{% endif %}
 </div>
 {% endif %}
 
 {% if lead and insp.state == "review" %}
-<div class="card"><h2>Завершение</h2>
+<div class="card"><h2>{% translate "Завершение" %}</h2>
 <form method="post" action="{% url 'inspections:transition' insp.pk 'close' %}" class="f">{% csrf_token %}
-<div><label for="conclusion">Заключение эксперта</label><textarea id="conclusion" name="conclusion" rows="3">{{ insp.conclusion }}</textarea></div>
-<button class="btn">Закрыть проверку</button></form>
+<div><label for="conclusion">{% translate "Заключение эксперта" %}</label><textarea id="conclusion" name="conclusion" rows="3">{{ insp.conclusion }}</textarea></div>
+<button class="btn">{% translate "Закрыть проверку" %}</button></form>
 <form method="post" action="{% url 'inspections:transition' insp.pk 'reopen' %}" class="f" style="margin-top:8px">{% csrf_token %}
-<div><label for="comment">Или вернуть на сбор данных — что дособрать?</label><input type="text" id="comment" name="comment"></div>
-<button class="btn ghost">Вернуть на сбор</button></form>
-<p class="small muted">По каждой находке можно поставить диагноз и составить план исправления — кнопка «Диагноз и план».</p></div>
-{% elif insp.conclusion %}<div class="card"><h2>Заключение</h2><p>{{ insp.conclusion|linebreaksbr }}</p></div>{% endif %}
+<div><label for="comment">{% translate "Или вернуть на сбор данных — что дособрать?" %}</label><input type="text" id="comment" name="comment"></div>
+<button class="btn ghost">{% translate "Вернуть на сбор" %}</button></form>
+<p class="small muted">{% translate "По каждой находке можно поставить диагноз и составить план исправления — кнопка «Диагноз и план»." %}</p></div>
+{% elif insp.conclusion %}<div class="card"><h2>{% translate "Заключение" %}</h2><p>{{ insp.conclusion|linebreaksbr }}</p></div>{% endif %}
 {% endblock %}

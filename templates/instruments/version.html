@@ -1,51 +1,51 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load i18n %}
 {% block title %}{{ inst.title }}{% endblock %}
 {% block content %}
-<p class="small"><a href="{% url 'instruments:index' %}">Инструменты</a> ›</p>
-<div class="row between"><div><span class="kind">{{ inst.get_kind_display }} · заполняет: {{ inst.get_respondent_display }}</span>
+<p class="small"><a href="{% url 'instruments:index' %}">{% translate "Инструменты" %}</a> ›</p>
+<div class="row between"><div><span class="kind">{{ inst.get_kind_display }} · {% blocktranslate with resp=inst.get_respondent_display %}заполняет: {{ resp }}{% endblocktranslate %}</span>
 <h1>{{ inst.title }}</h1>
-<p class="muted">Версия {{ v.number }} ·
-{% if v.status == "published" %}<span class="pill ok">опубликована {{ v.published_at|date:"d.m.Y" }}</span>{% elif v.status == "draft" %}<span class="pill warn">черновик</span>{% else %}<span class="pill">в архиве</span>{% endif %}
+<p class="muted">{% blocktranslate with num=v.number %}Версия {{ num }}{% endblocktranslate %} ·
+{% if v.status == "published" %}<span class="pill ok">{% blocktranslate with date=v.published_at|date:"d.m.Y" %}опубликована {{ date }}{% endblocktranslate %}</span>{% elif v.status == "draft" %}<span class="pill warn">{% translate "черновик" %}</span>{% else %}<span class="pill">{% translate "в архиве" %}</span>{% endif %}
 {% if v.note %} · {{ v.note }}{% endif %}
-{% for o in versions %}{% if o.pk != v.pk %} · <a href="{% url 'instruments:version' o.pk %}">в.{{ o.number }}</a>{% endif %}{% endfor %}</p></div>
-<div class="row"><a class="btn" href="{% url 'instruments:try' v.pk %}">Пробное заполнение</a>
+{% for o in versions %}{% if o.pk != v.pk %} · <a href="{% url 'instruments:version' o.pk %}">{% blocktranslate with num=o.number %}в.{{ num }}{% endblocktranslate %}</a>{% endif %}{% endfor %}</p></div>
+<div class="row"><a class="btn" href="{% url 'instruments:try' v.pk %}">{% translate "Пробное заполнение" %}</a>
 {% if can_manage %}
-  {% if v.editable %}<form method="post" action="{% url 'instruments:publish' v.pk %}">{% csrf_token %}<button class="btn ghost">Опубликовать</button></form>
-  {% else %}<form method="post" action="{% url 'instruments:new_version' v.pk %}">{% csrf_token %}<button class="btn ghost">Создать новую версию</button></form>{% endif %}
-  <a class="btn ghost" href="{% url 'instruments:edit' inst.pk %}">Описание</a>
+  {% if v.editable %}<form method="post" action="{% url 'instruments:publish' v.pk %}">{% csrf_token %}<button class="btn ghost">{% translate "Опубликовать" %}</button></form>
+  {% else %}<form method="post" action="{% url 'instruments:new_version' v.pk %}">{% csrf_token %}<button class="btn ghost">{% translate "Создать новую версию" %}</button></form>{% endif %}
+  <a class="btn ghost" href="{% url 'instruments:edit' inst.pk %}">{% translate "Описание" %}</a>
 {% endif %}</div></div>
 {% if inst.description %}<p>{{ inst.description|linebreaksbr }}</p>{% endif %}
-{% if inst.source_title %}<p class="small">Основание: {% if inst.source_url %}<a href="{{ inst.source_url }}" target="_blank" rel="noopener">{{ inst.source_title }}</a>{% else %}{{ inst.source_title }}{% endif %}</p>{% endif %}
-{% if not v.editable and can_manage %}<p class="small muted">Опубликованная версия не меняется, чтобы старые проверки остались понятными. Для правок создайте новую версию.</p>{% endif %}
+{% if inst.source_title %}<p class="small">{% translate "Основание:" %} {% if inst.source_url %}<a href="{{ inst.source_url }}" target="_blank" rel="noopener">{{ inst.source_title }}</a>{% else %}{{ inst.source_title }}{% endif %}</p>{% endif %}
+{% if not v.editable and can_manage %}<p class="small muted">{% translate "Опубликованная версия не меняется, чтобы старые проверки остались понятными." %} {% translate "Для правок создайте новую версию." %}</p>{% endif %}
 
 {% for s in sections %}
 <div class="card"><div class="row between"><h2>{{ s.title }}</h2>
-{% if v.editable and can_manage %}<div class="row"><a class="btn small" href="{% url 'instruments:item_create' s.pk %}">+ пункт</a>
-<a class="btn small ghost" href="{% url 'instruments:section_edit' v.pk s.pk %}">Изменить</a>
-<a class="btn small ghost" href="{% url 'instruments:delete' 'section' s.pk %}">Удалить</a></div>{% endif %}</div>
+{% if v.editable and can_manage %}<div class="row"><a class="btn small" href="{% url 'instruments:item_create' s.pk %}">+ {% translate "пункт" %}</a>
+<a class="btn small ghost" href="{% url 'instruments:section_edit' v.pk s.pk %}">{% translate "Изменить" %}</a>
+<a class="btn small ghost" href="{% url 'instruments:delete' 'section' s.pk %}">{% translate "Удалить" %}</a></div>{% endif %}</div>
 {% if s.text %}<p class="small muted">{{ s.text }}</p>{% endif %}
 <div class="tbl"><table><tbody>
 {% for it in s.items.all %}<tr><td class="num" style="width:60px">{{ it.code }}</td>
-<td>{{ it.text }}{% if not it.required %} <span class="small muted">(необязательный)</span>{% endif %}
+<td>{{ it.text }}{% if not it.required %} <span class="small muted">({% translate "необязательный" %})</span>{% endif %}
   {% if it.help %}<div class="small muted">{{ it.help }}</div>{% endif %}
-  {% if it.indicator %}<div class="small">→ показатель: {{ it.indicator.code }} {{ it.indicator.title|truncatechars:70 }}</div>{% endif %}</td>
-<td style="width:150px"><span class="pill">{{ it.get_type_display }}</span>{% if it.type == "yes_no" or it.type == "scale" %}<div class="small muted">вес {{ it.weight.normalize }}</div>{% endif %}</td>
-{% if v.editable and can_manage %}<td style="width:170px" class="row"><a class="btn small ghost" href="{% url 'instruments:item_edit' s.pk it.pk %}">Изменить</a>
+  {% if it.indicator %}<div class="small">→ {% translate "показатель:" %} {{ it.indicator.code }} {{ it.indicator.title|truncatechars:70 }}</div>{% endif %}</td>
+<td style="width:150px"><span class="pill">{{ it.get_type_display }}</span>{% if it.type == "yes_no" or it.type == "scale" %}<div class="small muted">{% blocktranslate with w=it.weight.normalize %}вес {{ w }}{% endblocktranslate %}</div>{% endif %}</td>
+{% if v.editable and can_manage %}<td style="width:170px" class="row"><a class="btn small ghost" href="{% url 'instruments:item_edit' s.pk it.pk %}">{% translate "Изменить" %}</a>
 <a class="btn small ghost" href="{% url 'instruments:delete' 'item' it.pk %}">✕</a></td>{% endif %}</tr>
-{% empty %}<tr><td class="muted">Пунктов нет.</td></tr>{% endfor %}
+{% empty %}<tr><td class="muted">{% translate "Пунктов нет." %}</td></tr>{% endfor %}
 </tbody></table></div></div>
 {% endfor %}
-{% if v.editable and can_manage %}<a class="btn ghost" href="{% url 'instruments:section_create' v.pk %}">+ Раздел</a>{% endif %}
+{% if v.editable and can_manage %}<a class="btn ghost" href="{% url 'instruments:section_create' v.pk %}">+ {% translate "Раздел" %}</a>{% endif %}
 
-<div class="card"><div class="row between"><h2>Расчётные показатели</h2>
-{% if v.editable and can_manage %}<a class="btn small" href="{% url 'instruments:derived_create' v.pk %}">+ расчёт</a>{% endif %}</div>
-<p class="small muted">Как из ответов получается число, которое сравнивается с порогами нормы.</p>
+<div class="card"><div class="row between"><h2>{% translate "Расчётные показатели" %}</h2>
+{% if v.editable and can_manage %}<a class="btn small" href="{% url 'instruments:derived_create' v.pk %}">+ {% translate "расчёт" %}</a>{% endif %}</div>
+<p class="small muted">{% translate "Как из ответов получается число, которое сравнивается с порогами нормы." %}</p>
 <div class="tbl"><table><tbody>
 {% for d in derived %}<tr><td class="num" style="width:60px">{{ d.code }}</td><td><b>{{ d.title }}</b>
-<div class="small muted">{{ d.get_method_display }}{% if d.numerator %}: {{ d.numerator.code }} ÷ {{ d.denominator.code }}{% endif %}{% if d.section %} · раздел «{{ d.section }}»{% endif %}</div>
-{% if d.indicator %}<div class="small">→ {{ d.indicator.node.version.framework.title }}: {{ d.indicator.code }} {{ d.indicator.title|truncatechars:70 }}</div>{% else %}<div class="small muted">не привязан к норме</div>{% endif %}</td>
-{% if v.editable and can_manage %}<td style="width:170px" class="row"><a class="btn small ghost" href="{% url 'instruments:derived_edit' v.pk d.pk %}">Изменить</a>
+<div class="small muted">{{ d.get_method_display }}{% if d.numerator %}: {{ d.numerator.code }} ÷ {{ d.denominator.code }}{% endif %}{% if d.section %} · {% blocktranslate with sec=d.section %}раздел «{{ sec }}»{% endblocktranslate %}{% endif %}</div>
+{% if d.indicator %}<div class="small">→ {{ d.indicator.node.version.framework.title }}: {{ d.indicator.code }} {{ d.indicator.title|truncatechars:70 }}</div>{% else %}<div class="small muted">{% translate "не привязан к норме" %}</div>{% endif %}</td>
+{% if v.editable and can_manage %}<td style="width:170px" class="row"><a class="btn small ghost" href="{% url 'instruments:derived_edit' v.pk d.pk %}">{% translate "Изменить" %}</a>
 <a class="btn small ghost" href="{% url 'instruments:delete' 'derived' d.pk %}">✕</a></td>{% endif %}</tr>
-{% empty %}<tr><td class="muted">Расчётов нет.</td></tr>{% endfor %}
+{% empty %}<tr><td class="muted">{% translate "Расчётов нет." %}</td></tr>{% endfor %}
 </tbody></table></div></div>
 {% endblock %}

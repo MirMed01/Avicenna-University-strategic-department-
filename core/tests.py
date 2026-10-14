@@ -95,3 +95,17 @@ class CodespacesForwardedTests(TestCase):
         camp.add_codes(1)
         page = c.get(f"/feedback/{camp.pk}/codes/", **self.h)
         self.assertContains(page, "https://demo-8000.app.github.dev/s/")
+
+
+class CsrfFailureTests(TestCase):
+    """Дефект, который увидел владелец: устаревшая форма давала английскую техническую страницу 403."""
+
+    def test_stale_form_shows_clear_message(self):
+        u = User.objects.create_user("x@demo.local", "Demo-pass-2026", full_name="Х", is_active=True)
+        c = self.client_class(enforce_csrf_checks=True)
+        c.force_login(u)
+        c.get("/")
+        r = c.post("/accounts/profile/", {"full_name": "Y", "csrfmiddlewaretoken": "устаревший-ключ" * 2})
+        self.assertEqual(r.status_code, 403)
+        self.assertContains(r, "Страница устарела", status_code=403)
+        self.assertNotContains(r, "CSRF", status_code=403)

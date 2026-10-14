@@ -1,18 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Портфолио — {{ owner.full_name }}{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktranslate with name=owner.full_name %}Портфолио — {{ name }}{% endblocktranslate %}{% endblock %}
 {% block content %}
-<div class="row between"><div><span class="kind">Портфолио преподавателя</span><h1>{{ owner.full_name }}</h1>
+<div class="row between"><div><span class="kind">{% translate "Портфолио преподавателя" %}</span><h1>{{ owner.full_name }}</h1>
 <p class="muted">{{ owner.position|default:"" }}{% if owner.academic_degree %} · {{ owner.academic_degree }}{% endif %}{% if owner.academic_title %} · {{ owner.academic_title }}{% endif %}
 {% for u in units %} · <a href="{% url 'org:detail' u.pk %}">{{ u }}</a>{% endfor %}</p></div>
-{% if is_owner %}<a class="btn" href="{% url 'portfolio:create' %}">+ Добавить запись</a>{% endif %}</div>
+{% if is_owner %}<a class="btn" href="{% url 'portfolio:create' %}">+ {% translate "Добавить запись" %}</a>{% endif %}</div>
 
 <div class="grid">
-  <div class="stat"><b>{{ summary.total }}</b><span>всего записей, подтверждено {{ summary.verified }}</span></div>
-  <div class="stat"><b>{{ summary.scopus_wos }}</b><span>статей Scopus / WoS (показатель 3.1 Стратегии)</span></div>
-  <div class="stat"><b>{{ summary.certification }}</b><span>сертифицированное обучение (2.2)</span></div>
-  <div class="stat"><b>{{ summary.mobility }}</b><span>стажировки и мобильность (2.3)</span></div>
+  <div class="stat"><b>{{ summary.total }}</b><span>{% blocktranslate with n=summary.verified %}всего записей, подтверждено {{ n }}{% endblocktranslate %}</span></div>
+  <div class="stat"><b>{{ summary.scopus_wos }}</b><span>{% translate "статей Scopus / WoS (показатель 3.1 Стратегии)" %}</span></div>
+  <div class="stat"><b>{{ summary.certification }}</b><span>{% translate "сертифицированное обучение (2.2)" %}</span></div>
+  <div class="stat"><b>{{ summary.mobility }}</b><span>{% translate "стажировки и мобильность (2.3)" %}</span></div>
 </div>
-<p class="small muted">В сводке учитываются только подтверждённые записи.</p>
+<p class="small muted">{% translate "В сводке учитываются только подтверждённые записи." %}</p>
 
 {% for kind, entries in groups %}
 <div class="card"><h2>{{ kind }}</h2>
@@ -20,26 +21,26 @@
 {% for e in entries %}<tr>
 <td style="width:110px" class="num">{{ e.date_start|date:"d.m.Y" }}{% if e.date_end %}<br>– {{ e.date_end|date:"d.m.Y" }}{% endif %}</td>
 <td><b>{{ e.title }}</b>{% if e.organization %}<div class="small">{{ e.organization }}</div>{% endif %}
-  <div class="small muted">{% if e.hours %}{{ e.hours }} ч{% endif %}{% if e.indexing %}{% if e.hours %} · {% endif %}{{ e.get_indexing_display }}{% endif %}{% if e.doi_or_url %}{% if e.hours or e.indexing %} · {% endif %}{{ e.doi_or_url }}{% endif %}</div>
+  <div class="small muted">{% if e.hours %}{% blocktranslate with h=e.hours %}{{ h }} ч{% endblocktranslate %}{% endif %}{% if e.indexing %}{% if e.hours %} · {% endif %}{{ e.get_indexing_display }}{% endif %}{% if e.doi_or_url %}{% if e.hours or e.indexing %} · {% endif %}{{ e.doi_or_url }}{% endif %}</div>
   {% if e.details %}<div class="small">{{ e.details|linebreaksbr }}</div>{% endif %}
-  {% if e.file %}<a class="small" href="{% url 'portfolio:file' e.pk %}" target="_blank">Подтверждающий файл</a>{% endif %}
-  {% if e.review_comment %}<div class="small muted">Комментарий проверяющего: {{ e.review_comment }}</div>{% endif %}</td>
+  {% if e.file %}<a class="small" href="{% url 'portfolio:file' e.pk %}" target="_blank">{% translate "Подтверждающий файл" %}</a>{% endif %}
+  {% if e.review_comment %}<div class="small muted">{% blocktranslate with c=e.review_comment %}Комментарий проверяющего: {{ c }}{% endblocktranslate %}</div>{% endif %}</td>
 <td style="width:150px"><span class="pill {% if e.status == 'verified' %}ok{% elif e.status == 'rejected' %}bad{% elif e.status == 'submitted' %}warn{% endif %}">{{ e.get_status_display }}</span>
   {% if e.status == 'verified' and e.reviewed_by %}<div class="small muted">{{ e.reviewed_by }}</div>{% endif %}</td>
 <td style="width:220px">
 {% if is_owner %}<div class="row">
-  {% if e.status == 'draft' or e.status == 'rejected' %}<form method="post" action="{% url 'portfolio:submit' e.pk %}">{% csrf_token %}<button class="btn small">На проверку</button></form>{% endif %}
-  <a class="btn small ghost" href="{% url 'portfolio:edit' e.pk %}">Изменить</a>
-  <a class="btn small ghost" href="{% url 'portfolio:delete' e.pk %}">Удалить</a></div>
+  {% if e.status == 'draft' or e.status == 'rejected' %}<form method="post" action="{% url 'portfolio:submit' e.pk %}">{% csrf_token %}<button class="btn small">{% translate "На проверку" %}</button></form>{% endif %}
+  <a class="btn small ghost" href="{% url 'portfolio:edit' e.pk %}">{% translate "Изменить" %}</a>
+  <a class="btn small ghost" href="{% url 'portfolio:delete' e.pk %}">{% translate "Удалить" %}</a></div>
 {% elif can_verify and e.status == 'submitted' %}
   <form method="post" action="{% url 'portfolio:review' e.pk %}" class="f" style="gap:6px">{% csrf_token %}
   <input type="hidden" name="next" value="{{ request.path }}">
-  <textarea name="comment" rows="2" placeholder="Комментарий (обязателен при возврате)"></textarea>
-  <div class="row"><button class="btn small" name="decision" value="verify">Подтвердить</button>
-  <button class="btn small ghost" name="decision" value="reject">Вернуть</button></div></form>
+  <textarea name="comment" rows="2" placeholder="{% translate 'Комментарий (обязателен при возврате)' %}"></textarea>
+  <div class="row"><button class="btn small" name="decision" value="verify">{% translate "Подтвердить" %}</button>
+  <button class="btn small ghost" name="decision" value="reject">{% translate "Вернуть" %}</button></div></form>
 {% endif %}</td></tr>{% endfor %}
 </tbody></table></div></div>
 {% empty %}
-<div class="card"><p class="muted">Записей пока нет.{% if is_owner %} Добавьте образование, повышение квалификации, публикации, стажировки — всё, что подтверждает вашу работу.{% endif %}</p></div>
+<div class="card"><p class="muted">{% translate "Записей пока нет." %}{% if is_owner %} {% translate "Добавьте образование, повышение квалификации, публикации, стажировки — всё, что подтверждает вашу работу." %}{% endif %}</p></div>
 {% endfor %}
 {% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{{ c.title }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'accreditation:index' %}">{% translate "Аккредитация" %}</a> ›</p>
+<div class="row between"><div><span class="kind">{{ c.version }}</span><h1>{{ c.title }}</h1>
+<p class="muted">{{ c.programme }}{% if c.org_unit %} · {{ c.org_unit }}{% endif %}{% if c.lead %} · {% translate "ответственный" %}: {{ c.lead }}{% endif %}</p></div>
+<div class="row"><a class="btn" href="{% url 'accreditation:docx' c.pk %}">{% translate "Заготовка самоотчёта (Word)" %}</a>
+{% if can_manage %}<a class="btn ghost" href="{% url 'accreditation:edit' c.pk %}">{% translate "Изменить срок и ответственного" %}</a>{% endif %}</div></div>
+
+<div class="grid">
+  <div class="stat"><b>{{ c.report_due|date:"d.m.Y" }}</b><span>{% blocktranslate with n=c.days_left %}сдать самоотчёт (за 8 недель до визита); осталось дней: {{ n }}{% endblocktranslate %}</span></div>
+  <div class="stat"><b>{{ fc.rated }} / {{ fc.total }}</b><span>{% translate "критериев оценено" %}</span></div>
+  <div class="stat"><b>{% if fc.rated %}{{ fc.improve_pct }} %{% else %}—{% endif %}</b><span>{% translate "«предполагает улучшение»" %}</span></div>
+  <div class="stat"><b>{% if fc.rated %}{{ fc.strong_pct }} %{% else %}—{% endif %}</b><span>{% translate "«сильных»" %}</span></div>
+</div>
+{% if fc.rated %}<div class="msg {% if fc.years == 0 %}error{% elif fc.years >= 5 %}success{% endif %}"><b>{% translate "Ориентир по правилам IAAR" %}: {{ fc.label }}</b>.
+{% blocktranslate with r=fc.rated t=fc.total %}По {{ r }} оценённым из {{ t }} критериев. Решение принимает Совет IAAR; это самопроверка, а не прогноз агентства.{% endblocktranslate %}</div>{% endif %}
+
+<div class="card"><h2>{% translate "По стандартам" %}</h2>
+<div class="tbl"><table><thead><tr><th>{% translate "Стандарт" %}</th><th class="num">{% translate "Оценено" %}</th><th class="num">{% translate "Сильных" %}</th><th class="num">{% translate "Удовл." %}</th><th class="num">{% translate "Улучшение" %}</th><th class="num">{% translate "Неудовл." %}</th><th>{% translate "Внимание" %}</th>{% if lead %}<th>{% translate "Поручить стандарт" %}</th>{% endif %}</tr></thead><tbody>
+{% for s in standards %}<tr><td>{{ s.std.code }}. {{ s.std.title }}</td><td class="num">{{ s.rated }} / {{ s.total }}</td>
+<td class="num">{{ s.counts.strong }}</td><td class="num">{{ s.counts.satisfactory }}</td><td class="num">{{ s.counts.improve }}</td><td class="num">{{ s.counts.unsatisfactory }}</td>
+<td class="small">{% if s.missing_measures %}<span class="err">{% blocktranslate with n=s.missing_measures %}без мер: {{ n }}{% endblocktranslate %}</span> {% endif %}{% if s.no_evidence %}<span class="muted">{% blocktranslate with n=s.no_evidence %}без доказательств: {{ n }}{% endblocktranslate %}</span>{% endif %}</td>
+{% if lead %}<td><form method="post" action="{% url 'accreditation:assign' c.pk %}" class="row">{% csrf_token %}<input type="hidden" name="standard" value="{{ s.std.code }}">
+{{ assign_form.responsible }}<button class="btn small ghost">{% translate "Назначить" %}</button></form></td>{% endif %}</tr>{% endfor %}
+</tbody></table></div></div>
+
+<div class="card"><div class="row between"><h2>{% translate "Критерии" %}</h2>
+<p class="small">{% translate "Показать" %}: {% if not f %}<b>{% translate "все" %}</b>{% else %}<a href="?">{% translate "все" %}</a>{% endif %} ·
+{% if f == "unrated" %}<b>{% translate "не оценённые" %}</b>{% else %}<a href="?f=unrated">{% translate "не оценённые" %}</a>{% endif %} ·
+{% if f == "weak" %}<b>{% translate "требуют улучшения" %}</b>{% else %}<a href="?f=weak">{% translate "требуют улучшения" %}</a>{% endif %} ·
+{% if f == "mine" %}<b>{% translate "мои" %}</b>{% else %}<a href="?f=mine">{% translate "мои" %}</a>{% endif %}</p></div>
+{% for std, items in groups %}<h3 style="margin-top:12px">{{ std.code }}. {{ std.title }}</h3>
+<div class="tbl"><table><tbody>
+{% for a in items %}<tr id="c{{ a.pk }}"><td class="num" style="width:64px"><a href="{% url 'accreditation:assessment' a.pk %}">{{ a.criterion.code }}</a></td>
+<td><a href="{% url 'accreditation:assessment' a.pk %}">{{ a.criterion.text|default:a.criterion.title }}</a>
+<div class="small muted">{{ a.responsible|default:"" }}{% if a.files.all %} · {% blocktranslate count n=a.files.all|length %}{{ n }} документ{% plural %}{{ n }} документов{% endblocktranslate %}{% endif %}</div></td>
+<td style="width:200px">{% include "accreditation/_rating.html" with r=a.rating label=a.get_rating_display %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% empty %}<p class="muted">{% translate "Ничего не найдено." %}</p>{% endfor %}
+</div>
+{% endblock %}

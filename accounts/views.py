@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 
 from core.models import log
 
@@ -50,9 +51,9 @@ def user_detail(request, pk):
             target.requested_role, target.requested_unit = "", None
             target.save()
             log(request.user, "activate", target, f"Открыт доступ: {target}")
-            messages.success(request, f"Доступ открыт: {target}")
+            messages.success(request, _("Доступ открыт: %(user)s") % {"user": target})
         else:
-            messages.success(request, "Роль добавлена.")
+            messages.success(request, _("Роль добавлена."))
         return redirect("accounts:user_detail", pk)
     return render(request, "accounts/user_detail.html", {"target": target, "form": form,
                                                          "roles": target.roles.select_related("org_unit")})
@@ -64,7 +65,7 @@ def role_remove(request, pk, role_pk):
     if request.method == "POST":
         log(request.user, "role_remove", ra.user, f"{ra.user}: снята роль «{ra.get_role_display()}» в «{ra.org_unit}»")
         ra.delete()
-        messages.success(request, "Роль снята.")
+        messages.success(request, _("Роль снята."))
     return redirect("accounts:user_detail", pk)
 
 
@@ -73,19 +74,19 @@ def toggle_user(request, pk):
     target = get_object_or_404(User, pk=pk)
     if request.method == "POST":
         if target == request.user:
-            messages.error(request, "Нельзя закрыть доступ самому себе.")
+            messages.error(request, _("Нельзя закрыть доступ самому себе."))
         elif not target.is_active and target.last_login is None and not target.roles.exists():
             # Заявка без роли — отклонить (удалить), чтобы не копились.
             log(request.user, "reject", target, f"Заявка отклонена: {target.full_name}, {target.email}")
             target.delete()
-            messages.success(request, "Заявка отклонена.")
+            messages.success(request, _("Заявка отклонена."))
             return redirect("accounts:users")
         else:
             target.is_active = not target.is_active
             target.save(update_fields=["is_active"])
             log(request.user, "activate" if target.is_active else "deactivate", target,
                 f"{'Открыт' if target.is_active else 'Закрыт'} доступ: {target}")
-            messages.success(request, "Доступ открыт." if target.is_active else "Доступ закрыт.")
+            messages.success(request, _("Доступ открыт.") if target.is_active else _("Доступ закрыт."))
     return redirect("accounts:user_detail", pk)
 
 
@@ -94,6 +95,6 @@ def profile(request):
     form = ProfileForm(request.POST or None, instance=request.user)
     if form.is_valid():
         form.save()
-        messages.success(request, "Сохранено.")
+        messages.success(request, _("Сохранено."))
         return redirect("accounts:profile")
-    return render(request, "form.html", {"form": form, "title": "Мои данные"})
+    return render(request, "form.html", {"form": form, "title": _("Мои данные")})

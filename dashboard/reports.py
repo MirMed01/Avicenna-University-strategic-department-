@@ -3,9 +3,12 @@
 from io import BytesIO
 
 from django.utils import timezone
+from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 
-STATUS_TEXT = {"ok": "в норме", "mild": "лёгкое отклонение", "severe": "выраженное отклонение",
-               "unknown": "порог не задан", "nodata": "нет данных"}
+STATUS_TEXT = {"ok": gettext_lazy("в норме"), "mild": gettext_lazy("лёгкое отклонение"),
+               "severe": gettext_lazy("выраженное отклонение"), "unknown": gettext_lazy("порог не задан"),
+               "nodata": gettext_lazy("нет данных")}
 
 
 def _num(v):
@@ -19,34 +22,35 @@ def xlsx(ctx, strategy):
     fills = {"ok": "E2F2E8", "mild": "FBF0D9", "severe": "F8E1DF"}
     wb = Workbook()
     ws = wb.active
-    ws.title = "Тепловая карта"
+    ws.title = _("Тепловая карта")
     heat = ctx["heat"]
-    ws.append(["Кафедра"] + heat["titles"] + ["Отклонений"])
+    ws.append([_("Кафедра")] + heat["titles"] + [_("Отклонений")])
     for row in heat["rows"]:
         ws.append([row["unit"].name] + [_num(c["value"]) if c else None for c in row["line"]] + [row["bad"]])
         for j, c in enumerate(row["line"], start=2):
             if c and c["status"] in fills:
                 ws.cell(ws.max_row, j).fill = PatternFill("solid", fgColor=fills[c["status"]])
     ws.append([])
-    ws.append([f"Не проверялись: {len(heat['unchecked'])} кафедр"])
+    ws.append([_("Не проверялись: %(n)s кафедр") % {"n": len(heat["unchecked"])}])
 
-    st = wb.create_sheet("Стратегия 2030")
-    st.append(["№", "Показатель", "Ед.", "Цель 2027", "Цель 2030", f"Значение {ctx['year']}", "Состояние", "Источник"])
+    st = wb.create_sheet(_("Стратегия 2030"))
+    st.append(["№", _("Показатель"), _("Ед."), _("Цель 2027"), _("Цель 2030"), _("Значение %(year)s") % {"year": ctx["year"]},
+              _("Состояние"), _("Источник")])
     for r in strategy:
         i = r["ind"]
         st.append([i.code, i.title, i.unit, _num(i.threshold_medium), _num(i.threshold_high), _num(r["value"]),
-                   STATUS_TEXT.get(r["status"], ""), r["source"]])
+                   str(STATUS_TEXT.get(r["status"], "")), r["source"]])
 
-    pl = wb.create_sheet("Планы исправления")
-    pl.append(["№", "Подразделение", "Диагноз", "План", "Статус", "Срок", "Просрочен", "Ответственный"])
+    pl = wb.create_sheet(_("Планы исправления"))
+    pl.append(["№", _("Подразделение"), _("Диагноз"), _("План"), _("Статус"), _("Срок"), _("Просрочен"), _("Ответственный")])
     for p in ctx["plan_list"]:
-        pl.append([p.ref, str(p.org_unit), str(p.problem), p.title, p.get_state_display(), p.due_date,
-                   "да" if p.overdue else "", str(p.owner or "")])
+        pl.append([p.ref, str(p.org_unit), str(p.problem), p.title, str(p.get_state_display()), p.due_date,
+                   _("да") if p.overdue else "", str(p.owner or "")])
 
-    sv = wb.create_sheet("Опросы студентов")
-    sv.append(["Опрос", "Кафедра", "Группа", "Ответов", "Итоги видны"])
+    sv = wb.create_sheet(_("Опросы студентов"))
+    sv.append([_("Опрос"), _("Кафедра"), _("Группа"), _("Ответов"), _("Итоги видны")])
     for c in ctx["campaigns"]:
-        sv.append([c.title, str(c.org_unit), c.label, c.response_count, "да" if c.results_visible else "нет (мало ответов)"])
+        sv.append([c.title, str(c.org_unit), c.label, c.response_count, _("да") if c.results_visible else _("нет (мало ответов)")])
 
     for sheet in wb.worksheets:
         for cell in sheet[1]:
@@ -66,49 +70,53 @@ def docx(ctx, strategy):
     doc.styles["Normal"].font.name = "Times New Roman"
     doc.styles["Normal"].font.size = Pt(12)
     year = ctx["year"]
-    doc.add_heading(f"Годовой отчёт Центра стратегического развития за {year} год", level=0)
-    doc.add_paragraph("ТГМУ им. Абуали ибни Сино. Сформировано программой «Канон» "
-                      f"{timezone.localdate():%d.%m.%Y}. Цифры — по данным, внесённым в программу; "
-                      "текстовый анализ дописывается Центром.")
+    doc.add_heading(_("Годовой отчёт Центра стратегического развития за %(year)s год") % {"year": year}, level=0)
+    doc.add_paragraph(_("ТГМУ им. Абуали ибни Сино. Сформировано программой «Канон» %(date)s. Цифры — по данным, "
+                        "внесённым в программу; текстовый анализ дописывается Центром.")
+                      % {"date": f"{timezone.localdate():%d.%m.%Y}"})
 
-    doc.add_heading("1. Выполнение Стратегии развития до 2030 года", level=1)
+    doc.add_heading(_("1. Выполнение Стратегии развития до 2030 года"), level=1)
     t = doc.add_table(rows=1, cols=6)
     t.style = "Table Grid"
-    for c, h in zip(t.rows[0].cells, ["№", "Показатель", "Цель 2027", "Цель 2030", f"{year}", "Состояние"]):
+    for c, h in zip(t.rows[0].cells, ["№", _("Показатель"), _("Цель 2027"), _("Цель 2030"), f"{year}", _("Состояние")]):
         c.text = h
     for r in strategy:
         i = r["ind"]
         f = lambda v: "—" if v is None else f"{v.normalize():f}"
         cells = t.add_row().cells
-        for c, v in zip(cells, [i.code, i.title, f(i.threshold_medium), f(i.threshold_high), f(r["value"]), STATUS_TEXT.get(r["status"], "")]):
+        for c, v in zip(cells, [i.code, i.title, f(i.threshold_medium), f(i.threshold_high), f(r["value"]), str(STATUS_TEXT.get(r["status"], ""))]):
             c.text = v
     filled = sum(1 for r in strategy if r["value"] is not None)
-    doc.add_paragraph(f"Значения есть по {filled} из {len(strategy)} показателей. Показатели 2.2, 2.3 и 3.1 считаются "
-                      "по подтверждённым портфолио преподавателей, зарегистрированных в программе.")
+    doc.add_paragraph(_("Значения есть по %(filled)s из %(total)s показателей. Показатели 2.2, 2.3 и 3.1 считаются "
+                        "по подтверждённым портфолио преподавателей, зарегистрированных в программе.")
+                      % {"filled": filled, "total": len(strategy)})
 
-    doc.add_heading("2. Проверки кафедр", level=1)
+    doc.add_heading(_("2. Проверки кафедр"), level=1)
     heat = ctx["heat"]
-    doc.add_paragraph(f"За {year} год назначено проверок: {ctx['inspections_year']}, закрыто: {ctx['inspections_closed']}. "
-                      f"Кафедр с результатами: {len(heat['rows'])}, не проверялись: {len(heat['unchecked'])}.")
+    doc.add_paragraph(_("За %(year)s год назначено проверок: %(planned)s, закрыто: %(closed)s. "
+                        "Кафедр с результатами: %(rows)s, не проверялись: %(unchecked)s.")
+                      % {"year": year, "planned": ctx["inspections_year"], "closed": ctx["inspections_closed"],
+                         "rows": len(heat["rows"]), "unchecked": len(heat["unchecked"])})
     for row in heat["rows"]:
         bad = [f"{code} — {c['value'].normalize():f} %" for code, c in zip(heat["codes"], row["line"])
                if c and c["status"] in ("mild", "severe") and c["value"] is not None]
-        doc.add_paragraph(f"{row['unit'].name}: " + ("отклонения — " + "; ".join(bad) if bad else "отклонений нет"), style="List Bullet")
+        doc.add_paragraph(f"{row['unit'].name}: " + (_("отклонения — %(list)s") % {"list": "; ".join(bad)} if bad else _("отклонений нет")), style="List Bullet")
 
-    doc.add_heading("3. Диагнозы и планы исправления", level=1)
+    doc.add_heading(_("3. Диагнозы и планы исправления"), level=1)
     ps = ctx["plans"]
-    doc.add_paragraph(f"Всего планов: {ps['total']}, открыто: {ps['open']}, закрыто результативно: {ps['closed']}, "
-                      f"просрочено: {len(ps['overdue'])}.")
+    doc.add_paragraph(_("Всего планов: %(total)s, открыто: %(open)s, закрыто результативно: %(closed)s, "
+                        "просрочено: %(overdue)s.")
+                      % {"total": ps["total"], "open": ps["open"], "closed": ps["closed"], "overdue": len(ps["overdue"])})
     for name, n in ctx["problems"]:
         doc.add_paragraph(f"{name}: {n}", style="List Bullet")
 
-    doc.add_heading("4. Обратная связь студентов", level=1)
+    doc.add_heading(_("4. Обратная связь студентов"), level=1)
     camps = list(ctx["campaigns"])
-    doc.add_paragraph(f"Опросов: {len(camps)}, ответов: {ctx['responses']}. Итоги учитываются только там, где ответов "
-                      "не меньше порога анонимности.")
+    doc.add_paragraph(_("Опросов: %(camps)s, ответов: %(responses)s. Итоги учитываются только там, где ответов "
+                        "не меньше порога анонимности.") % {"camps": len(camps), "responses": ctx["responses"]})
 
-    doc.add_heading("5. Выводы и предложения", level=1)
-    doc.add_paragraph("________________________________________________ (заполняет Центр)")
+    doc.add_heading(_("5. Выводы и предложения"), level=1)
+    doc.add_paragraph(_("________________________________________________ (заполняет Центр)"))
     buf = BytesIO()
     doc.save(buf)
     return buf.getvalue()

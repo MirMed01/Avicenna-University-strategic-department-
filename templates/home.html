@@ -1,20 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Главная{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Главная" %}{% endblock %}
 {% block content %}
-<h1>Здравствуйте, {{ user.full_name|default:user.email }}</h1>
-<p class="muted">{% for r in my_roles %}{{ r.get_role_display }} — {{ r.org_unit }}{% if not forloop.last %}; {% endif %}{% empty %}Роль ещё не назначена.{% endfor %}</p>
-{% if pending_users %}<div class="msg">Ждут подтверждения доступа: <b>{{ pending_users }}</b>. <a href="{% url 'accounts:users' %}">Открыть</a></div>{% endif %}
-{% if to_review %}<div class="msg">Записей портфолио на проверке: <b>{{ to_review }}</b>. <a href="{% url 'portfolio:queue' %}">Проверить</a></div>{% endif %}
-{% if my_overdue %}<div class="msg error"><b>У вас просроченные мероприятия ({{ my_overdue|length }}):</b>
-{% for a in my_overdue %}<div><a href="{% url 'capa:detail' a.plan_id %}">{{ a.plan.ref }}</a> — {{ a.title|truncatechars:90 }}, срок {{ a.due_date|date:"d.m.Y" }}</div>{% endfor %}</div>{% endif %}
+<h1>{% blocktranslate with name=user.full_name|default:user.email %}Здравствуйте, {{ name }}{% endblocktranslate %}</h1>
+<p class="muted">{% for r in my_roles %}{{ r.get_role_display }} — {{ r.org_unit }}{% if not forloop.last %}; {% endif %}{% empty %}{% translate "Роль ещё не назначена." %}{% endfor %}</p>
+{% if pending_users %}<div class="msg">{% blocktranslate %}Ждут подтверждения доступа: <b>{{ pending_users }}</b>.{% endblocktranslate %} <a href="{% url 'accounts:users' %}">{% translate "Открыть" %}</a></div>{% endif %}
+{% if to_review %}<div class="msg">{% blocktranslate %}Записей портфолио на проверке: <b>{{ to_review }}</b>.{% endblocktranslate %} <a href="{% url 'portfolio:queue' %}">{% translate "Проверить" %}</a></div>{% endif %}
+{% if my_overdue %}<div class="msg error"><b>{% blocktranslate with n=my_overdue|length %}У вас просроченные мероприятия ({{ n }}):{% endblocktranslate %}</b>
+{% for a in my_overdue %}<div><a href="{% url 'capa:detail' a.plan_id %}">{{ a.plan.ref }}</a> — {{ a.title|truncatechars:90 }}, {% blocktranslate with d=a.due_date|date:"d.m.Y" %}срок {{ d }}{% endblocktranslate %}</div>{% endfor %}</div>{% endif %}
 <div class="grid">
-  <a class="stat" href="{% url 'org:tree' %}"><b>{{ faculties }}</b><span>факультетов</span></a>
-  <a class="stat" href="{% url 'org:tree' %}"><b>{{ departments }}</b><span>кафедр</span></a>
-  <a class="stat" href="{% url 'norms:index' %}"><b>{{ indicators }}</b><span>показателей в {{ frameworks }} документах</span></a>
-  <a class="stat" href="{% url 'capa:index' %}"><b>{{ open_plans }}</b><span>открытых планов исправления{% if overdue_plans %}, просрочено {{ overdue_plans }}{% endif %}</span></a>
-  <a class="stat" href="{% url 'portfolio:my' %}"><b>{{ my_entries }}</b><span>записей в моём портфолио</span></a>
+  <a class="stat" href="{% url 'org:tree' %}"><b>{{ faculties }}</b><span>{% translate "факультетов" %}</span></a>
+  <a class="stat" href="{% url 'org:tree' %}"><b>{{ departments }}</b><span>{% translate "кафедр" %}</span></a>
+  <a class="stat" href="{% url 'norms:index' %}"><b>{{ indicators }}</b><span>{% blocktranslate %}показателей в {{ frameworks }} документах{% endblocktranslate %}</span></a>
+  <a class="stat" href="{% url 'capa:index' %}"><b>{{ open_plans }}</b><span>{% translate "открытых планов исправления" %}{% if overdue_plans %}{% blocktranslate %}, просрочено {{ overdue_plans }}{% endblocktranslate %}{% endif %}</span></a>
+  <a class="stat" href="{% url 'portfolio:my' %}"><b>{{ my_entries }}</b><span>{% translate "записей в моём портфолио" %}</span></a>
 </div>
-<div class="card"><h2>Цикл качества</h2>
-<p>Нормы → инструменты → проверка кафедры → находки → диагноз и план исправления → повторная проверка.
-Дальше появятся анонимное окно студентов и панели руководства.</p></div>
+<div class="card"><h2>{% translate "Цикл качества" %}</h2>
+<p>{% blocktranslate %}Нормы → инструменты → проверка кафедры → находки → диагноз и план исправления → повторная проверка.
+Дальше появятся анонимное окно студентов и панели руководства.{% endblocktranslate %}</p></div>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import PortfolioEntry
 
@@ -17,4 +18,4 @@ class PortfolioEntryForm(forms.ModelForm):
 
 
 class ReviewForm(forms.Form):
-    comment = forms.CharField(label="Комментарий", required=False, widget=forms.Textarea(attrs={"rows": 2}))
+    comment = forms.CharField(label=_("Комментарий"), required=False, widget=forms.Textarea(attrs={"rows": 2}))

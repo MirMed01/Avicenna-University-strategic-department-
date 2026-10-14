@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load i18n %}
 {% block content %}
-<h1>Показатель {{ ind.code }}</h1>
+<h1>{% blocktranslate with code=ind.code %}Показатель {{ code }}{% endblocktranslate %}</h1>
 <form method="post" class="f card">{% csrf_token %}{% include "_fields.html" %}
-<div class="row"><button class="btn">Сохранить</button><a class="btn ghost" href="{% url 'norms:version' ind.node.version_id %}">Отмена</a>
-<a class="btn danger" href="{% url 'norms:indicator_delete' ind.pk %}">Удалить</a></div></form>
-<div class="card"><h2>История изменений</h2>
+<div class="row"><button class="btn">{% translate "Сохранить" %}</button><a class="btn ghost" href="{% url 'norms:version' ind.node.version_id %}">{% translate "Отмена" %}</a>
+<a class="btn danger" href="{% url 'norms:indicator_delete' ind.pk %}">{% translate "Удалить" %}</a></div></form>
+<div class="card"><h2>{% translate "История изменений" %}</h2>
 {% for h in history %}<div class="small">{{ h.at|date:"d.m.Y H:i" }} · {{ h.user|default:"—" }} · {{ h.description }}</div>
-{% empty %}<p class="muted small">Изменений не было.</p>{% endfor %}</div>
+{% empty %}<p class="muted small">{% translate "Изменений не было." %}</p>{% endfor %}</div>
 {% endblock %}

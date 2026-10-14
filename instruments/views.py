@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 
 from accounts.decorators import manager_required
 from core.models import log
@@ -35,7 +36,7 @@ def create(request):
         v = InstrumentVersion.objects.create(instrument=inst, number=1)
         log(request.user, "create", inst, f"Новый инструмент «{inst}»")
         return redirect("instruments:version", v.pk)
-    return render(request, "form.html", {"form": form, "title": "Новый инструмент"})
+    return render(request, "form.html", {"form": form, "title": _("Новый инструмент")})
 
 
 @manager_required
@@ -46,12 +47,12 @@ def edit(request, pk):
         form.save()
         log(request.user, "update", inst, f"Изменено описание инструмента «{inst}»")
         return redirect("instruments:version", inst.latest_version().pk)
-    return render(request, "form.html", {"form": form, "title": f"Инструмент: {inst}"})
+    return render(request, "form.html", {"form": form, "title": _("Инструмент: %(inst)s") % {"inst": inst}})
 
 
 def _draft_or_redirect(request, v):
     if not v.editable:
-        messages.error(request, "Опубликованную версию менять нельзя. Создайте новую версию.")
+        messages.error(request, _("Опубликованную версию менять нельзя. Создайте новую версию."))
         return redirect("instruments:version", v.pk)
     return None
 
@@ -63,7 +64,7 @@ def publish(request, pk):
         try:
             v.publish()
             log(request.user, "publish", v.instrument, f"Опубликована {v}")
-            messages.success(request, "Версия опубликована. Теперь её можно использовать в проверках.")
+            messages.success(request, _("Версия опубликована. Теперь её можно использовать в проверках."))
         except ValidationError as e:
             messages.error(request, " ".join(e.messages))
     return redirect("instruments:version", pk)
@@ -93,7 +94,7 @@ def section_form(request, version_pk, pk=None):
         form.save()
         log(request.user, "update" if pk else "create", v.instrument, f"{v}: раздел «{section}»")
         return redirect("instruments:version", v.pk)
-    return render(request, "form.html", {"form": form, "title": "Раздел инструмента"})
+    return render(request, "form.html", {"form": form, "title": _("Раздел инструмента")})
 
 
 @manager_required
@@ -108,7 +109,7 @@ def item_form(request, section_pk, pk=None):
         saved = form.save()
         log(request.user, "update" if pk else "create", section.version.instrument, f"{section.version}: пункт {saved}")
         return redirect("instruments:version", section.version_id)
-    return render(request, "form.html", {"form": form, "title": f"Пункт в разделе «{section}»"})
+    return render(request, "form.html", {"form": form, "title": _("Пункт в разделе «%(section)s»") % {"section": section}})
 
 
 @manager_required
@@ -122,8 +123,8 @@ def derived_form(request, version_pk, pk=None):
         saved = form.save()
         log(request.user, "update" if pk else "create", v.instrument, f"{v}: расчёт {saved}")
         return redirect("instruments:version", v.pk)
-    return render(request, "form.html", {"form": form, "title": "Расчётный показатель",
-                                         "hint": "Расчёт превращает ответы в число, которое программа сравнит с порогами нормы."})
+    return render(request, "form.html", {"form": form, "title": _("Расчётный показатель"),
+                                         "hint": _("Расчёт превращает ответы в число, которое программа сравнит с порогами нормы.")})
 
 
 @manager_required
@@ -137,7 +138,7 @@ def delete_part(request, kind, pk):
         log(request.user, "delete", v.instrument, f"{v}: удалено «{obj}»")
         obj.delete()
         return redirect("instruments:version", v.pk)
-    return render(request, "confirm.html", {"title": f"Удалить «{obj}»?", "text": "Удаляется только из черновика.",
+    return render(request, "confirm.html", {"title": _("Удалить «%(obj)s»?") % {"obj": obj}, "text": _("Удаляется только из черновика."),
                                             "back": f"/instruments/{v.pk}/"})
 
 

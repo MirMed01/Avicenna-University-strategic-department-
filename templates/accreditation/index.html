@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Аккредитация" %}{% endblock %}
+{% block content %}
+<div class="row between"><h1>{% translate "Подготовка к аккредитации" %}</h1>
+{% if can_manage %}<a class="btn" href="{% url 'accreditation:create' %}">{% translate "+ Новая подготовка" %}</a>{% endif %}</div>
+<p class="muted">{% translate "Самооценка по каждому критерию стандарта, доказательства, ответственные, готовность и ориентировочный прогноз решения." %}</p>
+<div class="tbl"><table><thead><tr><th>{% translate "Программа" %}</th><th>{% translate "Стандарт" %}</th><th>{% translate "Самоотчёт до" %}</th><th>{% translate "Оценено" %}</th><th>{% translate "Ориентир" %}</th></tr></thead><tbody>
+{% for c, fc in rows %}<tr><td><a href="{% url 'accreditation:detail' c.pk %}">{{ c.title }}</a><div class="small muted">{{ c.programme }}</div></td>
+<td class="small">{{ c.version }}</td>
+<td class="num">{{ c.report_due|date:"d.m.Y" }}<div class="small {% if c.days_left < 60 %}err{% else %}muted{% endif %}">{% blocktranslate with n=c.days_left %}осталось дней: {{ n }}{% endblocktranslate %}</div></td>
+<td class="num">{{ fc.rated }} / {{ fc.total }}</td><td>{% if fc.rated %}{{ fc.label }}{% else %}—{% endif %}</td></tr>
+{% empty %}<tr><td colspan="5" class="muted">{% translate "Пока ничего не начато." %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

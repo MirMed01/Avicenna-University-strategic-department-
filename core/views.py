@@ -53,3 +53,8 @@ def journal(request):
     if not can_manage(request.user):
         raise PermissionDenied
     return render(request, "journal.html", {"rows": AuditLog.objects.select_related("user")[:300]})
+
+
+def csrf_failure(request, reason=""):
+    """Вместо технической страницы Django — понятное объяснение: форма устарела после нового входа."""
+    return render(request, "csrf_failure.html", status=403)

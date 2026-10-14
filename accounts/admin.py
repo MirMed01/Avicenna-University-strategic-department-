@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.translation import gettext_lazy as _
 
 from .models import RoleAssignment, User
 
@@ -17,8 +18,8 @@ class UserAdmin(BaseUserAdmin):
     inlines = [RoleInline]
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Сотрудник", {"fields": ("full_name", "position", "academic_degree", "academic_title")}),
-        ("Заявка", {"fields": ("requested_unit", "requested_role")}),
-        ("Доступ", {"fields": ("is_active", "is_staff", "is_superuser")}),
+        (_("Сотрудник"), {"fields": ("full_name", "position", "academic_degree", "academic_title")}),
+        (_("Заявка"), {"fields": ("requested_unit", "requested_role")}),
+        (_("Доступ"), {"fields": ("is_active", "is_staff", "is_superuser")}),
     )
     add_fieldsets = ((None, {"fields": ("email", "full_name", "password1", "password2")}),)

@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from accounts.models import Role, RoleAssignment, User
 from accounts.permissions import can_verify_portfolio, can_view_portfolio, has_role, units_in_scope
@@ -67,9 +68,10 @@ def create(request):
         entry.owner = request.user
         entry.status = S.SUBMITTED if "submit" in request.POST else S.DRAFT
         entry.save()
-        messages.success(request, "Запись добавлена" + (" и отправлена на проверку." if entry.status == S.SUBMITTED else "."))
+        messages.success(request, _("Запись добавлена и отправлена на проверку.") if entry.status == S.SUBMITTED
+                         else _("Запись добавлена."))
         return redirect("portfolio:my")
-    return render(request, "portfolio/form.html", {"form": form, "title": "Новая запись портфолио"})
+    return render(request, "portfolio/form.html", {"form": form, "title": _("Новая запись портфолио")})
 
 
 @login_required
@@ -80,13 +82,13 @@ def edit(request, pk):
         entry = form.save(commit=False)
         if entry.status == S.VERIFIED:
             # Изменили подтверждённое — нужно подтвердить заново.
-            messages.info(request, "Запись изменена и снова отправлена на проверку.")
+            messages.info(request, _("Запись изменена и снова отправлена на проверку."))
             entry.status = S.SUBMITTED
         elif "submit" in request.POST:
             entry.status = S.SUBMITTED
         entry.save()
         return redirect("portfolio:my")
-    return render(request, "portfolio/form.html", {"form": form, "title": "Изменить запись", "entry": entry})
+    return render(request, "portfolio/form.html", {"form": form, "title": _("Изменить запись"), "entry": entry})
 
 
 @login_required
@@ -96,9 +98,10 @@ def delete(request, pk):
         if entry.file:
             entry.file.delete(save=False)
         entry.delete()
-        messages.success(request, "Запись удалена.")
+        messages.success(request, _("Запись удалена."))
         return redirect("portfolio:my")
-    return render(request, "confirm.html", {"title": f"Удалить запись «{entry.title}»?", "text": "Отменить это нельзя.",
+    return render(request, "confirm.html", {"title": _("Удалить запись «%(title)s»?") % {"title": entry.title},
+                                            "text": _("Отменить это нельзя."),
                                             "back": "/portfolio/"})
 
 
@@ -108,7 +111,7 @@ def submit(request, pk):
     if request.method == "POST" and entry.status in (S.DRAFT, S.REJECTED):
         entry.status = S.SUBMITTED
         entry.save(update_fields=["status", "updated_at"])
-        messages.success(request, "Отправлено на проверку.")
+        messages.success(request, _("Отправлено на проверку."))
     return redirect("portfolio:my")
 
 
@@ -120,13 +123,13 @@ def review(request, pk):
     form = ReviewForm(request.POST or None)
     if request.method == "POST" and form.is_valid() and request.POST.get("decision") in ("verify", "reject"):
         if request.POST["decision"] == "reject" and not form.cleaned_data["comment"]:
-            messages.error(request, "Чтобы вернуть запись, напишите, что исправить.")
+            messages.error(request, _("Чтобы вернуть запись, напишите, что исправить."))
         else:
             entry.status = S.VERIFIED if request.POST["decision"] == "verify" else S.REJECTED
             entry.reviewed_by, entry.reviewed_at = request.user, timezone.now()
             entry.review_comment = form.cleaned_data["comment"]
             entry.save()
-            messages.success(request, "Подтверждено." if entry.status == S.VERIFIED else "Возвращено на исправление.")
+            messages.success(request, _("Подтверждено.") if entry.status == S.VERIFIED else _("Возвращено на исправление."))
     return redirect(request.POST.get("next") or "portfolio:queue")
 
 

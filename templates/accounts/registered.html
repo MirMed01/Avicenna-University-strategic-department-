@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block content %}
-<div class="auth card"><h1>Заявка отправлена</h1>
-<p>{{ user_obj.full_name }}, доступ откроется после подтверждения администратором. Войти можно будет по адресу {{ user_obj.email }}.</p>
-<a class="btn ghost" href="{% url 'login' %}">На страницу входа</a></div>
+<div class="auth card"><h1>{% translate "Заявка отправлена" %}</h1>
+<p>{% blocktranslate with name=user_obj.full_name email=user_obj.email %}{{ name }}, доступ откроется после подтверждения администратором. Войти можно будет по адресу {{ email }}.{% endblocktranslate %}</p>
+<a class="btn ghost" href="{% url 'login' %}">{% translate "На страницу входа" %}</a></div>
 {% endblock %}

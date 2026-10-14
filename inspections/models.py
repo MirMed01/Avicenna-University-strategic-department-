@@ -4,6 +4,8 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext, override
+from django.utils.translation import gettext_lazy as _
 
 from instruments.models import InstrumentVersion, Item
 from norms.models import LEVEL_ORDER, Indicator, Level, effective_level
@@ -11,30 +13,30 @@ from norms.models import LEVEL_ORDER, Indicator, Level, effective_level
 
 class Inspection(models.Model):
     class State(models.TextChoices):
-        PLANNED = "planned", "Назначена"
-        COLLECTING = "collecting", "Сбор данных"
-        REVIEW = "review", "Разбор экспертом"
-        CLOSED = "closed", "Закрыта"
-        CANCELLED = "cancelled", "Отменена"
+        PLANNED = "planned", _("Назначена")
+        COLLECTING = "collecting", _("Сбор данных")
+        REVIEW = "review", _("Разбор экспертом")
+        CLOSED = "closed", _("Закрыта")
+        CANCELLED = "cancelled", _("Отменена")
 
-    title = models.CharField("название", max_length=255)
-    org_unit = models.ForeignKey("org.OrgUnit", verbose_name="подразделение", on_delete=models.PROTECT, related_name="inspections")
-    lead_expert = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="ведущий эксперт", null=True, blank=True,
+    title = models.CharField(_("название"), max_length=255)
+    org_unit = models.ForeignKey("org.OrgUnit", verbose_name=_("подразделение"), on_delete=models.PROTECT, related_name="inspections")
+    lead_expert = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("ведущий эксперт"), null=True, blank=True,
                                     on_delete=models.SET_NULL, related_name="led_inspections")
-    state = models.CharField("статус", max_length=12, choices=State.choices, default=State.PLANNED)
-    due_date = models.DateField("срок сбора данных", null=True, blank=True)
-    parent = models.ForeignKey("self", verbose_name="повторная к проверке", null=True, blank=True,
+    state = models.CharField(_("статус"), max_length=12, choices=State.choices, default=State.PLANNED)
+    due_date = models.DateField(_("срок сбора данных"), null=True, blank=True)
+    parent = models.ForeignKey("self", verbose_name=_("повторная к проверке"), null=True, blank=True,
                                on_delete=models.SET_NULL, related_name="followups")
-    note = models.TextField("цель и примечание", blank=True)
-    conclusion = models.TextField("заключение эксперта", blank=True)
+    note = models.TextField(_("цель и примечание"), blank=True)
+    conclusion = models.TextField(_("заключение эксперта"), blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+")
     created_at = models.DateTimeField(auto_now_add=True)
     closed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = "проверка"
-        verbose_name_plural = "проверки"
+        verbose_name = _("проверка")
+        verbose_name_plural = _("проверки")
 
     def __str__(self):
         return f"{self.title} — {self.org_unit}"
@@ -44,13 +46,13 @@ class Task(models.Model):
     """Одно заполнение одного инструмента в рамках проверки."""
 
     class Status(models.TextChoices):
-        OPEN = "open", "Не заполнено"
-        DRAFT = "draft", "Черновик"
-        SUBMITTED = "submitted", "Сдано"
+        OPEN = "open", _("Не заполнено")
+        DRAFT = "draft", _("Черновик")
+        SUBMITTED = "submitted", _("Сдано")
 
     inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE, related_name="tasks")
-    version = models.ForeignKey(InstrumentVersion, verbose_name="инструмент", on_delete=models.PROTECT)
-    label = models.CharField("уточнение", max_length=255, blank=True, help_text="Например: «занятие доц. N, 3 курс».")
+    version = models.ForeignKey(InstrumentVersion, verbose_name=_("инструмент"), on_delete=models.PROTECT)
+    label = models.CharField(_("уточнение"), max_length=255, blank=True, help_text=_("Например: «занятие доц. N, 3 курс»."))
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.OPEN)
     filled_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     submitted_at = models.DateTimeField(null=True, blank=True)
@@ -105,9 +107,9 @@ class Answer(models.Model):
         if v is None:
             return "—"
         if v is True:
-            return "да"
+            return gettext("да")
         if v is False:
-            return "нет"
+            return gettext("нет")
         if isinstance(v, Decimal):
             return f"{v.normalize():f}"
         return str(v)
@@ -120,7 +122,7 @@ class Result(models.Model):
     indicator = models.ForeignKey(Indicator, null=True, on_delete=models.SET_NULL)
     title = models.CharField(max_length=255)
     value = models.DecimalField(max_digits=8, decimal_places=1, null=True, blank=True)
-    n = models.PositiveIntegerField("сколько заполнений учтено", default=0)
+    n = models.PositiveIntegerField(_("сколько заполнений учтено"), default=0)
     note = models.CharField(max_length=255, blank=True)
     expected_level = models.CharField(max_length=10, choices=Level.choices, blank=True)
     achieved = models.CharField(max_length=10, blank=True)  # weak/medium/high/below или пусто — порогов нет
@@ -146,15 +148,15 @@ class Result(models.Model):
 
 class Finding(models.Model):
     class Severity(models.TextChoices):
-        MILD = "mild", "Лёгкое отклонение"
-        SEVERE = "severe", "Выраженное отклонение"
-        NOTE = "note", "Замечание"
-        STRENGTH = "strength", "Сильная сторона"
+        MILD = "mild", _("Лёгкое отклонение")
+        SEVERE = "severe", _("Выраженное отклонение")
+        NOTE = "note", _("Замечание")
+        STRENGTH = "strength", _("Сильная сторона")
 
     inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE, related_name="findings")
     result = models.ForeignKey(Result, null=True, blank=True, on_delete=models.CASCADE, related_name="findings")
-    severity = models.CharField("вид", max_length=10, choices=Severity.choices)
-    text = models.TextField("описание")
+    severity = models.CharField(_("вид"), max_length=10, choices=Severity.choices)
+    text = models.TextField(_("описание"))
     auto = models.BooleanField(default=False)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -194,9 +196,13 @@ def calculate(inspection):
                                   n=len(values), note=note[:255], expected_level=expected, achieved=achieved)
         if r.status in ("mild", "severe"):
             thr = r.expected_threshold
+            # Текст находки сохраняется в базу — пишем его по-русски при любом языке интерфейса
+            # (подпись уровня Level переводимая).
+            with override("ru"):
+                level_label = str(Level(expected).label).lower()
             Finding.objects.create(
                 inspection=inspection, result=r, auto=True, severity=r.status,
                 text=f"{r.title}: {value.normalize():f} при норме {'≥' if ind.direction == 'higher_better' else '≤'} "
-                     f"{thr.normalize():f} (уровень «{Level(expected).label.lower()}»)"
+                     f"{thr.normalize():f} (уровень «{level_label}»)"
                      + (" — ниже всех порогов" if r.status == "severe" else ""))
     return inspection.results.all()

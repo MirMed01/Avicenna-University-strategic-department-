@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from accounts.decorators import manager_required
 from accounts.models import Role
@@ -50,8 +51,8 @@ def create(request):
             log(request.user, "create", c, f"Опрос студентов «{c}»: {form.cleaned_data['code_count']} кодов")
         return redirect("feedback:detail", c.pk)
     if not form.fields["version"].queryset.exists():
-        messages.error(request, "Нет опубликованной анкеты для студентов. Создайте её в разделе «Инструменты» (кто заполняет — студент).")
-    return render(request, "form.html", {"form": form, "title": "Новый опрос студентов"})
+        messages.error(request, _("Нет опубликованной анкеты для студентов. Создайте её в разделе «Инструменты» (кто заполняет — студент)."))
+    return render(request, "form.html", {"form": form, "title": _("Новый опрос студентов")})
 
 
 @login_required
@@ -129,7 +130,7 @@ def vote(request, code):
     try:
         c = find_campaign(code)
     except VoteError as e:
-        return render(request, "feedback/public_message.html", {"title": "Не получилось", "text": str(e)})
+        return render(request, "feedback/public_message.html", {"title": _("Не получилось"), "text": str(e)})
     errors, posted = {}, {}
     if request.method == "POST":
         answers, errors = validate(c, request.POST)
@@ -137,9 +138,9 @@ def vote(request, code):
             try:
                 submit(code, answers)
             except VoteError as e:
-                return render(request, "feedback/public_message.html", {"title": "Не получилось", "text": str(e)})
+                return render(request, "feedback/public_message.html", {"title": _("Не получилось"), "text": str(e)})
             return render(request, "feedback/public_message.html", {
-                "title": "Спасибо!", "text": "Ответ записан анонимно. Код больше не действует."})
+                "title": _("Спасибо!"), "text": _("Ответ записан анонимно. Код больше не действует.")})
         posted = request.POST
     sections = []
     for s in c.version.sections.all():

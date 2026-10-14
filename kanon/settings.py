@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "capa",
     "feedback",
     "dashboard",
+    "accreditation",
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,7 @@ if sys.argv[1:2] == ["test"]:
     # Только для тестов: быстрое хеширование паролей, на сервере не действует.
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
+CSRF_FAILURE_VIEW = "core.views.csrf_failure"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"

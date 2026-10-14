@@ -1,63 +1,63 @@
-{% extends "base.html" %}{% load kanon %}
+{% extends "base.html" %}{% load kanon i18n %}
 {% block title %}{{ plan.ref }}{% endblock %}
 {% block content %}
-<p class="small"><a href="{% url 'capa:index' %}">Планы исправления</a> › <a href="{% url 'inspections:detail' plan.finding.inspection_id %}">{{ plan.finding.inspection.title }}</a></p>
-<div class="row between"><div><span class="kind">План исправления {{ plan.ref }}</span><h1>{{ plan.title }}</h1>
+<p class="small"><a href="{% url 'capa:index' %}">{% translate "Планы исправления" %}</a> › <a href="{% url 'inspections:detail' plan.finding.inspection_id %}">{{ plan.finding.inspection.title }}</a></p>
+<div class="row between"><div><span class="kind">{% blocktranslate with ref=plan.ref %}План исправления {{ ref }}{% endblocktranslate %}</span><h1>{{ plan.title }}</h1>
 <p class="muted">{{ plan.org_unit }} · {% include "capa/_state.html" with s=plan.state label=plan.get_state_display overdue=plan.overdue %}
-· срок {{ plan.due_date|date:"d.m.Y" }} · ответственный: {{ plan.owner|default:"—" }}</p></div>
-{% if editable %}<a class="btn ghost" href="{% url 'capa:edit' plan.pk %}">Изменить план</a>{% endif %}</div>
+· {% translate "срок" %} {{ plan.due_date|date:"d.m.Y" }} · {% translate "ответственный:" %} {{ plan.owner|default:"—" }}</p></div>
+{% if editable %}<a class="btn ghost" href="{% url 'capa:edit' plan.pk %}">{% translate "Изменить план" %}</a>{% endif %}</div>
 
 <div class="grid">
-<div class="card"><h2>Находка</h2><p><b>{{ plan.finding.get_severity_display }}.</b> {{ plan.finding.text }}</p></div>
-<div class="card"><h2>Диагноз</h2><p><b>{{ plan.problem }}</b></p>{% if plan.problem.description %}<p class="small muted">{{ plan.problem.description }}</p>{% endif %}</div>
+<div class="card"><h2>{% translate "Находка" %}</h2><p><b>{{ plan.finding.get_severity_display }}.</b> {{ plan.finding.text }}</p></div>
+<div class="card"><h2>{% translate "Диагноз" %}</h2><p><b>{{ plan.problem }}</b></p>{% if plan.problem.description %}<p class="small muted">{{ plan.problem.description }}</p>{% endif %}</div>
 </div>
-<div class="card"><h2>Анализ причины</h2><p>{{ plan.root_cause|linebreaksbr|default:"<span class='muted'>Не написан. Без анализа причины план не подать.</span>" }}</p>
-{% if plan.effectiveness_criterion %}<p class="small"><b>Как поймём, что помогло:</b> {{ plan.effectiveness_criterion }}</p>{% endif %}</div>
+<div class="card"><h2>{% translate "Анализ причины" %}</h2><p>{% if plan.root_cause %}{{ plan.root_cause|linebreaksbr }}{% else %}<span class='muted'>{% translate "Не написан. Без анализа причины план не подать." %}</span>{% endif %}</p>
+{% if plan.effectiveness_criterion %}<p class="small"><b>{% translate "Как поймём, что помогло:" %}</b> {{ plan.effectiveness_criterion }}</p>{% endif %}</div>
 
-<div class="card"><h2>Мероприятия</h2>
-<div class="tbl"><table><thead><tr><th>Мероприятие</th><th>Исполнитель</th><th>Срок</th><th>Статус</th>{% if plan.state == "in_progress" or editable %}<th></th>{% endif %}</tr></thead><tbody>
+<div class="card"><h2>{% translate "Мероприятия" %}</h2>
+<div class="tbl"><table><thead><tr><th>{% translate "Мероприятие" %}</th><th>{% translate "Исполнитель" %}</th><th>{% translate "Срок" %}</th><th>{% translate "Статус" %}</th>{% if plan.state == "in_progress" or editable %}<th></th>{% endif %}</tr></thead><tbody>
 {% for a, can in actions %}<tr><td><span class="kind">{{ a.get_type_display }}</span><br>{{ a.title }}
 {% if a.result_note %}<div class="small muted">{{ a.result_note }}</div>{% endif %}</td>
 <td>{{ a.responsible|default:"—" }}</td><td class="num">{{ a.due_date|date:"d.m.Y" }}</td>
-<td><span class="pill {% if a.state == 'done' %}ok{% elif a.overdue %}bad{% endif %}">{% if a.overdue %}просрочено{% else %}{{ a.get_state_display }}{% endif %}</span></td>
+<td><span class="pill {% if a.state == 'done' %}ok{% elif a.overdue %}bad{% endif %}">{% if a.overdue %}{% translate "просрочено" %}{% else %}{{ a.get_state_display }}{% endif %}</span></td>
 {% if plan.state == "in_progress" or editable %}<td style="width:280px">
 {% if can and a.state == "planned" %}<form method="post" action="{% url 'capa:action_report' a.pk %}" class="f" style="gap:6px">{% csrf_token %}
-<input type="text" name="note" placeholder="Что сделано / почему отменено"><div class="row">
-<button class="btn small" name="decision" value="done">Выполнено</button><button class="btn small ghost" name="decision" value="cancelled">Отменить</button></div></form>{% endif %}
-{% if editable %}<form method="post" action="{% url 'capa:action_delete' a.pk %}">{% csrf_token %}<button class="btn small ghost">Удалить</button></form>{% endif %}</td>{% endif %}</tr>
-{% empty %}<tr><td colspan="5" class="muted">Мероприятий нет.</td></tr>{% endfor %}
+<input type="text" name="note" placeholder="{% translate "Что сделано / почему отменено" %}"><div class="row">
+<button class="btn small" name="decision" value="done">{% translate "Выполнено" %}</button><button class="btn small ghost" name="decision" value="cancelled">{% translate "Отменить" %}</button></div></form>{% endif %}
+{% if editable %}<form method="post" action="{% url 'capa:action_delete' a.pk %}">{% csrf_token %}<button class="btn small ghost">{% translate "Удалить" %}</button></form>{% endif %}</td>{% endif %}</tr>
+{% empty %}<tr><td colspan="5" class="muted">{% translate "Мероприятий нет." %}</td></tr>{% endfor %}
 </tbody></table></div>
 {% if editable or lead and plan.state == "in_progress" %}
-<details><summary class="small">+ Добавить мероприятие</summary>
+<details><summary class="small">{% translate "+ Добавить мероприятие" %}</summary>
 <form method="post" action="{% url 'capa:action_add' plan.pk %}" class="f" style="margin-top:8px">{% csrf_token %}{% include "_fields.html" with form=action_form %}
-<button class="btn small">Добавить</button></form></details>{% endif %}
+<button class="btn small">{% translate "Добавить" %}</button></form></details>{% endif %}
 </div>
 
-{% if plan.followup %}<div class="card"><h2>Повторная проверка</h2>
+{% if plan.followup %}<div class="card"><h2>{% translate "Повторная проверка" %}</h2>
 <p><a href="{% url 'inspections:detail' plan.followup_id %}">{{ plan.followup.title }}</a> · {% include "inspections/_state.html" with s=plan.followup.state label=plan.followup.get_state_display %}</p>
-{% if followup_result %}<p>Тот же показатель сейчас: <b>{{ followup_result.value|num }} %</b>
-{% if followup_result.status == "ok" %}<span class="pill ok">в норме</span>{% elif followup_result.status == "mild" %}<span class="pill warn">лёгкое отклонение</span>{% elif followup_result.status == "severe" %}<span class="pill bad">выраженное отклонение</span>{% else %}<span class="pill">проверить нельзя</span>{% endif %}
-<span class="small muted">(было: {{ plan.finding.result.value|num }} %)</span></p>
-{% else %}<p class="small muted">Результат появится, когда в повторной проверке закроют сбор данных.</p>{% endif %}</div>{% endif %}
-{% if plan.effectiveness_comment %}<div class="card"><h2>Оценка результативности</h2><p>{{ plan.effectiveness_comment|linebreaksbr }}</p></div>{% endif %}
+{% if followup_result %}<p>{% translate "Тот же показатель сейчас:" %} <b>{{ followup_result.value|num }} %</b>
+{% if followup_result.status == "ok" %}<span class="pill ok">{% translate "в норме" %}</span>{% elif followup_result.status == "mild" %}<span class="pill warn">{% translate "лёгкое отклонение" %}</span>{% elif followup_result.status == "severe" %}<span class="pill bad">{% translate "выраженное отклонение" %}</span>{% else %}<span class="pill">{% translate "проверить нельзя" %}</span>{% endif %}
+<span class="small muted">{% blocktranslate with was=plan.finding.result.value|num %}(было: {{ was }} %){% endblocktranslate %}</span></p>
+{% else %}<p class="small muted">{% translate "Результат появится, когда в повторной проверке закроют сбор данных." %}</p>{% endif %}</div>{% endif %}
+{% if plan.effectiveness_comment %}<div class="card"><h2>{% translate "Оценка результативности" %}</h2><p>{{ plan.effectiveness_comment|linebreaksbr }}</p></div>{% endif %}
 
-{% if plan.is_open %}<div class="card"><h2>Действия</h2><div class="row">
-{% if plan.state == "draft" and is_owner or plan.state == "draft" and lead %}<form method="post" action="{% url 'capa:transition' plan.pk 'submit' %}">{% csrf_token %}<button class="btn">Подать на утверждение</button></form>{% endif %}
-{% if plan.state == "in_progress" and is_owner or plan.state == "in_progress" and lead %}<form method="post" action="{% url 'capa:transition' plan.pk 'verify' %}">{% csrf_token %}<button class="btn">Мероприятия выполнены</button></form>{% endif %}
-{% if lead and plan.state == "verification" and not plan.followup %}<form method="post" action="{% url 'capa:followup' plan.pk %}">{% csrf_token %}<button class="btn ghost">Назначить повторную проверку</button></form>{% endif %}
+{% if plan.is_open %}<div class="card"><h2>{% translate "Действия" %}</h2><div class="row">
+{% if plan.state == "draft" and is_owner or plan.state == "draft" and lead %}<form method="post" action="{% url 'capa:transition' plan.pk 'submit' %}">{% csrf_token %}<button class="btn">{% translate "Подать на утверждение" %}</button></form>{% endif %}
+{% if plan.state == "in_progress" and is_owner or plan.state == "in_progress" and lead %}<form method="post" action="{% url 'capa:transition' plan.pk 'verify' %}">{% csrf_token %}<button class="btn">{% translate "Мероприятия выполнены" %}</button></form>{% endif %}
+{% if lead and plan.state == "verification" and not plan.followup %}<form method="post" action="{% url 'capa:followup' plan.pk %}">{% csrf_token %}<button class="btn ghost">{% translate "Назначить повторную проверку" %}</button></form>{% endif %}
 </div>
 {% if lead %}
-{% if plan.state == "submitted" %}<form method="post" action="{% url 'capa:transition' plan.pk 'approve' %}" class="row" style="margin-top:8px">{% csrf_token %}<button class="btn">Утвердить план</button></form>
-<form method="post" action="{% url 'capa:transition' plan.pk 'return' %}" class="row" style="margin-top:8px">{% csrf_token %}<input type="text" name="comment" placeholder="Что доработать" style="max-width:420px"><button class="btn ghost">Вернуть на доработку</button></form>{% endif %}
+{% if plan.state == "submitted" %}<form method="post" action="{% url 'capa:transition' plan.pk 'approve' %}" class="row" style="margin-top:8px">{% csrf_token %}<button class="btn">{% translate "Утвердить план" %}</button></form>
+<form method="post" action="{% url 'capa:transition' plan.pk 'return' %}" class="row" style="margin-top:8px">{% csrf_token %}<input type="text" name="comment" placeholder="{% translate "Что доработать" %}" style="max-width:420px"><button class="btn ghost">{% translate "Вернуть на доработку" %}</button></form>{% endif %}
 {% if plan.state == "verification" %}<form method="post" class="f" style="margin-top:8px">{% csrf_token %}
-<div><label for="comment">Оценка результативности (обязательно)</label><textarea id="comment" name="comment" rows="2" placeholder="На чём основан вывод: повторная проверка, показатель, документы"></textarea></div>
-<div class="row"><button class="btn" formaction="{% url 'capa:transition' plan.pk 'effective' %}">Помогло — закрыть план</button>
-<button class="btn ghost" formaction="{% url 'capa:transition' plan.pk 'not_effective' %}">Не помогло — снова в работу</button></div></form>{% endif %}
-{% if plan.is_open %}<form method="post" action="{% url 'capa:transition' plan.pk 'cancel' %}" class="row" style="margin-top:8px">{% csrf_token %}<input type="text" name="comment" placeholder="Причина отмены" style="max-width:420px"><button class="btn small ghost">Отменить план</button></form>{% endif %}
+<div><label for="comment">{% translate "Оценка результативности (обязательно)" %}</label><textarea id="comment" name="comment" rows="2" placeholder="{% translate "На чём основан вывод: повторная проверка, показатель, документы" %}"></textarea></div>
+<div class="row"><button class="btn" formaction="{% url 'capa:transition' plan.pk 'effective' %}">{% translate "Помогло — закрыть план" %}</button>
+<button class="btn ghost" formaction="{% url 'capa:transition' plan.pk 'not_effective' %}">{% translate "Не помогло — снова в работу" %}</button></div></form>{% endif %}
+{% if plan.is_open %}<form method="post" action="{% url 'capa:transition' plan.pk 'cancel' %}" class="row" style="margin-top:8px">{% csrf_token %}<input type="text" name="comment" placeholder="{% translate "Причина отмены" %}" style="max-width:420px"><button class="btn small ghost">{% translate "Отменить план" %}</button></form>{% endif %}
 {% endif %}
-{% if not lead and not is_owner %}<p class="small muted">Только просмотр.</p>{% endif %}
+{% if not lead and not is_owner %}<p class="small muted">{% translate "Только просмотр." %}</p>{% endif %}
 </div>{% endif %}
 
-<div class="card"><h2>История</h2>
-{% for h in history %}<div class="small">{{ h.at|date:"d.m.Y H:i" }} · {{ h.user|default:"—" }} · {{ h.description }}</div>{% empty %}<p class="muted small">Пусто.</p>{% endfor %}</div>
+<div class="card"><h2>{% translate "История" %}</h2>
+{% for h in history %}<div class="small">{{ h.at|date:"d.m.Y H:i" }} · {{ h.user|default:"—" }} · {{ h.description }}</div>{% empty %}<p class="muted small">{% translate "Пусто." %}</p>{% endfor %}</div>
 {% endblock %}

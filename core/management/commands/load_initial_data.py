@@ -32,6 +32,7 @@ class Command(BaseCommand):
         self.skeletons()
         self.instruments()
         self.problems()
+        self.iaar()
 
     def _unit(self, kind, name, parent, order=0):
         unit, created = OrgUnit.objects.get_or_create(kind=kind, name=name, parent=parent, defaults={"order": order})
@@ -131,3 +132,39 @@ class Command(BaseCommand):
                 for fw, code in p["indicators"]:
                     obj.indicators.add(*Indicator.objects.filter(node__version__framework__code=fw, code=code))
         self.stdout.write(f"Справочник проблем качества: добавлено {made}.")
+
+    def iaar(self):
+        """Стандарт IAAR для программной аккредитации и три подготовки ТГМУ (срок — окончание действующей аккредитации)."""
+        from datetime import date
+
+        from accreditation.models import Cycle
+
+        d = _load("iaar_programme_2025.json")
+        doc = d["document"]
+        fw, _ = Framework.objects.get_or_create(code="iaar-bmifo", defaults={
+            "title": "IAAR: международная аккредитация программ медицинского и фармацевтического образования",
+            "description": f"{doc['title']}. Издание {doc['edition']}, {doc['year']}; {doc['approved']}. "
+                           "Критерии даны кратким изложением — точные формулировки сверять с PDF."})
+        v, created = FrameworkVersion.objects.get_or_create(framework=fw, version=f"{doc['year']}, изд. {doc['edition']}",
+                                                            defaults={"source_url": doc["url_ru"]})
+        if created:
+            order = 0
+            for s in d["standards"]:
+                std = NormNode.objects.create(version=v, kind=NormNode.Kind.AREA, code=s["code"], title=s["title"], order=int(s["code"]))
+                for sub in s["substandards"]:
+                    sn = NormNode.objects.create(version=v, parent=std, kind=NormNode.Kind.STANDARD, code=sub["code"], title=sub["title"], order=order)
+                    for code, summary in sub["criteria"]:
+                        order += 1
+                        NormNode.objects.create(version=v, parent=sn, kind=NormNode.Kind.CRITERION, code=code,
+                                                title=summary, order=order)
+            self.stdout.write(f"IAAR: {NormNode.objects.filter(version=v, kind='criterion').count()} критериев.")
+        if Cycle.objects.exists():
+            return
+        faculties = {f.name: f for f in OrgUnit.objects.filter(kind=OrgUnit.Kind.FACULTY)}
+        for code, name, fac in (("1-790101", "Лечебное дело", "Медицинский факультет"),
+                                ("1-790102", "Педиатрия", "Педиатрический факультет"),
+                                ("1-790108", "Фармация", "Фармацевтический факультет")):
+            c = Cycle.objects.create(title=f"{name}: повторная аккредитация IAAR", version=v, programme=f"{code} {name}",
+                                     org_unit=faculties.get(fac), deadline=date(2027, 4, 21))
+            c.ensure_assessments()
+        self.stdout.write("Подготовка к аккредитации: 3 программы (срок — 21.04.2027, уточните дату визита).")
