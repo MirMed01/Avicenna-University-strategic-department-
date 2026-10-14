@@ -52,3 +52,46 @@ class CodespacesLoginTests(TestCase):
             r = c.post("/login/", {"username": "d@demo.local", "password": "Demo-pass-2026", "csrfmiddlewaretoken": token},
                        HTTP_HOST="localhost:8000", HTTP_ORIGIN="https://localhost:8000")
         self.assertEqual(r.status_code, 302)
+
+
+class CodespacesForwardedTests(TestCase):
+    """За прокси Codespaces: вход не ломается, а ссылки для студентов ведут на внешний адрес https."""
+
+    def setUp(self):
+        import json
+
+        from django.conf import settings
+
+        env = json.loads((settings.BASE_DIR / ".devcontainer" / "devcontainer.json").read_text(encoding="utf-8"))["containerEnv"]
+        self.assertEqual(env["KANON_USE_X_FORWARDED_HOST"], "1")
+        self.over = self.settings(CSRF_TRUSTED_ORIGINS=env["KANON_CSRF_ORIGINS"].split(","), ALLOWED_HOSTS=["localhost", ".app.github.dev"],
+                                  USE_X_FORWARDED_HOST=True, SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
+        self.over.enable()
+        self.addCleanup(self.over.disable)
+        self.h = {"HTTP_HOST": "localhost:8000", "HTTP_X_FORWARDED_HOST": "demo-8000.app.github.dev", "HTTP_X_FORWARDED_PROTO": "https"}
+
+    def test_login_and_student_links(self):
+        from datetime import date
+
+        from accounts.models import Role, RoleAssignment
+        from feedback.models import Campaign
+        from instruments.models import Instrument, InstrumentVersion, Item, Section
+        from org.models import OrgUnit
+
+        uni = OrgUnit.objects.create(kind="university", name="ТГМУ")
+        dep = OrgUnit.objects.create(kind="department", name="К", parent=uni)
+        u = User.objects.create_user("d@demo.local", "Demo-pass-2026", full_name="Д", is_active=True)
+        RoleAssignment.objects.create(user=u, role=Role.DIRECTOR, org_unit=uni)
+        c = self.client_class(enforce_csrf_checks=True)
+        token = c.get("/login/", **self.h).cookies["csrftoken"].value
+        r = c.post("/login/", {"username": "d@demo.local", "password": "Demo-pass-2026", "csrfmiddlewaretoken": token},
+                   HTTP_ORIGIN="https://localhost:8000", **self.h)
+        self.assertEqual(r.status_code, 302)
+        inst = Instrument.objects.create(code="s", title="А", kind="survey", respondent="student")
+        v = InstrumentVersion.objects.create(instrument=inst)
+        Item.objects.create(section=Section.objects.create(version=v, title="Р"), code="a", text="?", type="scale")
+        v.publish()
+        camp = Campaign.objects.create(title="О", version=v, org_unit=dep, closes_on=date(2099, 1, 1))
+        camp.add_codes(1)
+        page = c.get(f"/feedback/{camp.pk}/codes/", **self.h)
+        self.assertContains(page, "https://demo-8000.app.github.dev/s/")

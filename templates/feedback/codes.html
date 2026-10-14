@@ -1,0 +1,17 @@
+{% load static %}<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Коды — {{ c.title }}</title><link rel="stylesheet" href="{% static 'kanon.css' %}">
+<style>
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0;background:var(--paper)}
+.slip{border:1px dashed var(--muted);padding:12px;display:grid;gap:6px;justify-items:center;text-align:center;break-inside:avoid}
+.slip svg{width:120px;height:120px}
+.slip code{font:600 18px var(--f-mono);letter-spacing:.08em}
+@media print{.noprint{display:none}body{background:var(--paper)}main{padding:0}}
+</style></head><body><main>
+<div class="noprint card"><h1>Листок с кодами: {{ c.title }}</h1>
+<p>Распечатайте (Ctrl + P), разрежьте по пунктиру и раздайте студентам <b>вслепую</b> — не записывая, кому какой код. Каждый код действует один раз.
+Неиспользованных кодов: {{ slips|length }}. <a href="{% url 'feedback:detail' c.pk %}">← к опросу</a></p></div>
+<div class="sheet">{% for s in slips %}<div class="slip"><b class="small">{{ c.title }}</b>{% if c.label %}<span class="small">{{ c.label }}</span>{% endif %}
+{{ s.qr }}<code>{{ s.code }}</code><span class="small">Наведите камеру телефона на QR или откройте<br>{{ entry }} и введите код. Ответ анонимный.</span></div>
+{% empty %}<p class="muted">Неиспользованных кодов нет — добавьте на странице опроса.</p>{% endfor %}</div>
+</main></body></html>

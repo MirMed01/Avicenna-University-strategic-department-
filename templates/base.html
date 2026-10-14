@@ -11,6 +11,7 @@
     <a href="{% url 'instruments:index' %}">Инструменты</a>
     <a href="{% url 'inspections:index' %}">Проверки</a>
     <a href="{% url 'capa:index' %}">Планы исправления</a>
+    <a href="{% url 'feedback:index' %}">Опросы студентов</a>
     <a href="{% url 'portfolio:my' %}">Моё портфолио</a>
     {% if is_verifier %}<a href="{% url 'portfolio:queue' %}">Проверка портфолио</a>{% endif %}
     {% if can_manage %}<a href="{% url 'accounts:users' %}">Пользователи</a><a href="{% url 'journal' %}">Журнал</a>{% endif %}

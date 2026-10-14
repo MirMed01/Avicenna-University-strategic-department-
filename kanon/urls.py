@@ -4,6 +4,7 @@ from django.urls import include, path
 
 from accounts.urls import login_view
 from core import views as core_views
+from feedback.urls import public_urlpatterns
 
 admin.site.site_header = "Канон — администрирование"
 
@@ -19,5 +20,7 @@ urlpatterns = [
     path("instruments/", include("instruments.urls")),
     path("inspections/", include("inspections.urls")),
     path("plans/", include("capa.urls")),
+    path("feedback/", include("feedback.urls")),
+    path("s/", include((public_urlpatterns, "feedback"), namespace="student")),
     path("admin/", admin.site.urls),
 ]

@@ -25,12 +25,13 @@ class InspectionForm(forms.ModelForm):
         self.fields["lead_expert"].queryset = User.objects.filter(
             is_active=True, roles__role__in=[Role.EXPERT, Role.DIRECTOR]).distinct()
         self.fields["instruments"].queryset = InstrumentVersion.objects.filter(
-            status=InstrumentVersion.Status.PUBLISHED).select_related("instrument").order_by("instrument__title")
+            status=InstrumentVersion.Status.PUBLISHED).exclude(instrument__respondent="student").select_related("instrument").order_by("instrument__title")
         self.fields["instruments"].label_from_instance = lambda v: f"{v.instrument.title} (в.{v.number}) — заполняет: {v.instrument.get_respondent_display().lower()}"
 
 
 class AddTaskForm(forms.Form):
-    version = forms.ModelChoiceField(InstrumentVersion.objects.filter(status=InstrumentVersion.Status.PUBLISHED), label="Инструмент")
+    version = forms.ModelChoiceField(InstrumentVersion.objects.filter(status=InstrumentVersion.Status.PUBLISHED).exclude(
+        instrument__respondent="student"), label="Инструмент")
     label = forms.CharField(label="Уточнение", required=False, help_text="Например: «занятие доц. Н., 3 курс».")
 
     def __init__(self, *args, **kwargs):

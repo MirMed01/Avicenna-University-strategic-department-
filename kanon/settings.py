@@ -13,6 +13,13 @@ if not SECRET_KEY:
 
 ALLOWED_HOSTS = [h for h in os.environ.get("KANON_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h]
 CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get("KANON_CSRF_ORIGINS", "").split(",") if o]
+# Адрес для ссылок и QR-кодов студентам, например https://qanun.tajmedun.tj (без «/» в конце).
+KANON_PUBLIC_URL = os.environ.get("KANON_PUBLIC_URL", "").rstrip("/")
+# За прокси (Codespaces, nginx) брать настоящий адрес из X-Forwarded-Host.
+USE_X_FORWARDED_HOST = os.environ.get("KANON_USE_X_FORWARDED_HOST", "0") == "1"
+if USE_X_FORWARDED_HOST:
+    # Тот же доверенный прокси сообщает и протокол — ссылки в QR будут https.
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -29,6 +36,7 @@ INSTALLED_APPS = [
     "instruments",
     "inspections",
     "capa",
+    "feedback",
 ]
 
 MIDDLEWARE = [

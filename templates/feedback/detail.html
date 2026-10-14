@@ -1,0 +1,46 @@
+{% extends "base.html" %}{% load kanon %}
+{% block title %}{{ c.title }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'feedback:index' %}">Опросы студентов</a> ›</p>
+<div class="row between"><div><span class="kind">Опрос студентов · {{ c.version.instrument.title }}</span><h1>{{ c.title }}</h1>
+<p class="muted">{{ c.org_unit }}{% if c.label %} · {{ c.label }}{% endif %} ·
+{% if c.accepting %}<span class="pill ok">приём до {{ c.closes_on|date:"d.m.Y" }}</span>{% else %}<span class="pill">приём закрыт</span>{% endif %}</p></div>
+{% if manager %}<div class="row"><a class="btn" href="{% url 'feedback:codes' c.pk %}">Листок с кодами (QR)</a>
+<form method="post" action="{% url 'feedback:toggle' c.pk %}">{% csrf_token %}<button class="btn ghost">{% if c.is_open %}Закрыть приём{% else %}Открыть приём{% endif %}</button></form></div>{% endif %}</div>
+
+<div class="grid">
+  <div class="stat"><b>{{ c.response_count }}</b><span>ответов</span></div>
+  <div class="stat"><b>{{ used }} / {{ total }}</b><span>кодов использовано</span></div>
+  <div class="stat"><b>{{ c.min_respondents }}</b><span>минимум ответов для показа итогов</span></div>
+</div>
+{% if manager %}<form method="post" action="{% url 'feedback:add_codes' c.pk %}" class="row small">{% csrf_token %}
+<input type="number" name="n" value="10" min="1" max="100" style="max-width:90px"><button class="btn small ghost">+ Добавить коды</button></form>{% endif %}
+
+{% if not c.results_visible %}
+<div class="card"><h2>Итоги пока скрыты</h2><p>Ответили {{ c.response_count }}, а итоги показываются начиная с {{ c.min_respondents }} ответов.
+Так нельзя догадаться, кто что ответил.</p></div>
+{% else %}
+{% if derived %}<div class="card"><h2>Показатели</h2>
+<div class="tbl"><table><tbody>{% for d in derived %}<tr><td>{{ d.d.code }} {{ d.d.title }}</td>
+<td class="num">{% if d.value is not None %}{{ d.value|num }} %{% else %}—{% endif %}</td>
+<td>{% if d.value is None %}<span class="pill warn">посчитать нельзя</span>{% elif not d.d.indicator %}<span class="small muted">не привязан к норме</span>
+{% elif d.status == "unknown" %}<span class="pill">порог не задан — проверить нельзя</span>
+{% elif d.status == "ok" %}<span class="pill ok">в норме</span>{% elif d.status == "mild" %}<span class="pill warn">лёгкое отклонение</span>
+{% else %}<span class="pill bad">выраженное отклонение</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>{% endif %}
+
+<div class="card"><h2>Ответы по пунктам</h2>
+{% for r in rows %}<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>{{ r.item.text }}</b> <span class="small muted">ответов: {{ r.n }}</span>
+{% if r.mean %}<div>Средняя оценка: <b>{{ r.mean|num }}</b> из 5</div>
+<div class="row small">{% for k, n, pct in r.dist %}<span class="pill">{{ k }}: {{ n }} ({{ pct }} %)</span>{% endfor %}</div>
+{% elif r.yes_pct is not None %}<div>«Да»: <b>{{ r.yes_pct }} %</b></div>
+{% elif r.dist %}<div class="row small">{% for o, n, pct in r.dist %}<span class="pill">{{ o }}: {{ n }} ({{ pct }} %)</span>{% endfor %}</div>
+{% elif r.texts is not None %}
+  {% for t in r.texts %}<div class="row between small" style="padding:4px 0"><div>«{{ t.text }}»{% if manager %} <span class="pill {% if t.decision == 'public' %}ok{% elif t.decision == 'hidden' %}bad{% endif %}">{{ t.get_decision_display }}</span>{% endif %}</div>
+  {% if manager %}<form method="post" action="{% url 'feedback:moderate' t.pk %}" class="row">{% csrf_token %}
+  <button class="btn small ghost" name="decision" value="public">Показать кафедре</button><button class="btn small ghost" name="decision" value="hidden">Скрыть</button></form>{% endif %}</div>
+  {% empty %}<div class="small muted">{% if manager %}Комментариев нет.{% else %}Комментариев, одобренных Центром, пока нет.{% endif %}</div>{% endfor %}
+{% endif %}</div>{% endfor %}
+{% if manager %}<p class="small muted">Комментарии студентов кафедра видит только после того, как Центр отметит «Показать кафедре» (например, скрываются оскорбления и имена).</p>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

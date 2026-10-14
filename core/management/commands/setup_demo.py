@@ -48,12 +48,13 @@ class Command(BaseCommand):
         text = "Демо-входы «Канона» (пароль у всех один):\n" + "\n".join(lines) + f"\nПароль: {password}\n"
         (settings.BASE_DIR / ".demo-logins.txt").write_text(text, encoding="utf-8")
         self.demo_inspection(department)
+        self.demo_campaign(department)
         self.stdout.write(text)
 
     # Демо-пороги: только для показа, только если порог ещё не задан, с явной пометкой.
     DEMO_THRESHOLDS = {"ГО-1": (40, 50, 60), "ГО-2": (90, 95, 100), "ГО-3": (85, 90, 95), "ГО-4": (40, 50, 60),
                        "ГО-5": (15, 20, 30), "ГО-6": (15, 20, 30), "ОСКЭ-1": (70, 85, 100), "ОСКЭ-2": (50, 65, 80),
-                       "ПЗ-1": (50, 65, 80)}
+                       "ПЗ-1": (50, 65, 80), "СТ-1": (50, 65, 80)}
     DEMO_ANSWERS = {
         "annual-report": [{"ppc_total": "40", "ppc_degree": "18", "ppc_dsc": "4", "ppc_young": "11", "ppc_trained": "9",
                            "hours_plan": "12000", "hours_fact": "11800", "st_total": "520", "st_passed": "497",
@@ -97,3 +98,35 @@ class Command(BaseCommand):
         calculate(insp)
         insp.state = Inspection.State.REVIEW
         insp.save()
+
+    DEMO_VOTES = [
+        ("4", "5", "3", "3", "4", "5", "4", "yes", "Больше практики у постели больного"),
+        ("5", "4", "2", "3", "5", "5", "5", "yes", ""),
+        ("3", "4", "2", "2", "3", "4", "3", "no", "Не хватает разбора ошибок после занятия"),
+        ("4", "4", "3", "4", "4", "5", "4", "yes", ""),
+        ("5", "5", "4", "4", "5", "5", "5", "yes", "Всё понравилось"),
+        ("4", "3", "2", "3", "4", "4", "4", "yes", "Больше симуляций"),
+        ("3", "4", "3", "2", "3", "4", "2", "no", ""),
+    ]
+
+    def demo_campaign(self, department):
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        from feedback.models import Campaign, TextAnswer
+        from feedback.voting import submit, validate
+        from instruments.models import Instrument
+
+        if Campaign.objects.filter(title__endswith="(демо)").exists():
+            return
+        version = Instrument.objects.get(code="student-teaching").current_version()
+        c = Campaign.objects.create(title="Опрос студентов 3 курса (демо)", version=version, org_unit=department,
+                                    label="3 курс, лечебный факультет", closes_on=timezone.localdate() + timedelta(days=30),
+                                    created_by=User.objects.get(email="director@demo.local"))
+        c.add_codes(25)
+        items = list(version.items())
+        for vote, code in zip(self.DEMO_VOTES, c.codes.all()):
+            answers, errors = validate(c, {f"i{it.pk}": v for it, v in zip(items, vote)})
+            submit(code.code, answers)
+        TextAnswer.objects.filter(campaign=c).exclude(text="Всё понравилось").update(decision=TextAnswer.Decision.PUBLIC)

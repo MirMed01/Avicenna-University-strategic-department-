@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Опросы студентов{% endblock %}
+{% block content %}
+<div class="row between"><h1>Опросы студентов</h1>{% if can_manage %}<a class="btn" href="{% url 'feedback:create' %}">+ Новый опрос</a>{% endif %}</div>
+<p class="muted">Анонимная обратная связь: студент отвечает по одноразовому коду с листка (QR). Ответ не связан с кодом и с человеком; итоги видны только при достаточном числе ответов.</p>
+<div class="tbl"><table><thead><tr><th>Опрос</th><th>Кафедра</th><th class="num">Ответов</th><th>Приём</th></tr></thead><tbody>
+{% for c in campaigns %}<tr><td><a href="{% url 'feedback:detail' c.pk %}">{{ c.title }}</a>{% if c.label %}<div class="small muted">{{ c.label }}</div>{% endif %}</td>
+<td>{{ c.org_unit }}</td><td class="num">{{ c.response_count }}</td>
+<td>{% if c.accepting %}<span class="pill ok">до {{ c.closes_on|date:"d.m.Y" }}</span>{% else %}<span class="pill">закрыт</span>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="4" class="muted">Опросов пока нет.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

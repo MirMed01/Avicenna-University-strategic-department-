@@ -155,7 +155,7 @@ class ViewTests(TestCase):
 class SeedTests(TestCase):
     def test_seed_instruments(self):
         call_command("load_initial_data", stdout=StringIO())
-        self.assertEqual(Instrument.objects.count(), 4)
+        self.assertEqual(Instrument.objects.count(), 5)  # + анкета студентов (этап 5)
         annual = Instrument.objects.get(code="annual-report").current_version()
         self.assertEqual(annual.derived.count(), 6)
         self.assertTrue(all(d.indicator for d in annual.derived.all()))

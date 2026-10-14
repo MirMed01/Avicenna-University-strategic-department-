@@ -89,13 +89,15 @@ class Command(BaseCommand):
         data = _load("instruments.json")
         f = data["framework"]
         fw, _ = Framework.objects.get_or_create(code=f["code"], defaults={"title": f["title"], "description": f["description"]})
-        v, created = FrameworkVersion.objects.get_or_create(framework=fw, version=f["version"])
-        if created:
-            for i, area in enumerate(f["areas"]):
-                node = NormNode.objects.create(version=v, kind=NormNode.Kind.AREA, code=area["code"], title=area["title"], order=i)
+        v, _ = FrameworkVersion.objects.get_or_create(framework=fw, version=f["version"])
+        # По разделам: новые разделы добавляются и в уже работающую базу, существующие не трогаются.
+        for i, area in enumerate(f["areas"]):
+            node, new_node = NormNode.objects.get_or_create(version=v, code=area["code"], defaults={
+                "kind": NormNode.Kind.AREA, "title": area["title"], "order": i})
+            if new_node:
                 for j, (code, title, unit) in enumerate(area["indicators"]):
                     Indicator.objects.create(node=node, code=code, title=title, unit=unit, order=j,
-                                             note="Порог не задан в положении — установите его.")
+                                             note="Порог не задан — установите его.")
         indicators = {i.code: i for i in Indicator.objects.filter(node__version=v)}
         made = 0
         for d in data["instruments"]:
