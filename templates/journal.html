@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Журнал изменений{% endblock %}
+{% block content %}
+<h1>Журнал изменений</h1><p class="muted">Последние 300 записей: кто, когда и что поменял.</p>
+<div class="tbl"><table><thead><tr><th>Когда</th><th>Кто</th><th>Что</th></tr></thead><tbody>
+{% for r in rows %}<tr><td class="num">{{ r.at|date:"d.m.Y H:i" }}</td><td>{{ r.user|default:"—" }}</td><td>{{ r.description }}</td></tr>
+{% empty %}<tr><td colspan="3" class="muted">Пока пусто.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

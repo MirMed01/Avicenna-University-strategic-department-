@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth card"><h1>Заявка отправлена</h1>
+<p>{{ user_obj.full_name }}, доступ откроется после подтверждения администратором. Войти можно будет по адресу {{ user_obj.email }}.</p>
+<a class="btn ghost" href="{% url 'login' %}">На страницу входа</a></div>
+{% endblock %}

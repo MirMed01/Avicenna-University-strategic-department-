@@ -1,0 +1,59 @@
+/* Канон — стили. Цвета только через токены. */
+:root{
+  --bg:#f5f7f9; --paper:#fff; --ink:#18222f; --muted:#5a6878; --line:#d9e0e8;
+  --accent:#1f4e8c; --accent-soft:#e3ecf7; --teal:#0f7c7a;
+  --ok:#2e7d4f; --ok-bg:#e2f2e8; --warn:#a86a00; --warn-bg:#fbf0d9; --bad:#b3362c; --bad-bg:#f8e1df;
+  --f-display:"PT Serif",Georgia,serif; --f-body:"IBM Plex Sans",system-ui,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body)}
+a{color:var(--accent)}
+.top{background:var(--ink);color:var(--paper)}
+.top .in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center}
+.top a{color:var(--paper);text-decoration:none;opacity:.85}
+.top a:hover,.top a.on{opacity:1;text-decoration:underline}
+.brand{font:700 20px var(--f-display);opacity:1!important}
+.brand small{font:400 12px var(--f-mono);opacity:.7;margin-left:6px}
+.top .me{margin-left:auto;display:flex;gap:14px;align-items:center;font-size:14px}
+.top form{display:inline}
+.top button{background:none;border:0;color:var(--paper);cursor:pointer;font:inherit;opacity:.85;padding:0}
+main{max-width:1180px;margin:0 auto;padding:24px 16px 60px;display:grid;gap:18px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.2;margin:0}
+h1{font-size:28px} h2{font-size:21px} h3{font-size:17px}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:10px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:14px}
+.stat b{display:block;font:700 28px var(--f-display)} .stat span{color:var(--muted);font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.between{justify-content:space-between}
+.btn{display:inline-block;padding:7px 14px;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);
+  text-decoration:none;font:500 14px var(--f-body);cursor:pointer}
+.btn.ghost{background:var(--paper);color:var(--accent)}
+.btn.danger{background:var(--bad);border-color:var(--bad)}
+.btn.small{padding:3px 9px;font-size:13px}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tbl{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--accent-soft);font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--f-mono)}
+.closed td{color:var(--muted);text-decoration:line-through}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line);background:var(--bg)}
+.pill.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.pill.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.pill.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.msg{padding:10px 14px;border-radius:5px;background:var(--accent-soft)}
+.msg.success{background:var(--ok-bg);color:var(--ok)} .msg.error{background:var(--bad-bg);color:var(--bad)}
+form.f{display:grid;gap:12px;max-width:680px}
+form.f label{font-weight:500;font-size:14px;display:block;margin-bottom:3px}
+input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],input[type=date],select,textarea{
+  width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit;background:var(--paper);color:var(--ink)}
+.help{font-size:12.5px;color:var(--muted)} .err{color:var(--bad);font-size:13px}
+.indent-1{padding-left:22px!important} .indent-2{padding-left:44px!important} .indent-3{padding-left:66px!important}
+.kind{font-family:var(--f-mono);font-size:12px;color:var(--teal);text-transform:uppercase;letter-spacing:.05em}
+.auth{max-width:440px;margin:40px auto}
+@media (max-width:640px){h1{font-size:23px}.top .me{margin-left:0}}

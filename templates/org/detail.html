@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ unit.name }}{% endblock %}
+{% block content %}
+<p class="small muted">{% for a in unit.ancestors %}<a href="{% url 'org:detail' a.pk %}">{{ a.name }}</a> › {% endfor %}</p>
+<div class="row between">
+  <div><span class="kind">{{ unit.get_kind_display }}</span><h1>{{ unit.name }}</h1>
+  {% if not unit.is_active %}<span class="pill warn">закрыто</span>{% endif %}</div>
+  {% if can_manage %}<div class="row">
+    {% if unit.kind != "department" %}<a class="btn" href="{% url 'org:create' %}?parent={{ unit.pk }}">+ Добавить внутрь</a>{% endif %}
+    <a class="btn ghost" href="{% url 'org:edit' unit.pk %}">Изменить</a>
+    <form method="post" action="{% url 'org:toggle' unit.pk %}">{% csrf_token %}
+      <button class="btn ghost">{% if unit.is_active %}Закрыть{% else %}Восстановить{% endif %}</button></form>
+    <a class="btn danger" href="{% url 'org:delete' unit.pk %}">Удалить</a>
+  </div>{% endif %}
+</div>
+
+{% if children %}
+<div class="card"><h2>Входят ({{ children|length }})</h2>
+<div class="tbl"><table><tbody>{% for c in children %}<tr class="{% if not c.is_active %}closed{% endif %}">
+<td><a href="{% url 'org:detail' c.pk %}">{{ c.name }}</a></td><td><span class="kind">{{ c.get_kind_display }}</span></td></tr>{% endfor %}</tbody></table></div></div>
+{% endif %}
+
+<div class="card"><h2>Сотрудники в системе</h2>
+{% if staff %}<div class="tbl"><table><thead><tr><th>ФИО</th><th>Роль</th><th></th></tr></thead><tbody>
+{% for a in staff %}<tr><td>{{ a.user.full_name }}</td><td>{{ a.get_role_display }}</td>
+<td>{% if a.role == "teacher" %}<a href="{% url 'portfolio:show' a.user.pk %}">Портфолио</a>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<p class="muted">Пока никто не привязан. Сотрудники регистрируются сами, доступ открывает администратор.</p>{% endif %}
+</div>
+{% endblock %}

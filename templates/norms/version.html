@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% load kanon %}
+{% block title %}{{ version.framework.title }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'norms:index' %}">Нормы</a> ›</p>
+<div class="row between"><div><h1>{{ version.framework.title }}</h1>
+<p class="muted">Редакция {{ version.version }} · {{ version.get_status_display }}{% if version.source_url %} · <a href="{{ version.source_url }}" target="_blank" rel="noopener">документ</a>{% endif %}</p></div>
+{% if can_manage %}<a class="btn" href="{% url 'norms:node_create' version.pk %}">+ Область</a>{% endif %}</div>
+{% if version.framework.description %}<p>{{ version.framework.description }}</p>{% endif %}
+
+<div class="tbl"><table><thead><tr><th>Раздел / показатель</th><th class="num">Слабый</th><th class="num">Средний</th><th class="num">Высокий</th><th>Ед.</th>{% if can_manage %}<th></th>{% endif %}</tr></thead><tbody>
+{% for n, depth in nodes %}
+<tr><td class="indent-{{ depth }}"><span class="kind">{{ n.get_kind_display }} {{ n.code }}</span><br><b>{{ n.title }}</b>
+  {% if n.text %}<div class="small muted">{{ n.text }}</div>{% endif %}</td><td></td><td></td><td></td><td></td>
+  {% if can_manage %}<td class="row"><a class="btn small ghost" href="{% url 'norms:node_create' version.pk %}?parent={{ n.pk }}">+ раздел</a>
+  <a class="btn small ghost" href="{% url 'norms:indicator_create' n.pk %}">+ показатель</a>
+  <a class="btn small ghost" href="{% url 'norms:node_edit' n.pk %}">Изменить</a>
+  <a class="btn small ghost" href="{% url 'norms:node_delete' n.pk %}">Удалить</a></td>{% endif %}</tr>
+  {% for i in n.indicators.all %}
+  <tr><td class="indent-{{ depth|add:1 }}">{{ i.code }} {{ i.title }}{% if i.direction == "lower_better" %} <span class="pill">чем меньше, тем лучше</span>{% endif %}
+    {% if i.note %}<div class="small muted">{{ i.note }}</div>{% endif %}</td>
+    <td class="num">{{ i.threshold_weak|num }}</td><td class="num">{{ i.threshold_medium|num }}</td>
+    <td class="num">{{ i.threshold_high|num }}</td><td>{{ i.unit }}</td>
+    {% if can_manage %}<td class="row"><a class="btn small ghost" href="{% url 'norms:indicator_edit' i.pk %}">Изменить</a></td>{% endif %}</tr>
+  {% endfor %}
+{% empty %}<tr><td colspan="6" class="muted">Разделов пока нет.</td></tr>
+{% endfor %}
+</tbody></table></div>
+<p class="small muted">«—» — порог не задан: по этому уровню показатель проверить нельзя, программа так и напишет, а не будет угадывать.</p>
+
+<div class="card"><div class="row between"><h2>Уровень строгости по подразделениям</h2>
+{% if can_manage %}<a class="btn small" href="{% url 'norms:level_set' version.pk %}">Задать уровень</a>{% endif %}</div>
+<p class="small muted">Где не задано — действует настройка вышестоящего подразделения, а если нигде — средний уровень.</p>
+{% if levels %}<div class="tbl"><table><tbody>{% for l in levels %}<tr><td>{{ l.org_unit }}</td><td><span class="pill">{{ l.get_level_display }}</span></td>
+{% if can_manage %}<td><form method="post" action="{% url 'norms:level_remove' l.pk %}">{% csrf_token %}<button class="btn small ghost">Убрать</button></form></td>{% endif %}</tr>{% endfor %}</tbody></table></div>{% endif %}
+</div>
+
+{% if history %}<div class="card"><h2>Последние изменения порогов</h2>
+{% for h in history %}<div class="small">{{ h.at|date:"d.m.Y H:i" }} · {{ h.user|default:"—" }} · {{ h.description }}</div>{% endfor %}</div>{% endif %}
+{% endblock %}

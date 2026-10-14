@@ -5,7 +5,25 @@
 Программа диагностики «здоровья» образования для **Отдела стратегического развития и качества обучения**
 ТГМУ имени Абуали ибни Сино (Душанбе).
 
-Состояние: **этап замысла**. Код ещё не написан — сначала согласуем, что именно автоматизировать.
+Состояние: **этап 1 готов** — структура университета (с правкой), пользователи и роли, справочник норм
+с уровнями строгости, портфолио преподавателя. План — [`docs/ПЛАН.md`](docs/ПЛАН.md).
+
+## Как запустить (для разработчика)
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+export KANON_DEBUG=1                      # только для разработки; на сервере — KANON_SECRET_KEY и KANON_DATABASE_URL
+.venv/bin/python manage.py migrate
+.venv/bin/python manage.py load_initial_data   # структура ТГМУ, Стратегия 2030, каркасы WFME/ESG/ISO
+.venv/bin/python manage.py createsuperuser     # первый администратор
+.venv/bin/python manage.py runserver           # http://127.0.0.1:8000
+.venv/bin/python manage.py test                # тесты
+```
+
+Переменные окружения для сервера: `KANON_SECRET_KEY`, `KANON_DATABASE_URL` (PostgreSQL),
+`KANON_ALLOWED_HOSTS`, `KANON_CSRF_ORIGINS`, `KANON_MEDIA_ROOT`.
+
+## Документы
 
 - Концепция (модель «норма → инструмент → проверка → диагноз → лечение»), роли и этапы — [`docs/КОНЦЕПЦИЯ.md`](docs/КОНЦЕПЦИЯ.md)
 - Что готового есть на GitHub — [`docs/ИССЛЕДОВАНИЕ_GITHUB.md`](docs/ИССЛЕДОВАНИЕ_GITHUB.md)

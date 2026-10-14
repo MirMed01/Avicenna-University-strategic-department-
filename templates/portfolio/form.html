@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+{% if entry.status == "verified" %}<div class="msg">Запись уже подтверждена. После изменения она снова уйдёт на проверку.</div>{% endif %}
+{% if entry.status == "rejected" and entry.review_comment %}<div class="msg error">Возвращено: {{ entry.review_comment }}</div>{% endif %}
+<form method="post" enctype="multipart/form-data" class="f card">{% csrf_token %}
+  {% include "_fields.html" %}
+  <p class="help">Файл: PDF, JPG, PNG, DOC или DOCX, до 10 МБ. Файл видят только вы, руководители вашего подразделения и Центр.</p>
+  <div class="row"><button class="btn" name="submit" value="1">Сохранить и отправить на проверку</button>
+  <button class="btn ghost" name="draft" value="1">Сохранить черновик</button>
+  <a class="btn ghost" href="{% url 'portfolio:my' %}">Отмена</a></div>
+</form>
+{% endblock %}

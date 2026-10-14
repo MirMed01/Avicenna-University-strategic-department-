@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Структура{% endblock %}
+{% block content %}
+<div class="row between"><h1>Структура университета</h1>
+  {% if can_manage %}<a class="btn" href="{% url 'org:create' %}">+ Добавить подразделение</a>{% endif %}</div>
+<p class="muted">Факультетов: {{ counts.faculty }} · кафедр: {{ counts.department }} · центров: {{ counts.center }} ·
+  {% if show_closed %}<a href="?">скрыть закрытые</a>{% else %}<a href="?closed=1">показать закрытые</a>{% endif %}</p>
+<div class="tbl"><table><thead><tr><th>Подразделение</th><th>Вид</th>{% if can_manage %}<th></th>{% endif %}</tr></thead><tbody>
+{% for u in units %}
+<tr class="{% if not u.is_active %}closed{% endif %}">
+  <td class="indent-{{ u.depth }}"><a href="{% url 'org:detail' u.pk %}">{{ u.name }}</a></td>
+  <td><span class="kind">{{ u.get_kind_display }}</span></td>
+  {% if can_manage %}<td class="row">
+    {% if u.kind != "department" %}<a class="btn small ghost" href="{% url 'org:create' %}?parent={{ u.pk }}">+ внутрь</a>{% endif %}
+    <a class="btn small ghost" href="{% url 'org:edit' u.pk %}">Изменить</a></td>{% endif %}
+</tr>
+{% empty %}<tr><td colspan="3" class="muted">Структура пуста. Загрузите начальные данные командой <code>python manage.py load_initial_data</code>.</td></tr>
+{% endfor %}
+</tbody></table></div>
+{% endblock %}

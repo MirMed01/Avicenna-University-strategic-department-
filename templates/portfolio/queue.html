@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Проверка портфолио{% endblock %}
+{% block content %}
+<h1>Проверка портфолио</h1>
+<p class="muted">Записи преподавателей вашего подразделения, ожидающие подтверждения.</p>
+<div class="tbl"><table><thead><tr><th>Преподаватель</th><th>Запись</th><th>Решение</th></tr></thead><tbody>
+{% for e in entries %}<tr>
+<td><a href="{% url 'portfolio:show' e.owner.pk %}">{{ e.owner.full_name }}</a></td>
+<td><span class="kind">{{ e.get_kind_display }}</span><br><b>{{ e.title }}</b>
+  <div class="small">{{ e.organization }} · {{ e.date_start|date:"d.m.Y" }}{% if e.indexing %} · {{ e.get_indexing_display }}{% endif %}</div>
+  {% if e.file %}<a class="small" href="{% url 'portfolio:file' e.pk %}" target="_blank">Файл</a>{% else %}<span class="small muted">без файла</span>{% endif %}</td>
+<td style="width:280px"><form method="post" action="{% url 'portfolio:review' e.pk %}" class="f" style="gap:6px">{% csrf_token %}
+  <textarea name="comment" rows="2" placeholder="Комментарий (обязателен при возврате)"></textarea>
+  <div class="row"><button class="btn small" name="decision" value="verify">Подтвердить</button>
+  <button class="btn small ghost" name="decision" value="reject">Вернуть</button></div></form></td></tr>
+{% empty %}<tr><td colspan="3" class="muted">Нет записей на проверке.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}
