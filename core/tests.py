@@ -32,3 +32,23 @@ class DemoSetupTests(TestCase):
         d = Path(tempfile.mkdtemp())
         self.addCleanup(lambda: __import__("shutil").rmtree(d, ignore_errors=True))
         return d
+
+
+class CodespacesLoginTests(TestCase):
+    """Codespaces пересылает запрос с Host и Origin = localhost:8000 (https). Вход не должен падать с 403."""
+
+    def test_login_through_codespaces_proxy(self):
+        import json
+
+        from django.conf import settings
+
+        env = json.loads((settings.BASE_DIR / ".devcontainer" / "devcontainer.json").read_text(encoding="utf-8"))["containerEnv"]
+        origins = env["KANON_CSRF_ORIGINS"].split(",")
+        User.objects.create_user("d@demo.local", "Demo-pass-2026", full_name="Д", is_active=True)
+        with self.settings(CSRF_TRUSTED_ORIGINS=origins, ALLOWED_HOSTS=["localhost", ".app.github.dev"]):
+            c = self.client_class(enforce_csrf_checks=True)
+            page = c.get("/login/", HTTP_HOST="localhost:8000")
+            token = page.cookies["csrftoken"].value
+            r = c.post("/login/", {"username": "d@demo.local", "password": "Demo-pass-2026", "csrfmiddlewaretoken": token},
+                       HTTP_HOST="localhost:8000", HTTP_ORIGIN="https://localhost:8000")
+        self.assertEqual(r.status_code, 302)
