@@ -44,7 +44,7 @@ def compute(derived, items, answers):
             return None, "не заполнены числитель или знаменатель"
         if den == 0:
             return None, "знаменатель равен нулю"
-        note = f"{num} из {den}"
+        note = f"{num.normalize():f} из {den.normalize():f}"
         if num > den:
             # Бывает законно (нагрузка выполнена с превышением), но для долей людей — ошибка ввода.
             note += " — больше 100 %, проверьте данные"

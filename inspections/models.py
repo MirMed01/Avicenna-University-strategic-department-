@@ -196,7 +196,7 @@ def calculate(inspection):
             thr = r.expected_threshold
             Finding.objects.create(
                 inspection=inspection, result=r, auto=True, severity=r.status,
-                text=f"{r.title}: {value:f} при норме {'≥' if ind.direction == 'higher_better' else '≤'} "
+                text=f"{r.title}: {value.normalize():f} при норме {'≥' if ind.direction == 'higher_better' else '≤'} "
                      f"{thr.normalize():f} (уровень «{Level(expected).label.lower()}»)"
                      + (" — ниже всех порогов" if r.status == "severe" else ""))
     return inspection.results.all()

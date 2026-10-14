@@ -20,6 +20,11 @@
 <td><a href="{% url 'org:detail' c.pk %}">{{ c.name }}</a></td><td><span class="kind">{{ c.get_kind_display }}</span></td></tr>{% endfor %}</tbody></table></div></div>
 {% endif %}
 
+{% if inspections or can_manage %}<div class="card"><div class="row between"><h2>Проверки</h2>
+{% if can_manage and unit.kind != "university" %}<a class="btn small" href="{% url 'inspections:create' %}?unit={{ unit.pk }}">+ Назначить проверку</a>{% endif %}</div>
+{% for i in inspections %}<div><a href="{% url 'inspections:detail' i.pk %}">{{ i.title }}</a> · {% include "inspections/_state.html" with s=i.state label=i.get_state_display %} <span class="small muted">{{ i.created_at|date:"d.m.Y" }}</span></div>
+{% empty %}<p class="muted small">Проверок не было.</p>{% endfor %}</div>{% endif %}
+
 <div class="card"><h2>Сотрудники в системе</h2>
 {% if staff %}<div class="tbl"><table><thead><tr><th>ФИО</th><th>Роль</th><th></th></tr></thead><tbody>
 {% for a in staff %}<tr><td>{{ a.user.full_name }}</td><td>{{ a.get_role_display }}</td>

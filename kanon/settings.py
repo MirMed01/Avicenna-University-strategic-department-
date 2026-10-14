@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "norms",
     "portfolio",
     "instruments",
+    "inspections",
 ]
 
 MIDDLEWARE = [
@@ -84,6 +85,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+import sys
+
+if sys.argv[1:2] == ["test"]:
+    # Только для тестов: быстрое хеширование паролей, на сервере не действует.
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"

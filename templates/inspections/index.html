@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Проверки{% endblock %}
+{% block content %}
+<div class="row between"><h1>Проверки кафедр</h1>
+  {% if can_manage %}<a class="btn" href="{% url 'inspections:create' %}">+ Назначить проверку</a>{% endif %}</div>
+<p class="muted">«Обследование»: инструменты заполняются, показатели сравниваются с нормой, отклонения становятся находками.</p>
+<div class="tbl"><table><thead><tr><th>Проверка</th><th>Подразделение</th><th>Статус</th><th>Срок</th><th>Эксперт</th></tr></thead><tbody>
+{% for i in rows %}<tr><td><a href="{% url 'inspections:detail' i.pk %}">{{ i.title }}</a></td><td>{{ i.org_unit }}</td>
+<td>{% include "inspections/_state.html" with s=i.state label=i.get_state_display %}</td>
+<td class="num">{{ i.due_date|date:"d.m.Y"|default:"—" }}</td><td>{{ i.lead_expert|default:"—" }}</td></tr>
+{% empty %}<tr><td colspan="5" class="muted">Проверок пока нет.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

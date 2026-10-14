@@ -46,7 +46,8 @@ def detail(request, pk):
         request,
         "org/detail.html",
         {"unit": unit, "staff": staff, "teachers": teachers, "children": unit.children.order_by("order", "name"),
-         "blockers": unit.delete_blockers()},
+         "blockers": unit.delete_blockers(),
+         "inspections": unit.inspections.order_by("-created_at")[:10]},
     )
 
 

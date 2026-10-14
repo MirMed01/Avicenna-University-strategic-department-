@@ -88,4 +88,7 @@ class OrgUnit(models.Model):
         n = self.role_assignments.count()
         if n:
             reasons.append(f"к нему привязаны сотрудники ({n})")
+        k = self.inspections.count()
+        if k:
+            reasons.append(f"у него есть проверки ({k})")
         return reasons
