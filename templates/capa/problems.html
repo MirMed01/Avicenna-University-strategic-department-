@@ -3,7 +3,7 @@
 {% block content %}
 <p class="small"><a href="{% url 'capa:index' %}">{% translate "Планы исправления" %}</a> ›</p>
 <div class="row between"><h1>{% translate "Справочник проблем качества" %}</h1>{% if can_manage %}<a class="btn" href="{% url 'capa:problem_create' %}">{% translate "+ Проблема" %}</a>{% endif %}</div>
-<p class="muted">{% translate "«Классификатор болезней образования»: типовые проблемы, их признаки и типовое лечение. По отклонению показателя программа подсказывает диагноз, а ставит его эксперт." %}</p>
+<p class="muted">{% translate "Типовые проблемы качества, их признаки и типовые мероприятия. По отклонению показателя программа подсказывает проблему, а выбирает её эксперт." %}</p>
 <div class="tbl"><table><thead><tr><th>{% translate "Код" %}</th><th>{% translate "Проблема" %}</th><th>{% translate "Типовые мероприятия" %}</th><th>{% translate "Подсказывается по" %}</th></tr></thead><tbody>
 {% for p in problems %}<tr class="{% if not p.is_active %}closed{% endif %}"><td class="num">{{ p.code }}</td>
 <td>{% if can_manage %}<a href="{% url 'capa:problem_edit' p.pk %}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}<div class="small muted">{{ p.description }}</div></td>

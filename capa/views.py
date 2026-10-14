@@ -51,10 +51,10 @@ def create(request, finding_pk):
             plan = form.save(commit=False)
             plan.finding, plan.created_by = finding, request.user
             plan.save()
-            # Типовое лечение диагноза — стартовый набор мероприятий; их можно править и удалять.
+            # Типовые мероприятия проблемы — стартовый набор мероприятий; их можно править и удалять.
             for title in plan.problem.action_list():
                 Action.objects.create(plan=plan, title=title, responsible=plan.owner, due_date=plan.due_date)
-            log(request.user, "create", plan, f"{plan.ref}: диагноз «{plan.problem}» — {plan.org_unit}")
+            log(request.user, "create", plan, f"{plan.ref}: проблема качества «{plan.problem}» — {plan.org_unit}")
         messages.success(request, _("План создан. В него добавлены типовые мероприятия — проверьте и уточните их."))
         return redirect("capa:detail", plan.pk)
     return render(request, "capa/create.html", {"form": form, "finding": finding, "suggested": suggested})
@@ -143,7 +143,7 @@ TRANSITIONS = {
     "return": ((S.SUBMITTED,), S.DRAFT, "lead", gettext_lazy("План возвращён на доработку")),
     "verify": ((S.IN_PROGRESS,), S.VERIFICATION, "owner", gettext_lazy("Мероприятия выполнены, ждёт оценки результативности")),
     "effective": ((S.VERIFICATION,), S.CLOSED, "lead", gettext_lazy("Результативно — план закрыт")),
-    "not_effective": ((S.VERIFICATION,), S.IN_PROGRESS, "lead", gettext_lazy("Не помогло — план снова выполняется")),
+    "not_effective": ((S.VERIFICATION,), S.IN_PROGRESS, "lead", gettext_lazy("Нерезультативно — план снова выполняется")),
     "cancel": ((S.DRAFT, S.SUBMITTED, S.IN_PROGRESS, S.VERIFICATION), S.CANCELLED, "lead", gettext_lazy("План отменён")),
 }
 NEEDS_COMMENT = {"return", "effective", "not_effective", "cancel"}

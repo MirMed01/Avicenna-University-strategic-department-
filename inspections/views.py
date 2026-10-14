@@ -208,7 +208,7 @@ def add_finding(request, pk):
         f = form.save(commit=False)
         f.inspection, f.created_by = insp, request.user
         f.save()
-        log(request.user, "create", insp, f"«{insp}»: находка эксперта — {f.text[:80]}")
+        log(request.user, "create", insp, f"«{insp}»: вывод эксперта — {f.text[:80]}")
     return redirect("inspections:detail", pk)
 
 
@@ -218,8 +218,8 @@ def delete_finding(request, pk):
     if not can_lead(request.user, f.inspection) or f.inspection.state != St.REVIEW or request.method != "POST":
         raise PermissionDenied
     if hasattr(f, "plan"):
-        messages.error(request, _("По находке уже есть план исправления — её нельзя удалить."))
+        messages.error(request, _("По этому выводу уже есть план исправления — его нельзя удалить."))
         return redirect("inspections:detail", f.inspection_id)
-    log(request.user, "delete", f.inspection, f"«{f.inspection}»: удалена находка — {f.text[:80]}")
+    log(request.user, "delete", f.inspection, f"«{f.inspection}»: удалён вывод — {f.text[:80]}")
     f.delete()
     return redirect("inspections:detail", f.inspection_id)

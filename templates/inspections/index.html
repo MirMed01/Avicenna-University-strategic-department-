@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row between"><h1>{% translate "Проверки кафедр" %}</h1>
   {% if can_manage %}<a class="btn" href="{% url 'inspections:create' %}">+ {% translate "Назначить проверку" %}</a>{% endif %}</div>
-<p class="muted">{% translate "«Обследование»: инструменты заполняются, показатели сравниваются с нормой, отклонения становятся находками." %}</p>
+<p class="muted">{% translate "Инструменты заполняются, показатели сравниваются с нормой, отклонения записываются в выводы проверки." %}</p>
 <div class="tbl"><table><thead><tr><th>{% translate "Проверка" %}</th><th>{% translate "Подразделение" %}</th><th>{% translate "Статус" %}</th><th>{% translate "Срок" %}</th><th>{% translate "Эксперт" %}</th></tr></thead><tbody>
 {% for i in rows %}<tr><td><a href="{% url 'inspections:detail' i.pk %}">{{ i.title }}</a></td><td>{{ i.org_unit }}</td>
 <td>{% include "inspections/_state.html" with s=i.state label=i.get_state_display %}</td>

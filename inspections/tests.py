@@ -190,7 +190,7 @@ class RadarTests(Base):
         self.client.post(reverse("inspections:transition", args=[insp.pk, "review"]))
         self.assertIsNone(radar(list(insp.results.all())))
         r = self.client.get(reverse("inspections:detail", args=[insp.pk]))
-        self.assertContains(r, "лёгкое отклонение")
+        self.assertContains(r, "ниже требуемого уровня")
 
 
 class RenderTests(Base):

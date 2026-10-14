@@ -25,8 +25,8 @@
 <td class="num">{% if d.value is not None %}{{ d.value|num }} %{% else %}—{% endif %}</td>
 <td>{% if d.value is None %}<span class="pill warn">{% translate "посчитать нельзя" %}</span>{% elif not d.d.indicator %}<span class="small muted">{% translate "не привязан к норме" %}</span>
 {% elif d.status == "unknown" %}<span class="pill">{% translate "порог не задан — проверить нельзя" %}</span>
-{% elif d.status == "ok" %}<span class="pill ok">{% translate "в норме" %}</span>{% elif d.status == "mild" %}<span class="pill warn">{% translate "лёгкое отклонение" %}</span>
-{% else %}<span class="pill bad">{% translate "выраженное отклонение" %}</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>{% endif %}
+{% elif d.status == "ok" %}<span class="pill ok">{% translate "в норме" %}</span>{% elif d.status == "mild" %}<span class="pill warn">{% translate "ниже требуемого уровня" %}</span>
+{% else %}<span class="pill bad">{% translate "ниже минимального порога" %}</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>{% endif %}
 
 <div class="card"><h2>{% translate "Ответы по пунктам" %}</h2>
 {% for r in rows %}<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>{{ r.item.text }}</b> <span class="small muted">{% blocktranslate with n=r.n %}ответов: {{ n }}{% endblocktranslate %}</span>

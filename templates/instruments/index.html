@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row between"><h1>{% translate "Инструменты" %}</h1>
   {% if can_manage %}<a class="btn" href="{% url 'instruments:create' %}">+ {% translate "Новый инструмент" %}</a>{% endif %}</div>
-<p class="muted">{% translate "«Методы обследования»: формы отчётов, чек-листы, протоколы посещения, станции ОСКЭ, анкеты." %}
+<p class="muted">{% translate "Формы отчётов, чек-листы, протоколы посещения, станции ОСКЭ, анкеты." %}
 {% translate "Каждый пункт и каждый расчёт привязан к показателю нормы." %}</p>
 <div class="tbl"><table><thead><tr><th>{% translate "Инструмент" %}</th><th>{% translate "Вид" %}</th><th>{% translate "Кто заполняет" %}</th><th>{% translate "Версия" %}</th></tr></thead><tbody>
 {% for i, latest, current in rows %}<tr>

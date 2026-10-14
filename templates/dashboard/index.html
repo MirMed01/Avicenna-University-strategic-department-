@@ -19,7 +19,7 @@
 {% for row in heat.rows %}<tr><td>{% if row.inspection %}<a href="{% url 'inspections:detail' row.inspection.pk %}">{{ row.unit.name }}</a>{% else %}{{ row.unit.name }}{% endif %}</td>
 {% for c in row.line %}<td class="num {% if c.status == 'ok' %}c-ok{% elif c.status == 'mild' %}c-warn{% elif c.status == 'severe' %}c-bad{% endif %}">{% if c %}{{ c.value|num }}{% else %}·{% endif %}</td>{% endfor %}</tr>{% endfor %}
 </tbody></table></div>
-<div class="row small" style="margin-top:8px"><span class="pill ok">{% translate "норма" %}</span><span class="pill warn">{% translate "лёгкое отклонение" %}</span><span class="pill bad">{% translate "выраженное отклонение" %}</span><span class="pill">{% translate "без цвета — порог не задан" %}</span><span class="muted">{% translate "· — нет данных" %}</span></div>
+<div class="row small" style="margin-top:8px"><span class="pill ok">{% translate "норма" %}</span><span class="pill warn">{% translate "ниже требуемого уровня" %}</span><span class="pill bad">{% translate "ниже минимального порога" %}</span><span class="pill">{% translate "без цвета — порог не задан" %}</span><span class="muted">{% translate "· — нет данных" %}</span></div>
 {% else %}<p class="muted">{% translate "Посчитанных проверок пока нет." %}</p>{% endif %}
 {% if heat.unchecked %}<details><summary class="small">{% blocktranslate with n=heat.unchecked|length %}Не проверялись: {{ n }} кафедр{% endblocktranslate %}</summary><p class="small">{% for u in heat.unchecked %}<a href="{% url 'org:detail' u.pk %}">{{ u.name }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p></details>{% endif %}
 </div>
@@ -36,6 +36,6 @@
 {% if plans.overdue %}<div class="card"><h2>{% translate "Просроченные планы исправления" %}</h2>
 {% for p in plans.overdue %}<div><a href="{% url 'capa:detail' p.pk %}">{{ p.ref }}</a> · {{ p.org_unit }} · {{ p.problem }} · {% translate "срок" %} {{ p.due_date|date:"d.m.Y" }} · {{ p.owner|default:"—" }}</div>{% endfor %}</div>{% endif %}
 
-{% if problems %}<div class="card"><h2>{% translate "Частые диагнозы" %}</h2>
+{% if problems %}<div class="card"><h2>{% translate "Частые проблемы качества" %}</h2>
 {% for name, n in problems %}<div class="row between small" style="border-bottom:1px solid var(--line);padding:4px 0"><span>{{ name }}</span><b>{{ n }}</b></div>{% endfor %}</div>{% endif %}
 {% endblock %}

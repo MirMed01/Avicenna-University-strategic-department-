@@ -14,7 +14,7 @@
 - Django 5.2 + серверные шаблоны (`templates/`), стили — `static/kanon.css`, цвета только через токены `var(--…)`.
 - Приложения: `org` (структура), `accounts` (пользователи, роли, права — `accounts/permissions.py`),
   `norms` (нормы и уровни), `portfolio` (портфолио преподавателя), `instruments` (инструменты, расчёты — `instruments/scoring.py`),
-  `inspections` (проверки, находки, «паутинка»; права — `inspections/access.py`),
+  `inspections` (проверки, выводы проверок, лепестковая диаграмма; права — `inspections/access.py`),
   `capa` (проблемы качества, планы исправления),
   `feedback` (анонимные опросы студентов — `feedback/voting.py`; не добавлять связь кода с ответом, время ответа, IP),
   `dashboard` (панель, Стратегия 2030, отчёты Excel/Word — `dashboard/data.py`, `dashboard/reports.py`),

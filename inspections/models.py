@@ -1,4 +1,4 @@
-"""Проверки кафедр — «обследование»: инструменты заполняются, показатели считаются, отклонения становятся находками."""
+"""Проверки кафедр: инструменты заполняются, показатели считаются, отклонения записываются в выводы проверки."""
 
 from decimal import Decimal
 
@@ -132,7 +132,7 @@ class Result(models.Model):
 
     @property
     def status(self):
-        """ok / mild / severe / unknown — для цвета и «паутинки»."""
+        """ok / mild / severe / unknown — для цвета и лепестковой диаграммы."""
         if self.value is None or not self.achieved:
             return "unknown"
         if self.achieved == "below":
@@ -148,8 +148,8 @@ class Result(models.Model):
 
 class Finding(models.Model):
     class Severity(models.TextChoices):
-        MILD = "mild", _("Лёгкое отклонение")
-        SEVERE = "severe", _("Выраженное отклонение")
+        MILD = "mild", _("Незначительное несоответствие")
+        SEVERE = "severe", _("Значительное несоответствие")
         NOTE = "note", _("Замечание")
         STRENGTH = "strength", _("Сильная сторона")
 
@@ -166,7 +166,7 @@ class Finding(models.Model):
 
 
 def calculate(inspection):
-    """Пересчитать показатели и автоматические находки по сданным заполнениям."""
+    """Пересчитать показатели и автоматические выводы по сданным заполнениям."""
     from collections import defaultdict
 
     from instruments.scoring import compute
@@ -196,7 +196,7 @@ def calculate(inspection):
                                   n=len(values), note=note[:255], expected_level=expected, achieved=achieved)
         if r.status in ("mild", "severe"):
             thr = r.expected_threshold
-            # Текст находки сохраняется в базу — пишем его по-русски при любом языке интерфейса
+            # Текст вывода сохраняется в базу — пишем его по-русски при любом языке интерфейса
             # (подпись уровня Level переводимая).
             with override("ru"):
                 level_label = str(Level(expected).label).lower()

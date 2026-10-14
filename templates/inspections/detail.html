@@ -31,9 +31,9 @@
 </div>
 
 {% if results %}
-<div class="card"><h2>{% translate "Карта здоровья" %}</h2>
+<div class="card"><h2>{% translate "Профиль показателей кафедры" %}</h2>
 <div class="row" style="align-items:flex-start;gap:24px">
-{% if radar %}<svg viewBox="0 0 {{ radar.size }} 400" width="100%" style="max-width:460px" role="img" aria-label="{% translate "Паутинка показателей" %}">
+{% if radar %}<svg viewBox="0 0 {{ radar.size }} 400" width="100%" style="max-width:460px" role="img" aria-label="{% translate "Лепестковая диаграмма показателей" %}">
   {% for ring in radar.rings %}<polygon points="{{ ring }}" fill="none" stroke="var(--line)"/>{% endfor %}
   {% for a in radar.axes %}<line x1="{{ radar.cx }}" y1="{{ radar.cy }}" x2="{{ a.x }}" y2="{{ a.y }}" stroke="var(--line)"/>
   <text x="{{ a.lx }}" y="{{ a.ly }}" text-anchor="{{ a.anchor }}" font-size="12" fill="var(--muted)">{{ a.label }}</text>{% endfor %}
@@ -48,25 +48,25 @@
 <td>{% if r.value is None %}<span class="pill warn">{% translate "посчитать нельзя" %}</span>
 {% elif not r.indicator %}<span class="small muted">{% translate "не привязан к норме" %}</span>
 {% elif r.status == "unknown" %}<span class="pill">{% translate "порог не задан — проверить нельзя" %}</span>
-{% elif r.status == "ok" %}<span class="pill ok">{% translate "в норме" %}</span>{% elif r.status == "mild" %}<span class="pill warn">{% translate "лёгкое отклонение" %}</span>
-{% else %}<span class="pill bad">{% translate "выраженное отклонение" %}</span>{% endif %}
+{% elif r.status == "ok" %}<span class="pill ok">{% translate "в норме" %}</span>{% elif r.status == "mild" %}<span class="pill warn">{% translate "ниже требуемого уровня" %}</span>
+{% else %}<span class="pill bad">{% translate "ниже минимального порога" %}</span>{% endif %}
 {% if r.expected_level %}<div class="small muted">{% blocktranslate with lvl=r.get_expected_level_display|lower %}уровень «{{ lvl }}»{% endblocktranslate %}{% if r.expected_threshold is not None %}, {% blocktranslate with thr=r.expected_threshold|num %}порог {{ thr }}{% endblocktranslate %}{% endif %}</div>{% endif %}</td></tr>
 {% endfor %}</tbody></table></div></div>
-{% if radar %}<p class="small muted">{% translate "Синяя область — факт, красный пунктир — порог уровня строгости, заданного для этой кафедры." %} {% translate "Точки: зелёная — норма, жёлтая — лёгкое отклонение, красная — выраженное, серая — порога нет." %}</p>{% endif %}
+{% if radar %}<p class="small muted">{% translate "Синяя область — факт, красный пунктир — порог уровня строгости, заданного для этой кафедры." %} {% translate "Точки: зелёная — норма, жёлтая — ниже требуемого уровня, красная — ниже минимального порога, серая — порога нет." %}</p>{% endif %}
 </div>
 {% endif %}
 
 {% if insp.state == "review" or insp.state == "closed" %}
-<div class="card"><h2>{% translate "Находки" %}</h2>
+<div class="card"><h2>{% translate "Выводы проверки" %}</h2>
 {% for f in findings %}<div class="row between" style="border-left:3px solid {% if f.severity == 'severe' %}var(--bad){% elif f.severity == 'mild' %}var(--warn){% elif f.severity == 'strength' %}var(--ok){% else %}var(--line){% endif %};padding:4px 10px">
 <div><b>{{ f.get_severity_display }}</b>{% if f.auto %} <span class="small muted">· {% translate "найдено программой" %}</span>{% else %} <span class="small muted">· {{ f.created_by }}</span>{% endif %}<div>{{ f.text }}</div></div>
 <div class="row">{% if f.plan %}<a class="btn small ghost" href="{% url 'capa:detail' f.plan.pk %}">{{ f.plan.ref }}: {{ f.plan.get_state_display|lower }}</a>
-{% elif lead and f.severity != "strength" %}<a class="btn small" href="{% url 'capa:create' f.pk %}">{% translate "Диагноз и план" %}</a>{% endif %}
+{% elif lead and f.severity != "strength" %}<a class="btn small" href="{% url 'capa:create' f.pk %}">{% translate "План исправления" %}</a>{% endif %}
 {% if lead and insp.state == "review" and not f.auto and not f.plan %}<form method="post" action="{% url 'inspections:delete_finding' f.pk %}">{% csrf_token %}<button class="btn small ghost">✕</button></form>{% endif %}</div></div>
 {% empty %}<p class="muted">{% translate "Отклонений не найдено." %}</p>{% endfor %}
 {% if lead and insp.state == "review" %}
 <form method="post" action="{% url 'inspections:add_finding' insp.pk %}" class="f">{% csrf_token %}{% include "_fields.html" with form=finding_form %}
-<button class="btn small ghost">+ {% translate "Добавить находку эксперта" %}</button></form>{% endif %}
+<button class="btn small ghost">+ {% translate "Добавить вывод эксперта" %}</button></form>{% endif %}
 </div>
 {% endif %}
 
@@ -78,6 +78,6 @@
 <form method="post" action="{% url 'inspections:transition' insp.pk 'reopen' %}" class="f" style="margin-top:8px">{% csrf_token %}
 <div><label for="comment">{% translate "Или вернуть на сбор данных — что дособрать?" %}</label><input type="text" id="comment" name="comment"></div>
 <button class="btn ghost">{% translate "Вернуть на сбор" %}</button></form>
-<p class="small muted">{% translate "По каждой находке можно поставить диагноз и составить план исправления — кнопка «Диагноз и план»." %}</p></div>
+<p class="small muted">{% translate "По каждому выводу можно определить проблему качества и составить план исправления — кнопка «План исправления»." %}</p></div>
 {% elif insp.conclusion %}<div class="card"><h2>{% translate "Заключение" %}</h2><p>{{ insp.conclusion|linebreaksbr }}</p></div>{% endif %}
 {% endblock %}

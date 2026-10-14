@@ -200,3 +200,26 @@ class HealthTests(TestCase):
     def test_health_without_login(self):
         r = self.client.get("/health/")
         self.assertEqual((r.status_code, r.content), (200, b"ok"))
+
+
+class NoMedicalWordsTests(TestCase):
+    """Владелец: «поставить диагноз кафедре не можем» — в интерфейсе только термины менеджмента качества."""
+
+    WORDS = ("диагноз", "находк", "лечени", "здоровь", "паутинк", "обследован", "болезн", "помогло",
+             "лёгкое отклонение", "выраженное отклонение",
+             "ташхис", "бозёфт", "табобат", "муоина", "тортанак")  # таджикские соответствия
+
+    def test_interface_texts_have_no_medical_words(self):
+        import re
+        from pathlib import Path
+
+        from django.conf import settings
+
+        base = Path(settings.BASE_DIR)
+        texts = {str(p): p.read_text() for p in (base / "templates").rglob("*.html")}
+        # Строки перевода (без комментариев и устаревших «#~»): и русский оригинал, и таджикский текст.
+        po = (base / "locale/tg/LC_MESSAGES/django.po").read_text().splitlines()
+        texts.update({f"django.po: {line[:60]}": line for line in po if line and not line.startswith("#")})
+        pattern = re.compile("|".join(self.WORDS), re.IGNORECASE)
+        bad = [name for name, text in texts.items() if pattern.search(text.replace("Корҳои табобатӣ", ""))]
+        self.assertEqual(bad, [])

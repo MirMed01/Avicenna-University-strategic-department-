@@ -19,7 +19,7 @@ def can_view(user, insp):
 
 
 def can_lead(user, insp):
-    """Ведёт проверку: менять статус, пересчитывать, писать заключение и находки."""
+    """Ведёт проверку: менять статус, пересчитывать, писать заключение и выводы."""
     return can_manage(user) or (insp.lead_expert_id == user.pk)
 
 

@@ -6,8 +6,8 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 
-STATUS_TEXT = {"ok": gettext_lazy("в норме"), "mild": gettext_lazy("лёгкое отклонение"),
-               "severe": gettext_lazy("выраженное отклонение"), "unknown": gettext_lazy("порог не задан"),
+STATUS_TEXT = {"ok": gettext_lazy("в норме"), "mild": gettext_lazy("ниже требуемого уровня"),
+               "severe": gettext_lazy("ниже минимального порога"), "unknown": gettext_lazy("порог не задан"),
                "nodata": gettext_lazy("нет данных")}
 
 
@@ -42,7 +42,7 @@ def xlsx(ctx, strategy):
                    str(STATUS_TEXT.get(r["status"], "")), r["source"]])
 
     pl = wb.create_sheet(_("Планы исправления"))
-    pl.append(["№", _("Подразделение"), _("Диагноз"), _("План"), _("Статус"), _("Срок"), _("Просрочен"), _("Ответственный")])
+    pl.append(["№", _("Подразделение"), _("Проблема качества"), _("План"), _("Статус"), _("Срок"), _("Просрочен"), _("Ответственный")])
     for p in ctx["plan_list"]:
         pl.append([p.ref, str(p.org_unit), str(p.problem), p.title, str(p.get_state_display()), p.due_date,
                    _("да") if p.overdue else "", str(p.owner or "")])
@@ -102,7 +102,7 @@ def docx(ctx, strategy):
                if c and c["status"] in ("mild", "severe") and c["value"] is not None]
         doc.add_paragraph(f"{row['unit'].name}: " + (_("отклонения — %(list)s") % {"list": "; ".join(bad)} if bad else _("отклонений нет")), style="List Bullet")
 
-    doc.add_heading(_("3. Диагнозы и планы исправления"), level=1)
+    doc.add_heading(_("3. Проблемы качества и планы исправления"), level=1)
     ps = ctx["plans"]
     doc.add_paragraph(_("Всего планов: %(total)s, открыто: %(open)s, закрыто результативно: %(closed)s, "
                         "просрочено: %(overdue)s.")
