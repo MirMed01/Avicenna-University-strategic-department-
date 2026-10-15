@@ -26,7 +26,24 @@ def index(request):
 
 @manager_required
 def create(request):
-    form = InspectionForm(request.POST or None, initial={"org_unit": request.GET.get("unit")})
+    initial = {"org_unit": request.GET.get("unit")}
+    # Проверка по процессу (или по всей типовой карте уровня): инструменты оценки процесса и его подпроцессов — отмечены заранее.
+    from instruments.models import InstrumentVersion
+    from processes.models import Process
+
+    procs = Process.objects.none()
+    if request.GET.get("process", "").isdigit():
+        procs = Process.objects.filter(pk=request.GET["process"]) | Process.objects.filter(parent_id=request.GET["process"])
+        first = procs.filter(pk=request.GET["process"]).first()
+        if first:
+            initial["title"] = _("Проверка процесса «%(title)s»") % {"title": first.title}
+    elif request.GET.get("level") in Process.Level.values:
+        procs = Process.objects.filter(level=request.GET["level"], is_active=True)
+        initial["title"] = _("Комплексная проверка по карте процессов")
+    if procs:
+        initial["instruments"] = list(InstrumentVersion.objects.filter(
+            status=InstrumentVersion.Status.PUBLISHED, instrument__processes__in=procs).values_list("pk", flat=True).distinct())
+    form = InspectionForm(request.POST or None, initial=initial)
     if form.is_valid():
         with transaction.atomic():
             insp = form.save(commit=False)

@@ -2,8 +2,10 @@
 {% block title %}{{ p.title }}{% endblock %}
 {% block content %}
 <p class="small"><a href="{% url 'processes:index' %}">{% translate "Процессы СМК" %}</a> ›</p>
-<div class="row between"><div><span class="kind">{{ p.get_group_display }}{% if p.is_key %} · {% translate "ключевой" %}{% endif %}</span><h1>{{ p.code }} {{ p.title }}</h1></div>
-{% if editable %}<a class="btn" href="{% url 'processes:edit' p.pk %}">{% translate "Изменить паспорт" %}</a>{% endif %}</div>
+<div class="row between"><div><span class="kind">{{ p.get_level_display }} · {{ p.get_group_display }}{% if p.is_key and p.level == "university" %} · {% translate "ключевой" %}{% endif %}</span><h1>{{ p.code }} {{ p.title }}</h1>
+{% if p.parent %}<p class="small">{% translate "Входит в процесс" %} <a href="{% url 'processes:detail' p.parent_id %}">{{ p.parent }}</a></p>{% endif %}</div>
+<div class="row">{% if can_manage and instruments %}<a class="btn ghost" href="{% url 'inspections:create' %}?process={{ p.pk }}">{% translate "Назначить проверку процесса" %}</a>{% endif %}
+{% if editable %}<a class="btn" href="{% url 'processes:edit' p.pk %}">{% translate "Изменить паспорт" %}</a>{% endif %}</div></div>
 {% if gaps %}<div class="msg">{% translate "В паспорте не хватает:" %} {{ gaps|join:", " }}.</div>{% endif %}
 <div class="card"><h2>{% translate "Паспорт процесса" %}</h2>
 <div class="tbl"><table><tbody>
@@ -19,6 +21,11 @@
 <tr><th>{% translate "Цифровая система" %}</th><td>{% if p.is_digital %}{% translate "да" %}{% else %}{% translate "нет" %}{% endif %}</td></tr>
 </tbody></table></div></div>
 
+{% if children %}<div class="card"><h2>{% translate "Подпроцессы" %}</h2>
+{% for c in children %}<div><a href="{% url 'processes:detail' c.pk %}">{{ c.code }} {{ c.title }}</a> <span class="small muted">— {% for i in c.instruments.all %}{{ i.title }}{% if not forloop.last %}; {% endif %}{% empty %}{% translate "инструмента нет" %}{% endfor %}</span></div>{% endfor %}</div>{% endif %}
+<div class="card"><h2>{% translate "Инструменты оценки" %}</h2>
+{% for i in instruments %}<div><a href="{% url 'instruments:version' i.latest_version.pk %}">{{ i.title }}</a> <span class="small muted">· {{ i.get_kind_display }} · {% translate "заполняет:" %} {{ i.get_respondent_display|lower }}</span></div>
+{% empty %}<p class="muted">{% translate "Инструмент не выбран — выполнение процесса пока нечем измерить. Выберите его в паспорте." %}</p>{% endfor %}</div>
 <div class="card"><h2>{% translate "Показатели" %}</h2>
 {% if indicators %}<div class="tbl"><table><thead><tr><th>{% translate "Показатель" %}</th><th>{% translate "Пороги (слабый / средний / высокий)" %}</th><th>{% translate "По университету" %}</th><th>{% translate "Кафедры по последним проверкам" %}</th></tr></thead><tbody>
 {% for s in indicators %}<tr><td>{{ s.ind.code }} {{ s.ind.title }}<div class="small muted">{{ s.ind.node.version.framework.title }}</div></td>

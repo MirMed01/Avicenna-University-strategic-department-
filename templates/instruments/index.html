@@ -5,12 +5,13 @@
   {% if can_manage %}<a class="btn" href="{% url 'instruments:create' %}">+ {% translate "Новый инструмент" %}</a>{% endif %}</div>
 <p class="muted">{% translate "Формы отчётов, чек-листы, протоколы посещения, станции ОСКЭ, анкеты." %}
 {% translate "Каждый пункт и каждый расчёт привязан к показателю нормы." %}</p>
-<div class="tbl"><table><thead><tr><th>{% translate "Инструмент" %}</th><th>{% translate "Вид" %}</th><th>{% translate "Кто заполняет" %}</th><th>{% translate "Версия" %}</th></tr></thead><tbody>
+<div class="tbl"><table><thead><tr><th>{% translate "Инструмент" %}</th><th>{% translate "Вид" %}</th><th>{% translate "Кто заполняет" %}</th><th>{% translate "Оценивает процессы" %}</th><th>{% translate "Версия" %}</th></tr></thead><tbody>
 {% for i, latest, current in rows %}<tr>
 <td><a href="{% url 'instruments:version' latest.pk %}">{{ i.title }}</a>{% if i.source_title %}<div class="small muted">{% translate "Основание:" %} {{ i.source_title }}</div>{% endif %}</td>
 <td><span class="kind">{{ i.get_kind_display }}</span></td><td>{{ i.get_respondent_display }}</td>
+<td class="small">{% for p in i.processes.all %}<a href="{% url 'processes:detail' p.pk %}" title="{{ p.title }}">{{ p.code }}</a>{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
 <td>{% if current %}<span class="pill ok">{% blocktranslate with num=current.number %}действует: в.{{ num }}{% endblocktranslate %}</span>{% endif %}
     {% if latest.status == "draft" %}<span class="pill warn">{% blocktranslate with num=latest.number %}черновик в.{{ num }}{% endblocktranslate %}</span>{% endif %}</td></tr>
-{% empty %}<tr><td colspan="4" class="muted">{% translate "Инструментов пока нет." %}</td></tr>{% endfor %}
+{% empty %}<tr><td colspan="5" class="muted">{% translate "Инструментов пока нет." %}</td></tr>{% endfor %}
 </tbody></table></div>
 {% endblock %}

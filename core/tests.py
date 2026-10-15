@@ -285,4 +285,14 @@ class SeedRegistryTests(TestCase):
         Process.objects.filter(code="О-4").update(title="Оценивание (правка Центра)")
         call_command("load_initial_data", stdout=StringIO())
         self.assertEqual(Process.objects.get(code="О-4").title, "Оценивание (правка Центра)")
-        self.assertEqual(Process.objects.count(), 17)
+        self.assertEqual(Process.objects.count(), 55)
+        # Типовые карты: кафедра — 10 процессов и 15 подпроцессов, факультет — 6 и 7; у каждого есть инструмент оценки.
+        dep = Process.objects.filter(level="department")
+        self.assertEqual((dep.filter(parent__isnull=True).count(), dep.filter(parent__isnull=False).count()), (10, 15))
+        self.assertEqual(Process.objects.filter(level="faculty").count(), 13)
+        self.assertFalse(Process.objects.filter(level__in=["department", "faculty"], instruments__isnull=True).exists())
+        self.assertEqual(Process.objects.get(code="К-3.2").parent.code, "К-3")
+        self.assertTrue(Process.objects.get(code="К-1.2").instruments.filter(code="syllabus-review").exists())
+        from processes.models import strategy_shares
+
+        self.assertEqual(strategy_shares()[2], 17)  # Стратегия 4.2/4.3 — только процессы университета

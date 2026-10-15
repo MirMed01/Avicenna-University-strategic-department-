@@ -194,17 +194,28 @@ class Command(BaseCommand):
         self.stdout.write("Подготовка к аккредитации: 3 программы (срок — 21.04.2027, уточните дату визита).")
 
     def processes(self):
-        """Типовой реестр процессов. Добавляются только новые процессы; паспорта, правленные Центром, не трогаются."""
+        """Типовой реестр процессов. Добавляются только новые процессы; паспорта, правленные Центром, не трогаются.
+        Исключение — однократно: процесс, у которого ещё нет ни одного инструмента оценки, получает инструменты
+        и недостающие показатели из данных (так обновляется база, созданная до появления инструментов у процессов)."""
+        from instruments.models import Instrument
         from processes.models import Process
 
         made = 0
         for i, d in enumerate(_load("processes.json")["processes"]):
+            level = d.get("level", "university")
             obj, new = Process.objects.get_or_create(code=d["code"], defaults={
                 "title": d["title"], "group": d["group"], "owner_position": d["owner_position"], "purpose": d["purpose"],
-                "inputs": d["inputs"], "outputs": d["outputs"], "customers": d["customers"], "order": i})
+                "inputs": d["inputs"], "outputs": d["outputs"], "customers": d["customers"], "order": i, "level": level,
+                "is_key": level == "university", "parent": Process.objects.filter(code=d.get("parent")).first()})
+            instruments = Instrument.objects.filter(code__in=d.get("instruments", []))
             if not new:
+                if not obj.instruments.exists() and instruments:
+                    obj.instruments.add(*instruments)
+                    for fw, code in d["indicators"]:
+                        obj.indicators.add(*Indicator.objects.filter(node__version__framework__code=fw, code=code))
                 continue
             made += 1
+            obj.instruments.add(*instruments)
             for fw, code in d["nodes"]:
                 node = NormNode.objects.filter(version__framework__code=fw, code=code, parent__isnull=True).order_by(
                     "-version__effective_from", "-id").first()

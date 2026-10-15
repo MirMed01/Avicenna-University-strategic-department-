@@ -75,3 +75,37 @@ class PassportTests(Base):
         r = self.client.get(reverse("processes:risks"))
         self.assertContains(r, 'class="pill medium">16')
         self.assertEqual(self.client.get(reverse("processes:detail", args=[self.full.pk])).status_code, 200)
+
+
+class MapTests(Base):
+    def setUp(self):
+        super().setUp()
+        from instruments.models import Instrument, InstrumentVersion, Item, Section
+
+        inst = Instrument.objects.create(code="syl", title="Экспертиза силлабуса", kind="checklist", respondent="expert")
+        self.v = InstrumentVersion.objects.create(instrument=inst)
+        Item.objects.create(section=Section.objects.create(version=self.v, title="Р"), code="a", text="Есть?", type="yes_no")
+        self.v.publish()
+        self.top = Process.objects.create(code="К-1", title="Планирование", group="core", level="department", is_key=False)
+        self.sub = Process.objects.create(code="К-1.2", title="Силлабусы", group="core", level="department", parent=self.top,
+                                          is_key=False)
+        self.sub.instruments.add(inst)
+        self.bare = Process.objects.create(code="К-9", title="Ресурсы", group="support", level="department", is_key=False)
+
+    def test_department_map_tree_and_uncovered(self):
+        self.client.force_login(self.other)
+        r = self.client.get(reverse("processes:index") + "?level=department")
+        self.assertEqual([(x["p"].code, x["depth"]) for g in r.context["groups"] for x in g[1]],
+                         [("К-1", 0), ("К-1.2", 1), ("К-9", 0)])
+        self.assertEqual([p.code for p in r.context["uncovered"]], ["К-1", "К-9"])
+        self.assertContains(r, "Экспертиза силлабуса")
+        # Карта кафедры не входит в Стратегию 4.2/4.3
+        self.assertEqual(strategy_shares()[2], 2)
+
+    def test_inspection_by_process_preselects_instruments(self):
+        self.client.force_login(self.director)
+        r = self.client.get(reverse("inspections:create") + f"?process={self.top.pk}")
+        self.assertEqual(r.context["form"].initial["instruments"], [self.v.pk])  # инструмент подпроцесса тоже
+        self.assertIn("Планирование", r.context["form"].initial["title"])
+        r = self.client.get(reverse("inspections:create") + "?level=department")
+        self.assertEqual(r.context["form"].initial["instruments"], [self.v.pk])

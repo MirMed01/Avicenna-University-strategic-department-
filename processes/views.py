@@ -26,17 +26,32 @@ def _can_edit(user, process):
 
 @login_required
 def index(request):
-    processes = list(Process.objects.prefetch_related("indicators", "risks").select_related("owner"))
+    level = request.GET.get("level") if request.GET.get("level") in Process.Level.values else Process.Level.UNIVERSITY
+    all_processes = list(Process.objects.prefetch_related("indicators", "risks", "instruments").select_related("owner"))
+    processes = [p for p in all_processes if p.level == level]
     high, medium = config.get("risk_high"), config.get("risk_medium")
-    rows = []
-    for p in processes:
+
+    def row(p, depth):
         open_risks = [r for r in p.risks.all() if not r.is_closed]
-        rows.append({"p": p, "gaps": p.gaps(), "risks": len(open_risks),
-                     "high": sum(1 for r in open_risks if r.level(high, medium) == "high")})
-    groups = [(label, [r for r in rows if r["p"].group == value]) for value, label in Process.Group.choices]
-    digital, full, n_key = strategy_shares(processes)
-    return render(request, "processes/index.html", {"groups": groups, "digital": digital, "full": full, "n_key": n_key,
-                                                    "manager": can_manage(request.user)})
+        return {"p": p, "depth": depth, "gaps": p.gaps() if depth == 0 else [], "risks": len(open_risks),
+                "instruments": list(p.instruments.all()),
+                "high": sum(1 for r in open_risks if r.level(high, medium) == "high")}
+
+    groups = []
+    for value, label in Process.Group.choices:
+        rows = []
+        for p in processes:
+            if p.group == value and p.parent_id is None:
+                rows.append(row(p, 0))
+                rows += [row(c, 1) for c in processes if c.parent_id == p.pk]
+        groups.append((label, rows))
+    digital, full, n_key = strategy_shares(all_processes)
+    counts = {v: sum(1 for p in all_processes if p.level == v) for v in Process.Level.values}
+    return render(request, "processes/index.html", {
+        "groups": groups, "digital": digital, "full": full, "n_key": n_key, "manager": can_manage(request.user),
+        "level": level, "levels": [(v, l, counts[v]) for v, l in Process.Level.choices],
+        "n_top": sum(1 for p in processes if p.parent_id is None), "n_sub": sum(1 for p in processes if p.parent_id),
+        "uncovered": [p for p in processes if p.is_active and not p.instruments.all()]})
 
 
 def _indicator_status(ind):
@@ -58,6 +73,7 @@ def detail(request, pk):
     nodes = p.norm_nodes.select_related("version__framework").order_by("version__framework__title", "order", "code")
     return render(request, "processes/detail.html", {
         "p": p, "gaps": p.gaps(), "risks": risks, "nodes": nodes, "editable": _can_edit(request.user, p),
+        "children": p.children.prefetch_related("instruments"), "instruments": p.instruments.all(),
         "indicators": [_indicator_status(i) for i in p.indicators.select_related("node__version__framework")]})
 
 

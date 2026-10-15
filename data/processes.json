@@ -1,5 +1,5 @@
 {
- "note": "Типовой реестр процессов медицинского вуза — по docs/ИССЛЕДОВАНИЕ_ПРОЦЕССОВ.md. Владельцы, риски и механизм улучшения заполняет Центр.",
+ "note": "Типовой реестр процессов: университет (17), типовая карта факультета и кафедры с подпроцессами; у каждого — инструменты оценки. По docs/ИССЛЕДОВАНИЕ_ПРОЦЕССОВ.md. Владельцев, риски и механизм улучшения заполняет Центр.",
  "processes": [
   {
    "code": "У-1",
@@ -41,7 +41,10 @@
      "tsmu-strategy-2030",
      "4.4"
     ]
-   ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": []
   },
   {
    "code": "У-2",
@@ -99,6 +102,11 @@
      "tsmu-strategy-2030",
      "4.4"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "dept-management"
    ]
   },
   {
@@ -116,7 +124,10 @@
      "6"
     ]
    ],
-   "indicators": []
+   "indicators": [],
+   "level": "university",
+   "parent": null,
+   "instruments": []
   },
   {
    "code": "У-4",
@@ -141,7 +152,17 @@
      "8"
     ]
    ],
-   "indicators": []
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПИ-1"
+    ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "public-info"
+   ]
   },
   {
    "code": "О-1",
@@ -170,7 +191,21 @@
      "4"
     ]
    ],
-   "indicators": []
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПРМ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ПРМ-2"
+    ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "admission-results"
+   ]
   },
   {
    "code": "О-2",
@@ -223,7 +258,17 @@
     [
      "tsmu-internal",
      "ОП-3"
+    ],
+    [
+     "tsmu-internal",
+     "СИЛ-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "programme-annual",
+    "syllabus-review"
    ]
   },
   {
@@ -285,7 +330,19 @@
     [
      "tsmu-internal",
      "СР-3"
+    ],
+    [
+     "tsmu-internal",
+     "КЗ-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "class-visit",
+    "clinical-visit",
+    "student-teaching",
+    "learning-environment"
    ]
   },
   {
@@ -335,7 +392,23 @@
     [
      "tsmu-internal",
      "ОП-2"
+    ],
+    [
+     "tsmu-internal",
+     "КИМ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ЭКЗ-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "kim-audit",
+    "exam-organisation",
+    "osce-readiness",
+    "osce-station"
    ]
   },
   {
@@ -377,7 +450,17 @@
     [
      "tsmu-internal",
      "СР-6"
+    ],
+    [
+     "tsmu-internal",
+     "ПС-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "student-support",
+    "learning-environment"
    ]
   },
   {
@@ -412,6 +495,11 @@
      "tsmu-internal",
      "ОП-3"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "programme-annual"
    ]
   },
   {
@@ -466,6 +554,13 @@
      "tsmu-internal",
      "РАБ-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "graduate-survey",
+    "employer-survey",
+    "programme-annual"
    ]
   },
   {
@@ -495,7 +590,20 @@
     [
      "tsmu-strategy-2030",
      "3.3"
+    ],
+    [
+     "tsmu-internal",
+     "НР-1"
+    ],
+    [
+     "tsmu-internal",
+     "НР-2"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "research-dept"
    ]
   },
   {
@@ -549,7 +657,26 @@
     [
      "tsmu-internal",
      "ВП-1"
+    ],
+    [
+     "tsmu-internal",
+     "РП-1"
+    ],
+    [
+     "tsmu-internal",
+     "РП-2"
+    ],
+    [
+     "tsmu-internal",
+     "РП-3"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "staff-development",
+    "peer-observation",
+    "annual-report"
    ]
   },
   {
@@ -583,7 +710,16 @@
     [
      "tsmu-strategy-2030",
      "1.4"
+    ],
+    [
+     "tsmu-internal",
+     "КБ-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "clinical-base"
    ]
   },
   {
@@ -621,7 +757,16 @@
     [
      "tsmu-strategy-2030",
      "4.2"
+    ],
+    [
+     "tsmu-internal",
+     "РС-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "dept-resources"
    ]
   },
   {
@@ -643,7 +788,10 @@
      "8"
     ]
    ],
-   "indicators": []
+   "indicators": [],
+   "level": "university",
+   "parent": null,
+   "instruments": []
   },
   {
    "code": "П-5",
@@ -693,6 +841,1174 @@
      "tsmu-internal",
      "СР-1"
     ]
+   ],
+   "level": "university",
+   "parent": null,
+   "instruments": [
+    "student-teaching",
+    "learning-environment",
+    "graduate-survey",
+    "employer-survey"
+   ]
+  },
+  {
+   "code": "К-1",
+   "level": "department",
+   "parent": null,
+   "group": "core",
+   "title": "Планирование и методическое обеспечение дисциплин",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Подготовить к началу года нагрузку, силлабусы и оценочные материалы всех дисциплин кафедры.",
+   "inputs": "Учебный план программы, государственный стандарт",
+   "outputs": "Распределённая нагрузка, силлабусы, банк заданий",
+   "customers": "Преподаватели, студенты",
+   "nodes": [
+    [
+     "wfme-bme",
+     "2"
+    ],
+    [
+     "esg",
+     "1.2"
+    ],
+    [
+     "iaar-bmifo",
+     "2"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ГО-2"
+    ],
+    [
+     "tsmu-internal",
+     "СИЛ-1"
+    ],
+    [
+     "tsmu-internal",
+     "КИМ-1"
+    ]
+   ],
+   "instruments": [
+    "annual-report",
+    "syllabus-review",
+    "kim-audit"
+   ]
+  },
+  {
+   "code": "К-1.1",
+   "level": "department",
+   "parent": "К-1",
+   "group": "core",
+   "title": "Распределение учебной нагрузки",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Распределить нагрузку по преподавателям с учётом квалификации.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ГО-2"
+    ]
+   ],
+   "instruments": [
+    "annual-report"
+   ]
+  },
+  {
+   "code": "К-1.2",
+   "level": "department",
+   "parent": "К-1",
+   "group": "core",
+   "title": "Разработка и пересмотр силлабусов",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Иметь актуальный силлабус по каждой дисциплине.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "esg",
+     "1.2"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "СИЛ-1"
+    ]
+   ],
+   "instruments": [
+    "syllabus-review"
+   ]
+  },
+  {
+   "code": "К-1.3",
+   "level": "department",
+   "parent": "К-1",
+   "group": "core",
+   "title": "Разработка контрольно-измерительных материалов",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Иметь проверенный и обновляемый банк заданий.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "3"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "КИМ-1"
+    ]
+   ],
+   "instruments": [
+    "kim-audit"
+   ]
+  },
+  {
+   "code": "К-2",
+   "level": "department",
+   "parent": null,
+   "group": "core",
+   "title": "Проведение обучения",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Провести занятия по силлабусу с достаточной практикой и работой с пациентами.",
+   "inputs": "Силлабусы, расписание, клинические базы",
+   "outputs": "Проведённые занятия, освоенные навыки",
+   "customers": "Студенты",
+   "nodes": [
+    [
+     "wfme-bme",
+     "2"
+    ],
+    [
+     "esg",
+     "1.3"
+    ],
+    [
+     "iaar-bmifo",
+     "2"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПЗ-1"
+    ],
+    [
+     "tsmu-internal",
+     "КЗ-1"
+    ],
+    [
+     "tsmu-internal",
+     "НВ-1"
+    ],
+    [
+     "tsmu-internal",
+     "СТ-1"
+    ]
+   ],
+   "instruments": [
+    "class-visit",
+    "clinical-visit",
+    "skills-mastery",
+    "student-teaching"
+   ]
+  },
+  {
+   "code": "К-2.1",
+   "level": "department",
+   "parent": "К-2",
+   "group": "core",
+   "title": "Лекции и семинары",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Понятные, интерактивные занятия.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПЗ-1"
+    ],
+    [
+     "tsmu-internal",
+     "СТ-1"
+    ]
+   ],
+   "instruments": [
+    "class-visit",
+    "student-teaching"
+   ]
+  },
+  {
+   "code": "К-2.2",
+   "level": "department",
+   "parent": "К-2",
+   "group": "core",
+   "title": "Клинические занятия у постели больного",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Каждый студент работает с пациентом под наблюдением.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "КЗ-1"
+    ],
+    [
+     "tsmu-internal",
+     "СР-2"
+    ]
+   ],
+   "instruments": [
+    "clinical-visit",
+    "learning-environment"
+   ]
+  },
+  {
+   "code": "К-2.3",
+   "level": "department",
+   "parent": "К-2",
+   "group": "core",
+   "title": "Практические навыки и симуляция",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Все обязательные навыки отработаны и проверены наблюдением.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "НВ-1"
+    ],
+    [
+     "tsmu-internal",
+     "НВ-2"
+    ],
+    [
+     "tsmu-internal",
+     "НВ-3"
+    ]
+   ],
+   "instruments": [
+    "skills-mastery",
+    "osce-station"
+   ]
+  },
+  {
+   "code": "К-2.4",
+   "level": "department",
+   "parent": "К-2",
+   "group": "core",
+   "title": "Самостоятельная работа студентов",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Задания для самостоятельной работы с понятными сроками и контролем.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [],
+   "instruments": [
+    "syllabus-review"
+   ]
+  },
+  {
+   "code": "К-3",
+   "level": "department",
+   "parent": null,
+   "group": "core",
+   "title": "Оценивание студентов",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Оценивать надёжно, справедливо и с обратной связью.",
+   "inputs": "Банк заданий, критерии",
+   "outputs": "Оценки, разбор ошибок, анализ тестов",
+   "customers": "Студенты, деканат",
+   "nodes": [
+    [
+     "wfme-bme",
+     "3"
+    ],
+    [
+     "esg",
+     "1.3"
+    ],
+    [
+     "iaar-bmifo",
+     "3"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "КИМ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ЭКЗ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ОСКЭ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ОСКЭ-2"
+    ]
+   ],
+   "instruments": [
+    "kim-audit",
+    "exam-organisation",
+    "osce-readiness",
+    "osce-station"
+   ]
+  },
+  {
+   "code": "К-3.1",
+   "level": "department",
+   "parent": "К-3",
+   "group": "core",
+   "title": "Текущий и рубежный контроль",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Регулярная проверка с обратной связью студенту.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "КИМ-1"
+    ]
+   ],
+   "instruments": [
+    "kim-audit"
+   ]
+  },
+  {
+   "code": "К-3.2",
+   "level": "department",
+   "parent": "К-3",
+   "group": "core",
+   "title": "Экзамены и апелляции",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Экзамен по известным критериям, оценки в срок, честная апелляция. Качество теста — раздел «Анализ тестов».",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ЭКЗ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ЭКЗ-2"
+    ]
+   ],
+   "instruments": [
+    "exam-organisation"
+   ]
+  },
+  {
+   "code": "К-3.3",
+   "level": "department",
+   "parent": "К-3",
+   "group": "core",
+   "title": "ОСКЭ",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "ОСКЭ по Положению, станции с листами оценки.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОСКЭ-1"
+    ],
+    [
+     "tsmu-internal",
+     "ОСКЭ-2"
+    ]
+   ],
+   "instruments": [
+    "osce-readiness",
+    "osce-station"
+   ]
+  },
+  {
+   "code": "К-4",
+   "level": "department",
+   "parent": null,
+   "group": "support",
+   "title": "Клиническая база кафедры",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Достаточные условия и поток пациентов для обучения.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "6"
+    ],
+    [
+     "iaar-bmifo",
+     "6"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "КБ-1"
+    ]
+   ],
+   "instruments": [
+    "clinical-base"
+   ]
+  },
+  {
+   "code": "К-5",
+   "level": "department",
+   "parent": null,
+   "group": "core",
+   "title": "Работа со студентами",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Консультации, отработки, помощь неуспевающим, научный кружок.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "4"
+    ],
+    [
+     "esg",
+     "1.6"
+    ],
+    [
+     "iaar-bmifo",
+     "4"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "СТР-1"
+    ],
+    [
+     "tsmu-internal",
+     "НР-2"
+    ]
+   ],
+   "instruments": [
+    "student-work",
+    "research-dept"
+   ]
+  },
+  {
+   "code": "К-5.1",
+   "level": "department",
+   "parent": "К-5",
+   "group": "core",
+   "title": "Консультации, отработки, работа с неуспевающими",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Помочь каждому студенту освоить дисциплину.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "СТР-1"
+    ]
+   ],
+   "instruments": [
+    "student-work"
+   ]
+  },
+  {
+   "code": "К-5.2",
+   "level": "department",
+   "parent": "К-5",
+   "group": "core",
+   "title": "Научный кружок и научная работа студентов",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Вовлечь студентов в науку.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "НР-2"
+    ]
+   ],
+   "instruments": [
+    "research-dept"
+   ]
+  },
+  {
+   "code": "К-6",
+   "level": "department",
+   "parent": null,
+   "group": "core",
+   "title": "Научная работа кафедры",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Публикации, проекты, гранты; связь науки с обучением.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "2"
+    ],
+    [
+     "iaar-bmifo",
+     "5"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "НР-1"
+    ],
+    [
+     "tsmu-internal",
+     "ГО-1"
+    ]
+   ],
+   "instruments": [
+    "research-dept"
+   ]
+  },
+  {
+   "code": "К-7",
+   "level": "department",
+   "parent": null,
+   "group": "support",
+   "title": "Кадры и развитие преподавателей",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Компетентные преподаватели, наставничество и преемственность.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "5"
+    ],
+    [
+     "esg",
+     "1.5"
+    ],
+    [
+     "iaar-bmifo",
+     "5"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "РП-1"
+    ],
+    [
+     "tsmu-internal",
+     "РП-2"
+    ],
+    [
+     "tsmu-internal",
+     "РП-3"
+    ],
+    [
+     "tsmu-internal",
+     "ГО-5"
+    ],
+    [
+     "tsmu-internal",
+     "ГО-6"
+    ]
+   ],
+   "instruments": [
+    "staff-development",
+    "peer-observation",
+    "annual-report"
+   ]
+  },
+  {
+   "code": "К-7.1",
+   "level": "department",
+   "parent": "К-7",
+   "group": "support",
+   "title": "Повышение квалификации и педагогическая подготовка",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Каждый преподаватель регулярно учится, в том числе педагогике.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "РП-1"
+    ],
+    [
+     "tsmu-internal",
+     "ГО-5"
+    ]
+   ],
+   "instruments": [
+    "staff-development",
+    "annual-report"
+   ]
+  },
+  {
+   "code": "К-7.2",
+   "level": "department",
+   "parent": "К-7",
+   "group": "support",
+   "title": "Наставничество молодых преподавателей",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "У каждого молодого преподавателя есть наставник.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "РП-2"
+    ]
+   ],
+   "instruments": [
+    "staff-development"
+   ]
+  },
+  {
+   "code": "К-7.3",
+   "level": "department",
+   "parent": "К-7",
+   "group": "support",
+   "title": "Взаимопосещение занятий",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Преподаватели учатся друг у друга.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ВП-1"
+    ],
+    [
+     "tsmu-internal",
+     "РП-3"
+    ]
+   ],
+   "instruments": [
+    "peer-observation",
+    "staff-development"
+   ]
+  },
+  {
+   "code": "К-8",
+   "level": "department",
+   "parent": null,
+   "group": "management",
+   "title": "Управление кафедрой",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "План, заседания, контроль решений, годовой отчёт, документы.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "iso-21001",
+     "7"
+    ],
+    [
+     "wfme-bme",
+     "8"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "УК-1"
+    ]
+   ],
+   "instruments": [
+    "dept-management",
+    "annual-report"
+   ]
+  },
+  {
+   "code": "К-9",
+   "level": "department",
+   "parent": null,
+   "group": "support",
+   "title": "Учебные ресурсы кафедры",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Литература, электронные ресурсы и оборудование на всех языках обучения.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "6"
+    ],
+    [
+     "esg",
+     "1.6"
+    ],
+    [
+     "iaar-bmifo",
+     "6"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "РС-1"
+    ]
+   ],
+   "instruments": [
+    "dept-resources"
+   ]
+  },
+  {
+   "code": "К-10",
+   "level": "department",
+   "parent": null,
+   "group": "management",
+   "title": "Обратная связь и улучшение на кафедре",
+   "owner_position": "Заведующий кафедрой",
+   "purpose": "Узнавать мнение студентов, исправлять недостатки и сообщать о сделанном.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "7"
+    ],
+    [
+     "esg",
+     "1.9"
+    ],
+    [
+     "iaar-bmifo",
+     "7"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "СТ-1"
+    ],
+    [
+     "tsmu-internal",
+     "СР-1"
+    ]
+   ],
+   "instruments": [
+    "student-teaching",
+    "learning-environment"
+   ]
+  },
+  {
+   "code": "Ф-1",
+   "level": "faculty",
+   "parent": null,
+   "group": "core",
+   "title": "Организация учебного процесса",
+   "owner_position": "Декан факультета",
+   "purpose": "Расписание, учёт посещаемости, ведомости, выбор элективов.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "2"
+    ],
+    [
+     "iaar-bmifo",
+     "2"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОУП-1"
+    ]
+   ],
+   "instruments": [
+    "faculty-teaching-org"
+   ]
+  },
+  {
+   "code": "Ф-1.1",
+   "level": "faculty",
+   "parent": "Ф-1",
+   "group": "core",
+   "title": "Расписание, посещаемость и ведомости",
+   "owner_position": "Декан факультета",
+   "purpose": "Расписание без накладок, учёт пропусков, ведомости в срок.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОУП-1"
+    ]
+   ],
+   "instruments": [
+    "faculty-teaching-org"
+   ]
+  },
+  {
+   "code": "Ф-1.2",
+   "level": "faculty",
+   "parent": "Ф-1",
+   "group": "core",
+   "title": "Элективы и индивидуальные учебные планы",
+   "owner_position": "Декан факультета",
+   "purpose": "Реальный выбор дисциплин студентами.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [],
+   "instruments": [
+    "faculty-teaching-org"
+   ]
+  },
+  {
+   "code": "Ф-2",
+   "level": "faculty",
+   "parent": null,
+   "group": "core",
+   "title": "Контингент и сессии",
+   "owner_position": "Декан факультета",
+   "purpose": "Сохранить студентов и обеспечить сдачу сессий.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "4"
+    ],
+    [
+     "esg",
+     "1.4"
+    ],
+    [
+     "iaar-bmifo",
+     "4"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-1"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-2"
+    ]
+   ],
+   "instruments": [
+    "programme-annual"
+   ]
+  },
+  {
+   "code": "Ф-2.1",
+   "level": "faculty",
+   "parent": "Ф-2",
+   "group": "core",
+   "title": "Сессии и пересдачи",
+   "owner_position": "Декан факультета",
+   "purpose": "Сдача с первой попытки, понятный порядок пересдач.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-2"
+    ]
+   ],
+   "instruments": [
+    "programme-annual",
+    "exam-organisation"
+   ]
+  },
+  {
+   "code": "Ф-2.2",
+   "level": "faculty",
+   "parent": "Ф-2",
+   "group": "core",
+   "title": "Переводы, восстановления, отчисления",
+   "owner_position": "Декан факультета",
+   "purpose": "Оформление по положению; анализ причин отчисления.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-1"
+    ]
+   ],
+   "instruments": [
+    "programme-annual",
+    "student-support"
+   ]
+  },
+  {
+   "code": "Ф-3",
+   "level": "faculty",
+   "parent": null,
+   "group": "core",
+   "title": "Производственная практика",
+   "owner_position": "Декан факультета",
+   "purpose": "Практика с перечнем навыков, руководителями и оценкой.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "2"
+    ],
+    [
+     "wfme-bme",
+     "6"
+    ],
+    [
+     "iaar-bmifo",
+     "6"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПР-1"
+    ]
+   ],
+   "instruments": [
+    "practice-org"
+   ]
+  },
+  {
+   "code": "Ф-4",
+   "level": "faculty",
+   "parent": null,
+   "group": "core",
+   "title": "Итоговая аттестация",
+   "owner_position": "Декан факультета",
+   "purpose": "Подтвердить готовность выпускника.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "3"
+    ],
+    [
+     "iaar-bmifo",
+     "3"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-3"
+    ]
+   ],
+   "instruments": [
+    "programme-annual"
+   ]
+  },
+  {
+   "code": "Ф-5",
+   "level": "faculty",
+   "parent": null,
+   "group": "support",
+   "title": "Поддержка студентов",
+   "owner_position": "Декан факультета",
+   "purpose": "Кураторы, адаптация, психологическая и социальная помощь, голос студентов.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "4"
+    ],
+    [
+     "esg",
+     "1.6"
+    ],
+    [
+     "iaar-bmifo",
+     "4"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПС-1"
+    ],
+    [
+     "tsmu-internal",
+     "СР-1"
+    ],
+    [
+     "tsmu-internal",
+     "СР-6"
+    ]
+   ],
+   "instruments": [
+    "student-support",
+    "learning-environment"
+   ]
+  },
+  {
+   "code": "Ф-5.1",
+   "level": "faculty",
+   "parent": "Ф-5",
+   "group": "support",
+   "title": "Кураторство и адаптация первокурсников",
+   "owner_position": "Декан факультета",
+   "purpose": "Каждая группа с куратором, первокурсники адаптированы.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ПС-1"
+    ]
+   ],
+   "instruments": [
+    "student-support"
+   ]
+  },
+  {
+   "code": "Ф-5.2",
+   "level": "faculty",
+   "parent": "Ф-5",
+   "group": "support",
+   "title": "Психологическая и социальная поддержка",
+   "owner_position": "Декан факультета",
+   "purpose": "Студент знает, куда обратиться за помощью.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "СР-6"
+    ]
+   ],
+   "instruments": [
+    "student-support",
+    "learning-environment"
+   ]
+  },
+  {
+   "code": "Ф-5.3",
+   "level": "faculty",
+   "parent": "Ф-5",
+   "group": "support",
+   "title": "Студенческое самоуправление и обращения",
+   "owner_position": "Декан факультета",
+   "purpose": "Студенты участвуют в решениях, на обращения отвечают.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [],
+   "indicators": [],
+   "instruments": [
+    "student-support"
+   ]
+  },
+  {
+   "code": "Ф-6",
+   "level": "faculty",
+   "parent": null,
+   "group": "management",
+   "title": "Мониторинг образовательной программы",
+   "owner_position": "Декан факультета",
+   "purpose": "Ежегодный отчёт по программе, мнение выпускников и работодателей, план действий.",
+   "inputs": "",
+   "outputs": "",
+   "customers": "",
+   "nodes": [
+    [
+     "wfme-bme",
+     "7"
+    ],
+    [
+     "esg",
+     "1.9"
+    ],
+    [
+     "iaar-bmifo",
+     "7"
+    ]
+   ],
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-4"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-5"
+    ],
+    [
+     "tsmu-internal",
+     "ВЫП-1"
+    ],
+    [
+     "tsmu-internal",
+     "РАБ-1"
+    ]
+   ],
+   "instruments": [
+    "programme-annual",
+    "graduate-survey",
+    "employer-survey"
    ]
   }
  ]

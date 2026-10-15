@@ -175,7 +175,7 @@ class SeedTests(TestCase):
 
         call_command("load_initial_data", stdout=StringIO())
         p = Problem.objects.get(code="П-05")
-        self.assertEqual(sorted(i.code for i in p.indicators.all()), ["2.2", "ГО-5"])
+        self.assertEqual(sorted(i.code for i in p.indicators.all()), ["2.2", "ГО-5", "РП-1"])
         self.assertEqual(len(p.action_list()), 3)
 
 

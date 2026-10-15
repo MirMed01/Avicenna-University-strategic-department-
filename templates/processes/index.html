@@ -3,21 +3,29 @@
 {% block content %}
 <div class="row between"><h1>{% translate "Реестр процессов СМК" %}</h1>
 <div class="row"><a class="btn ghost" href="{% url 'processes:risks' %}">{% translate "Карта рисков" %}</a>{% if manager %}<a class="btn" href="{% url 'processes:create' %}">{% translate "+ Процесс" %}</a>{% endif %}</div></div>
-<p class="muted">{% translate "Каждый процесс университета с паспортом: цель, владелец, входы и выходы, показатели, риски, механизм улучшения и пункты стандартов (ISO 9001, п. 4.4). Центр и владелец процесса правят паспорт сами." %}</p>
-<div class="grid">
+<p class="muted">{% translate "Каждый процесс с паспортом: цель, владелец, входы и выходы, показатели, риски, механизм улучшения, пункты стандартов (ISO 9001, п. 4.4) и инструменты оценки. Карты факультета и кафедры — типовые: одинаковы для всех факультетов и кафедр. Центр и владелец процесса правят паспорт сами." %}</p>
+<div class="row">{% for v, l, n in levels %}<a class="btn {% if v != level %}ghost{% endif %}" href="?level={{ v }}">{{ l }} ({{ n }})</a>{% endfor %}</div>
+{% if level == "university" %}<div class="grid">
   <div class="stat"><b>{{ n_key }}</b><span>{% translate "ключевых процессов" %}</span></div>
   <div class="stat"><b>{% if full is not None %}{{ full }} %{% else %}—{% endif %}</b><span>{% translate "Стратегия 4.3: доля ключевых процессов с полным паспортом (владелец, показатели, риски, мониторинг, улучшение)" %}</span></div>
   <div class="stat"><b>{% if digital is not None %}{{ digital }} %{% else %}—{% endif %}</b><span>{% translate "Стратегия 4.2: доля ключевых процессов в цифровой системе" %}</span></div>
 </div>
 {% if manager and n_key %}<form method="post" action="{% url 'processes:save_strategy' %}">{% csrf_token %}<button class="btn small ghost">{% translate "Записать 4.2 и 4.3 в мониторинг Стратегии за этот год" %}</button></form>{% endif %}
-{% for label, rows in groups %}<h2>{{ label }}</h2>
-<div class="tbl"><table><thead><tr><th>{% translate "Код" %}</th><th>{% translate "Процесс" %}</th><th>{% translate "Владелец" %}</th><th>{% translate "Показатели" %}</th><th>{% translate "Открытые риски" %}</th><th>{% translate "Паспорт" %}</th></tr></thead><tbody>
+{% else %}<div class="grid">
+  <div class="stat"><b>{{ n_top }}</b><span>{% translate "процессов" %}</span></div>
+  <div class="stat"><b>{{ n_sub }}</b><span>{% translate "подпроцессов" %}</span></div>
+</div>
+{% if manager %}<p><a class="btn small" href="{% url 'inspections:create' %}?level={{ level }}">{% translate "Назначить комплексную проверку по этой карте" %}</a>
+<span class="small muted">{% translate "— в назначении будут заранее отмечены инструменты всех процессов уровня." %}</span></p>{% endif %}{% endif %}
+{% if uncovered %}<div class="msg">{% translate "Процессы без инструмента оценки:" %} {% for p in uncovered %}<a href="{% url 'processes:detail' p.pk %}">{{ p.code }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}. {% translate "Их выполнение пока нечем измерить." %}</div>{% endif %}
+{% for label, rows in groups %}{% if rows %}<h2>{{ label }}</h2>
+<div class="tbl"><table><thead><tr><th>{% translate "Код" %}</th><th>{% translate "Процесс" %}</th><th>{% translate "Владелец" %}</th><th>{% translate "Инструменты оценки" %}</th><th>{% translate "Показатели" %}</th><th>{% translate "Открытые риски" %}</th><th>{% translate "Паспорт" %}</th></tr></thead><tbody>
 {% for r in rows %}<tr class="{% if not r.p.is_active %}closed{% endif %}"><td class="num">{{ r.p.code }}</td>
-<td><a href="{% url 'processes:detail' r.p.pk %}">{{ r.p.title }}</a>{% if not r.p.is_key %} <span class="small muted">· {% translate "не ключевой" %}</span>{% endif %}</td>
+<td>{% if r.depth %}<span class="muted">↳ </span>{% endif %}<a href="{% url 'processes:detail' r.p.pk %}">{% if r.depth %}{{ r.p.title }}{% else %}<b>{{ r.p.title }}</b>{% endif %}</a>{% if level == "university" and not r.p.is_key %} <span class="small muted">· {% translate "не ключевой" %}</span>{% endif %}</td>
 <td class="small">{{ r.p.owner_position|default:"—" }}{% if r.p.owner %}<div class="muted">{{ r.p.owner }}</div>{% endif %}</td>
+<td class="small">{% for i in r.instruments %}{{ i.title|truncatechars:48 }}{% if not forloop.last %}<br>{% endif %}{% empty %}<span class="pill warn">{% translate "нет" %}</span>{% endfor %}</td>
 <td class="num">{{ r.p.indicators.all|length }}</td>
 <td>{{ r.risks }}{% if r.high %} <span class="pill high">{% blocktranslate with n=r.high %}высоких: {{ n }}{% endblocktranslate %}</span>{% endif %}</td>
-<td class="small">{% if r.gaps %}<span class="pill warn">{% translate "не хватает:" %} {{ r.gaps|join:", " }}</span>{% else %}<span class="pill ok">{% translate "полный" %}</span>{% endif %}</td></tr>
-{% empty %}<tr><td colspan="6" class="muted">{% translate "Пусто." %}</td></tr>{% endfor %}
-</tbody></table></div>{% endfor %}
+<td class="small">{% if r.depth %}<span class="muted">{% translate "подпроцесс" %}</span>{% elif r.gaps %}<span class="pill warn">{% translate "не хватает:" %} {{ r.gaps|join:", " }}</span>{% else %}<span class="pill ok">{% translate "полный" %}</span>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>{% endif %}{% endfor %}
 {% endblock %}

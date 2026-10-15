@@ -14,7 +14,7 @@ from .scoring import compute, parse
 
 @login_required
 def index(request):
-    rows = [(i, i.latest_version(), i.current_version()) for i in Instrument.objects.all()]
+    rows = [(i, i.latest_version(), i.current_version()) for i in Instrument.objects.prefetch_related("processes")]
     return render(request, "instruments/index.html", {"rows": rows})
 
 

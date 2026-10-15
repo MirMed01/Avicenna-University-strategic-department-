@@ -27,7 +27,8 @@ class InspectionForm(forms.ModelForm):
         self.fields["lead_expert"].queryset = User.objects.filter(
             is_active=True, roles__role__in=[Role.EXPERT, Role.DIRECTOR]).distinct()
         self.fields["instruments"].queryset = InstrumentVersion.objects.filter(
-            status=InstrumentVersion.Status.PUBLISHED).exclude(instrument__respondent="student").select_related("instrument").order_by("instrument__title")
+            status=InstrumentVersion.Status.PUBLISHED).exclude(instrument__respondent__in=["student", "graduate"]).select_related(
+            "instrument").order_by("instrument__title")
         self.fields["instruments"].label_from_instance = lambda v: gettext("%(title)s (в.%(number)s) — заполняет: %(who)s") % {
             "title": v.instrument.title, "number": v.number, "who": v.instrument.get_respondent_display().lower()}
 

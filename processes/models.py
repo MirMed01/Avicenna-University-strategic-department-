@@ -16,8 +16,17 @@ class Process(models.Model):
         CORE = "core", _("Основные процессы")
         SUPPORT = "support", _("Поддерживающие процессы")
 
+    class Level(models.TextChoices):
+        UNIVERSITY = "university", _("Университет")
+        FACULTY = "faculty", _("Факультет (деканат)")
+        DEPARTMENT = "department", _("Кафедра")
+
     code = models.CharField(_("код"), max_length=20, unique=True)
     title = models.CharField(_("название"), max_length=255)
+    level = models.CharField(_("уровень"), max_length=12, choices=Level.choices, default=Level.UNIVERSITY,
+                             help_text=_("Процессы факультета и кафедры — типовая карта: одинакова для всех факультетов или кафедр."))
+    parent = models.ForeignKey("self", verbose_name=_("входит в процесс"), null=True, blank=True, on_delete=models.CASCADE,
+                               related_name="children")
     group = models.CharField(_("группа"), max_length=12, choices=Group.choices)
     is_key = models.BooleanField(_("ключевой процесс"), default=True,
                                  help_text=_("Ключевые процессы учитываются в показателях Стратегии 4.2 и 4.3."))
@@ -37,6 +46,8 @@ class Process(models.Model):
                                      help_text=_("Данные процесса ведутся в «Каноне» или другой единой цифровой системе (Стратегия 4.2)."))
     norm_nodes = models.ManyToManyField("norms.NormNode", verbose_name=_("пункты стандартов"), blank=True, related_name="processes")
     indicators = models.ManyToManyField("norms.Indicator", verbose_name=_("показатели"), blank=True, related_name="processes")
+    instruments = models.ManyToManyField("instruments.Instrument", verbose_name=_("инструменты оценки"), blank=True,
+                                         related_name="processes")
     order = models.PositiveIntegerField(_("порядок"), default=0)
     is_active = models.BooleanField(_("действует"), default=True)
 
@@ -95,8 +106,9 @@ class Risk(models.Model):
 
 def strategy_shares(processes=None):
     """Показатели Стратегии 4.2 и 4.3 по реестру: (доля цифровых, доля полных паспортов, число ключевых)."""
+    # Считаются ключевые процессы университета верхнего уровня; типовые карты факультета и кафедры — отдельно.
     key = [p for p in (processes if processes is not None else Process.objects.filter(is_active=True, is_key=True))
-           if p.is_active and p.is_key]
+           if p.is_active and p.is_key and p.level == Process.Level.UNIVERSITY and p.parent_id is None]
     if not key:
         return None, None, 0
     digital = round(100 * sum(1 for p in key if p.is_digital) / len(key))
