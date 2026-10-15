@@ -177,3 +177,24 @@ class SeedTests(TestCase):
         p = Problem.objects.get(code="П-05")
         self.assertEqual(sorted(i.code for i in p.indicators.all()), ["2.2", "ГО-5"])
         self.assertEqual(len(p.action_list()), 3)
+
+
+class ClassifierTests(CapaBase):
+    def test_director_adds_group_and_problem_with_causes(self):
+        from .models import ProblemGroup
+
+        self.client.force_login(self.director)
+        self.client.post(reverse("capa:group_create"), {"code": "4", "title": "Оценка студентов", "order": "4", "is_active": "on"})
+        g = ProblemGroup.objects.get(code="4")
+        self.client.post(reverse("capa:problem_create"), {
+            "group": g.pk, "code": "4.2", "title": "Тесты без статистической проверки", "description": "",
+            "typical_actions": "Анализ тестов", "cause_set": ["measurement", "methods"], "is_active": "on"})
+        p = Problem.objects.get(code="4.2")
+        self.assertEqual((p.group, p.cause_list()), (g, ["measurement", "methods"]))
+        r = self.client.get(reverse("capa:problems"))
+        self.assertContains(r, "4. Оценка студентов")
+        self.assertContains(r, "Измерения")
+
+    def test_head_cannot_edit_classifier(self):
+        self.client.force_login(self.head)
+        self.assertEqual(self.client.get(reverse("capa:group_create")).status_code, 403)

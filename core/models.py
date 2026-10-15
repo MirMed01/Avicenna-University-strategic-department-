@@ -29,3 +29,13 @@ def log(user, action, obj, description):
         object_id=str(obj.pk or ""),
         description=description,
     )
+
+
+class Setting(models.Model):
+    """Настройка, которую Центр меняет сам (страница «Настройки»). Список и значения по умолчанию — core/config.py."""
+
+    key = models.CharField(max_length=50, unique=True)
+    value = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.key} = {self.value}"

@@ -11,6 +11,7 @@ admin.site.site_header = "Канон — администрирование"
 urlpatterns = [
     path("", core_views.home, name="home"),
     path("journal/", core_views.journal, name="journal"),
+    path("settings/", core_views.settings_page, name="settings"),
     path("health/", core_views.health, name="health"),
     path("login/", login_view, name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
@@ -24,6 +25,7 @@ urlpatterns = [
     path("feedback/", include("feedback.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("accreditation/", include("accreditation.urls")),
+    path("processes/", include("processes.urls")),
     path("s/", include((public_urlpatterns, "feedback"), namespace="student")),
     path("i18n/", include("django.conf.urls.i18n")),
     path("admin/", admin.site.urls),

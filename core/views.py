@@ -68,3 +68,46 @@ def health(request):
     with connection.cursor() as c:
         c.execute("SELECT 1")
     return HttpResponse("ok", content_type="text/plain")
+
+
+def _settings_form(data=None):
+    from django import forms
+
+    from core import config
+
+    current = config.get_many()
+    fields = {}
+    for s in config.SPECS:
+        kw = {"label": s.label, "help_text": s.help, "min_value": s.min, "max_value": s.max, "initial": current[s.key]}
+        fields[s.key] = forms.IntegerField(**kw) if s.kind is int else forms.DecimalField(decimal_places=2, **kw)
+    return type("SettingsForm", (forms.Form,), fields)(data), current
+
+
+@login_required
+def settings_page(request):
+    """Настройки Центра: пороги и правила, которые меняются без программиста. Каждое изменение — в журнал."""
+    from django.contrib import messages
+    from django.core.exceptions import PermissionDenied
+    from django.shortcuts import redirect
+    from django.utils.translation import gettext as _
+
+    from core import config
+    from core.models import Setting, log
+
+    if not can_manage(request.user):
+        raise PermissionDenied
+    form, current = _settings_form(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        changed = 0
+        for s in config.SPECS:
+            new = form.cleaned_data[s.key]
+            if new != current[s.key]:
+                obj, _created = Setting.objects.update_or_create(key=s.key, defaults={"value": str(new)})
+                log(request.user, "update", obj, f"Настройка «{s.label}»: было {current[s.key]}, стало {new}")
+                changed += 1
+        messages.success(request, _("Сохранено изменений: %(n)s.") % {"n": changed})
+        return redirect("settings")
+    groups = {}
+    for s in config.SPECS:
+        groups.setdefault(str(s.group), []).append(form[s.key])
+    return render(request, "settings.html", {"form": form, "groups": groups.items()})

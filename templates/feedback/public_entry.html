@@ -5,4 +5,5 @@
 <p>{% translate "Введите код с листка, который вам выдали. Ответ анонимный: программа не знает, кто вы." %}</p>
 <form method="get" class="f"><div><label for="code">{% translate "Код" %}</label><input type="text" id="code" name="code" autocomplete="off" autocapitalize="characters" style="font-size:20px;letter-spacing:.1em"></div>
 <button class="btn">{% translate "Продолжить" %}</button></form></div>
+{% include "feedback/_changes.html" %}
 {% endblock %}

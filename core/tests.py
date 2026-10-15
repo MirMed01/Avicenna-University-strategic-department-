@@ -223,3 +223,66 @@ class NoMedicalWordsTests(TestCase):
         pattern = re.compile("|".join(self.WORDS), re.IGNORECASE)
         bad = [name for name, text in texts.items() if pattern.search(text.replace("Корҳои табобатӣ", ""))]
         self.assertEqual(bad, [])
+
+
+class SettingsPageTests(TestCase):
+    """Гибкость: Центр сам меняет пороги и правила; каждое изменение — в журнал."""
+
+    def setUp(self):
+        from accounts.models import Role, RoleAssignment
+        from org.models import OrgUnit
+
+        uni = OrgUnit.objects.create(kind="university", name="ТГМУ")
+        self.director = User.objects.create_user("d@x.tj", "pass12345!", full_name="Директор")
+        RoleAssignment.objects.create(user=self.director, role=Role.DIRECTOR, org_unit=uni)
+        self.teacher = User.objects.create_user("t@x.tj", "pass12345!", full_name="Преподаватель")
+        RoleAssignment.objects.create(user=self.teacher, role=Role.TEACHER, org_unit=uni)
+
+    def form_data(self, **changes):
+        from core import config
+
+        data = {k: str(v) for k, v in config.get_many().items()}
+        data.update({k: str(v) for k, v in changes.items()})
+        return data
+
+    def test_director_changes_setting_and_it_is_logged(self):
+        from core import config
+        from core.models import AuditLog
+
+        self.assertEqual(config.get("feedback_min_respondents"), 5)
+        self.client.force_login(self.director)
+        r = self.client.post("/settings/", self.form_data(feedback_min_respondents=7))
+        self.assertRedirects(r, "/settings/")
+        self.assertEqual(config.get("feedback_min_respondents"), 7)
+        self.assertTrue(AuditLog.objects.filter(description__contains="было 5, стало 7").exists())
+
+    def test_value_below_minimum_rejected(self):
+        from core import config
+
+        self.client.force_login(self.director)
+        r = self.client.post("/settings/", self.form_data(feedback_min_respondents=2))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(config.get("feedback_min_respondents"), 5)
+
+    def test_teacher_has_no_access(self):
+        self.client.force_login(self.teacher)
+        self.assertEqual(self.client.get("/settings/").status_code, 403)
+
+
+class SeedRegistryTests(TestCase):
+    def test_classifier_and_processes_loaded_and_rerun_safe(self):
+        from capa.models import Problem, ProblemGroup
+        from processes.models import Process
+
+        call_command("load_initial_data", stdout=StringIO())
+        self.assertEqual(ProblemGroup.objects.count(), 10)
+        self.assertGreaterEqual(Problem.objects.count(), 49)
+        self.assertEqual(Problem.objects.get(code="П-01").group.code, "6")
+        p = Process.objects.get(code="О-4")
+        self.assertTrue(p.norm_nodes.filter(version__framework__code="iaar-bmifo", code="3").exists())
+        self.assertTrue(p.indicators.filter(code="ГО-3").exists())
+        # Правка Центра не затирается повторной загрузкой
+        Process.objects.filter(code="О-4").update(title="Оценивание (правка Центра)")
+        call_command("load_initial_data", stdout=StringIO())
+        self.assertEqual(Process.objects.get(code="О-4").title, "Оценивание (правка Центра)")
+        self.assertEqual(Process.objects.count(), 17)

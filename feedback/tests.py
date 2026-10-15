@@ -88,8 +88,7 @@ class AnonymityTests(Base):
         self.c.save()
         self.assertContains(self.vote(self.codes[0]), "закрыт")
         self.c.is_open = True
-        self.c.closes_on = timezone.localdate() - timedelta(days=1)
-        self.c.save()
+        Campaign.objects.filter(pk=self.c.pk).update(closes_on=timezone.localdate() - timedelta(days=1))
         self.assertContains(self.vote(self.codes[0]), "закрыт")
 
     def test_unknown_code_and_lowercase(self):
@@ -180,3 +179,47 @@ class TajikTests(Base):
         r = self.client.get(url)
         self.assertContains(r, "Фаҳмо буд?")
         self.assertContains(r, "Рекомендуете?")  # нет перевода — показывается русский текст, а не пусто
+
+
+class LoopTests(Base):
+    """«Вы сказали — мы сделали» и доля ответивших."""
+
+    def test_head_records_change_students_see_it(self):
+        from .models import Change
+
+        self.client.force_login(self.head)
+        self.client.post(reverse("feedback:change_add", args=[self.c.pk]),
+                         {"said": "Мало практики", "done": "Добавили занятия в симуляционном центре", "is_public": "on"})
+        self.assertEqual(Change.objects.count(), 1)
+        self.client.logout()
+        self.assertContains(self.client.get(reverse("student:entry")), "Добавили занятия в симуляционном центре")
+        self.assertContains(self.client.get(reverse("student:vote", args=[self.codes[0]])), "Добавили занятия")
+
+    def test_other_department_cannot_record(self):
+        from .models import Change
+
+        self.client.force_login(self.other_head)
+        r = self.client.post(reverse("feedback:change_add", args=[self.c.pk]), {"said": "x", "done": "y"})
+        self.assertEqual((r.status_code, Change.objects.count()), (403, 0))
+
+    def test_hidden_change_not_shown_to_students(self):
+        from .models import Change
+
+        Change.objects.create(campaign=self.c, said="a", done="Секретная мера", is_public=False)
+        self.assertNotContains(self.client.get(reverse("student:entry")), "Секретная мера")
+
+    def test_low_response_rate_warns_after_close(self):
+        self.vote(self.codes[0])
+        Campaign.objects.filter(pk=self.c.pk).update(closes_on=timezone.localdate() - timedelta(days=1))
+        self.client.force_login(self.director)
+        r = self.client.get(reverse("feedback:detail", args=[self.c.pk]))
+        self.assertEqual(r.context["rate"], 20)
+        self.assertContains(r, "Итог может не отражать мнение всей группы")
+
+    def test_default_min_respondents_from_settings(self):
+        from core.models import Setting
+
+        Setting.objects.create(key="feedback_min_respondents", value="8")
+        self.client.force_login(self.director)
+        r = self.client.get(reverse("feedback:create"))
+        self.assertEqual(r.context["form"]["min_respondents"].initial, 8)

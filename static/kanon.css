@@ -63,3 +63,10 @@ input[type=text],input[type=email],input[type=password],input[type=url],input[ty
 .top .lang{display:flex;gap:6px;margin-left:12px}
 .top .lang button{background:none;border:1px solid transparent;color:var(--paper);opacity:.7;cursor:pointer;font:inherit;font-size:13px;padding:1px 6px;border-radius:4px}
 .top .lang button[aria-current]{opacity:1;border-color:var(--paper)}
+/* Карта рисков 5×5 */
+.riskmap td{width:18%;height:56px;text-align:center;vertical-align:middle;border:1px solid var(--paper)}
+.riskmap td.low{background:var(--ok-bg)} .riskmap td.medium{background:var(--warn-bg)} .riskmap td.high{background:var(--bad-bg)}
+.riskmap th{font-weight:400;color:var(--muted);font-size:13px}
+.pill.high{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.pill.medium{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.pill.low{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}

@@ -52,9 +52,15 @@ def detail(request, pk):
     tasks = [(t, can_fill(request.user, t)) for t in insp.tasks.select_related("version__instrument", "filled_by")]
     results = list(insp.results.select_related("indicator"))
     lead = can_lead(request.user, insp)
+    from core import config
+
+    from .analysis import minor_clusters, repeated_findings
+
     return render(request, "inspections/detail.html", {
         "insp": insp, "tasks": tasks, "results": results, "radar": radar(results),
         "findings": insp.findings.select_related("created_by", "plan"), "lead": lead,
+        "clusters": minor_clusters(insp, config.get("minor_to_major")),
+        "repeated": repeated_findings(insp, config.get("repeat_years")), "repeat_years": config.get("repeat_years"),
         "finding_form": FindingForm(), "task_form": AddTaskForm(),
         "submitted": sum(1 for t, _ in tasks if t.status == Task.Status.SUBMITTED)})
 

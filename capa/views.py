@@ -13,8 +13,8 @@ from inspections.access import can_lead
 from inspections.models import Finding, Inspection, Task
 
 from .access import can_edit_plan, can_lead_plan, can_report_action, can_view_plan, visible_plans
-from .forms import ActionForm, PlanCreateForm, PlanEditForm, ProblemForm
-from .models import Action, Plan, Problem
+from .forms import ActionForm, PlanCreateForm, PlanEditForm, ProblemForm, ProblemGroupForm
+from .models import Action, Plan, Problem, ProblemGroup
 
 S = Plan.State
 
@@ -213,7 +213,10 @@ def schedule_followup(request, pk):
 
 @login_required
 def problems(request):
-    return render(request, "capa/problems.html", {"problems": Problem.objects.prefetch_related("indicators")})
+    problems = list(Problem.objects.select_related("group").prefetch_related("indicators"))
+    groups = [(g, [p for p in problems if p.group_id == g.pk]) for g in ProblemGroup.objects.all()]
+    rest = [p for p in problems if p.group_id is None]
+    return render(request, "capa/problems.html", {"groups": groups, "rest": rest})
 
 
 @manager_required
@@ -225,3 +228,14 @@ def problem_form(request, pk=None):
         log(request.user, "update" if pk else "create", p, f"Справочник проблем: «{p}»")
         return redirect("capa:problems")
     return render(request, "form.html", {"form": form, "title": _("Проблема качества")})
+
+
+@manager_required
+def group_form(request, pk=None):
+    obj = get_object_or_404(ProblemGroup, pk=pk) if pk else None
+    form = ProblemGroupForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        g = form.save()
+        log(request.user, "update" if pk else "create", g, f"Группа проблем: «{g}»")
+        return redirect("capa:problems")
+    return render(request, "form.html", {"form": form, "title": _("Группа проблем")})

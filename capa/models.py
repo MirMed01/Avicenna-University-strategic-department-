@@ -11,11 +11,42 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
-class Problem(models.Model):
-    """Типовая проблема качества с типовыми мероприятиями."""
+class ProblemGroup(models.Model):
+    """Группа проблем по области процесса (стратегия, программа, преподавание…). Центр правит сам."""
 
+    code = models.CharField(_("код"), max_length=10, unique=True)
+    title = models.CharField(_("название"), max_length=255)
+    order = models.PositiveIntegerField(_("порядок"), default=0)
+    is_active = models.BooleanField(_("используется"), default=True)
+
+    class Meta:
+        ordering = ["order", "code"]
+        verbose_name = _("группа проблем")
+        verbose_name_plural = _("группы проблем")
+
+    def __str__(self):
+        return f"{self.code}. {self.title}"
+
+
+class Cause(models.TextChoices):
+    """Тип коренной причины — по диаграмме Исикавы (6М), применительно к образованию."""
+
+    PEOPLE = "people", _("Люди")
+    METHODS = "methods", _("Методы")
+    RESOURCES = "resources", _("Ресурсы")
+    MEASUREMENT = "measurement", _("Измерения")
+    ENVIRONMENT = "environment", _("Среда")
+    MANAGEMENT = "management", _("Управление")
+
+
+class Problem(models.Model):
+    """Типовая проблема качества с признаками, типом причины и типовыми мероприятиями."""
+
+    group = models.ForeignKey(ProblemGroup, verbose_name=_("группа"), null=True, blank=True, on_delete=models.SET_NULL,
+                              related_name="problems")
     code = models.CharField(_("код"), max_length=20, unique=True)
     title = models.CharField(_("название"), max_length=255)
+    causes = models.CharField(_("тип причины"), max_length=100, blank=True)  # через запятую, значения Cause
     description = models.TextField(_("описание и признаки"), blank=True)
     typical_actions = models.TextField(_("типовые мероприятия (по одному в строке)"), blank=True)
     indicators = models.ManyToManyField("norms.Indicator", verbose_name=_("при отклонении каких показателей подсказывать"),
@@ -23,12 +54,18 @@ class Problem(models.Model):
     is_active = models.BooleanField(_("используется"), default=True)
 
     class Meta:
-        ordering = ["code"]
+        ordering = ["group__order", "code"]
         verbose_name = _("проблема качества")
         verbose_name_plural = _("проблемы качества")
 
     def __str__(self):
         return f"{self.code} {self.title}"
+
+    def cause_list(self):
+        return [c for c in self.causes.split(",") if c in Cause.values]
+
+    def cause_labels(self):
+        return [Cause(c).label for c in self.cause_list()]
 
     def action_list(self):
         return [a.strip() for a in self.typical_actions.splitlines() if a.strip()]

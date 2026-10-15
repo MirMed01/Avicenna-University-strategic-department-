@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% load i18n kanon %}
+{% block title %}{{ p.title }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'processes:index' %}">{% translate "Процессы СМК" %}</a> ›</p>
+<div class="row between"><div><span class="kind">{{ p.get_group_display }}{% if p.is_key %} · {% translate "ключевой" %}{% endif %}</span><h1>{{ p.code }} {{ p.title }}</h1></div>
+{% if editable %}<a class="btn" href="{% url 'processes:edit' p.pk %}">{% translate "Изменить паспорт" %}</a>{% endif %}</div>
+{% if gaps %}<div class="msg">{% translate "В паспорте не хватает:" %} {{ gaps|join:", " }}.</div>{% endif %}
+<div class="card"><h2>{% translate "Паспорт процесса" %}</h2>
+<div class="tbl"><table><tbody>
+<tr><th>{% translate "Цель" %}</th><td>{{ p.purpose|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Владелец" %}</th><td>{{ p.owner_position|default:"—" }}{% if p.owner %} — {{ p.owner }}{% endif %}</td></tr>
+<tr><th>{% translate "Поставщики" %}</th><td>{{ p.suppliers|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Входы" %}</th><td>{{ p.inputs|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Выходы" %}</th><td>{{ p.outputs|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Потребители" %}</th><td>{{ p.customers|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Ресурсы" %}</th><td>{{ p.resources|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Документы" %}</th><td>{{ p.documents|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Механизм улучшения" %}</th><td>{{ p.improvement|linebreaksbr|default:"—" }}</td></tr>
+<tr><th>{% translate "Цифровая система" %}</th><td>{% if p.is_digital %}{% translate "да" %}{% else %}{% translate "нет" %}{% endif %}</td></tr>
+</tbody></table></div></div>
+
+<div class="card"><h2>{% translate "Показатели" %}</h2>
+{% if indicators %}<div class="tbl"><table><thead><tr><th>{% translate "Показатель" %}</th><th>{% translate "Пороги (слабый / средний / высокий)" %}</th><th>{% translate "По университету" %}</th><th>{% translate "Кафедры по последним проверкам" %}</th></tr></thead><tbody>
+{% for s in indicators %}<tr><td>{{ s.ind.code }} {{ s.ind.title }}<div class="small muted">{{ s.ind.node.version.framework.title }}</div></td>
+<td class="num">{{ s.ind.thresholds_text }}{% if s.ind.unit %} {{ s.ind.unit }}{% endif %}</td>
+<td class="num">{% if s.yearly %}{{ s.yearly.value|num }} ({{ s.yearly.year }}){% else %}—{% endif %}</td>
+<td>{% if s.units %}{% blocktranslate with b=s.below u=s.units %}ниже нормы: {{ b }} из {{ u }}{% endblocktranslate %}{% else %}<span class="muted">{% translate "нет данных" %}</span>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="muted">{% translate "Показатели не выбраны. Их выбирают в паспорте из справочника норм." %}</p>{% endif %}</div>
+
+<div class="card"><div class="row between"><h2>{% translate "Риски" %}</h2>{% if editable %}<a class="btn small" href="{% url 'processes:risk_create' p.pk %}">{% translate "+ Риск" %}</a>{% endif %}</div>
+{% if risks %}<div class="tbl"><table><thead><tr><th>{% translate "Риск" %}</th><th>{% translate "Вероятность × последствия" %}</th><th>{% translate "Меры" %}</th><th>{% translate "Ответственный, срок" %}</th></tr></thead><tbody>
+{% for r, level in risks %}<tr class="{% if r.is_closed %}closed{% endif %}"><td>{% if editable %}<a href="{% url 'processes:risk_edit' r.pk %}">{{ r.title }}</a>{% else %}{{ r.title }}{% endif %}{% if r.is_closed %} <span class="small muted">· {% translate "снят" %}</span>{% endif %}</td>
+<td>{{ r.likelihood }} × {{ r.impact }} = <span class="pill {{ level }}">{{ r.score }}</span></td>
+<td class="small">{{ r.measures|linebreaksbr|default:"—" }}</td><td class="small">{{ r.responsible|default:"—" }}{% if r.review_date %}<div class="muted">{{ r.review_date|date:"d.m.Y" }}</div>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="muted">{% translate "Риски не записаны." %}</p>{% endif %}</div>
+
+<div class="card"><h2>{% translate "Пункты стандартов" %}</h2>
+{% for n in nodes %}<div class="small"><b>{{ n.version.framework.title }}</b> — {{ n.code }} {{ n.title }}</div>{% empty %}<p class="muted">{% translate "Не связано с пунктами стандартов." %}</p>{% endfor %}</div>
+{% endblock %}

@@ -94,3 +94,19 @@ class TextAnswer(models.Model):
 
     class Meta:
         ordering = ["id"]  # случайный порядок, не по времени
+
+
+class Change(models.Model):
+    """«Вы сказали — мы сделали»: что изменили по итогам опроса. Видно студентам — так петля обратной связи замыкается."""
+
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="changes")
+    said = models.TextField(_("что сказали студенты"))
+    done = models.TextField(_("что сделано или будет сделано"))
+    is_public = models.BooleanField(_("показывать студентам"), default=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="+")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("изменение по итогам опроса")
+        verbose_name_plural = _("вы сказали — мы сделали")

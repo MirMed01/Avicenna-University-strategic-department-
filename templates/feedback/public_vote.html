@@ -17,4 +17,5 @@
 {% elif it.type == "text" %}<textarea id="i{{ it.pk }}" name="i{{ it.pk }}" rows="3" maxlength="3000" placeholder="{% translate "Не пишите имён — так ответ останется анонимным" %}">{{ val }}</textarea>{% endif %}
 {% if err %}<div class="err">{{ err }}</div>{% endif %}</div>{% endfor %}</div>{% endfor %}
 <div><button class="btn">{% translate "Отправить анонимно" %}</button></div></form>
+{% include "feedback/_changes.html" %}
 {% endblock %}

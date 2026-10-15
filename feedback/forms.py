@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from instruments.models import Instrument, InstrumentVersion
 from org.models import OrgUnit
 
-from .models import Campaign
+from .models import Campaign, Change
 
 
 class CampaignForm(forms.ModelForm):
@@ -21,4 +21,15 @@ class CampaignForm(forms.ModelForm):
             status=InstrumentVersion.Status.PUBLISHED, instrument__respondent=Instrument.Respondent.STUDENT).select_related("instrument")
         self.fields["version"].label_from_instance = lambda v: _("%(title)s (в.%(number)s)") % {"title": v.instrument.title, "number": v.number}
         self.fields["org_unit"].queryset = OrgUnit.objects.filter(is_active=True, kind=OrgUnit.Kind.DEPARTMENT).order_by("name")
+        if not self.is_bound:
+            from core import config
+
+            self.fields["min_respondents"].initial = config.get("feedback_min_respondents")
         self.fields["min_respondents"].help_text = _("Не меньше 3. Пока ответов меньше, итоги не видны никому — так нельзя вычислить, кто что ответил.")
+
+
+class ChangeForm(forms.ModelForm):
+    class Meta:
+        model = Change
+        fields = ["said", "done", "is_public"]
+        widgets = {"said": forms.Textarea(attrs={"rows": 2}), "done": forms.Textarea(attrs={"rows": 2})}

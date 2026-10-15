@@ -1,0 +1,8 @@
+{% load i18n %}<div class="tbl"><table><thead><tr><th>{% translate "Код" %}</th><th>{% translate "Проблема и признаки" %}</th><th>{% translate "Тип причины" %}</th><th>{% translate "Типовые мероприятия" %}</th><th>{% translate "Подсказывается по" %}</th></tr></thead><tbody>
+{% for p in problems %}<tr class="{% if not p.is_active %}closed{% endif %}"><td class="num">{{ p.code }}</td>
+<td>{% if can_manage %}<a href="{% url 'capa:problem_edit' p.pk %}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}<div class="small muted">{{ p.description }}</div></td>
+<td class="small">{{ p.cause_labels|join:", "|default:"—" }}</td>
+<td class="small">{% for a in p.action_list %}• {{ a }}<br>{% endfor %}</td>
+<td class="small">{% for i in p.indicators.all %}{{ i.code }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td></tr>
+{% empty %}<tr><td colspan="5" class="muted">{% translate "Пусто." %}</td></tr>{% endfor %}
+</tbody></table></div>

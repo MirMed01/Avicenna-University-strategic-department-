@@ -1,0 +1,4 @@
+{% load i18n %}{% if changes %}<div class="card"><h2>{% translate "Вы сказали — мы сделали" %}</h2>
+<p class="small muted">{% translate "Что изменилось после прошлых опросов студентов." %}</p>
+{% for ch in changes %}<div style="border-left:3px solid var(--ok);padding:4px 10px"><div class="small muted">{{ ch.campaign.org_unit }} · {% translate "студенты сказали:" %} {{ ch.said }}</div><div><b>{% translate "Сделано:" %}</b> {{ ch.done }}</div></div>{% endfor %}
+</div>{% endif %}

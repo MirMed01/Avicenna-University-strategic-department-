@@ -14,8 +14,8 @@ from accounts.permissions import VIEW_ALL, can_manage, has_role, unit_in_scope, 
 from core.models import log
 from norms.models import LEVEL_ORDER, effective_level
 
-from .forms import CampaignForm
-from .models import Campaign, TextAnswer
+from .forms import CampaignForm, ChangeForm
+from .models import Campaign, Change, TextAnswer
 from .voting import VoteError, find_campaign, submit, summary, validate
 
 
@@ -29,6 +29,11 @@ def _status(level, expected):
 
 def _can_view(user, c):
     return has_role(user, *VIEW_ALL) or unit_in_scope(user, c.org_unit, (Role.HEAD, Role.DEAN))
+
+
+def _can_act(user, c):
+    """Записать «вы сказали — мы сделали» может Центр, заведующий кафедрой и декан."""
+    return can_manage(user) or unit_in_scope(user, c.org_unit, (Role.HEAD, Role.DEAN))
 
 
 @login_required
@@ -62,6 +67,14 @@ def detail(request, pk):
         raise PermissionDenied
     manager = can_manage(request.user)
     ctx = {"c": c, "manager": manager, "used": c.codes.filter(used=True).count(), "total": c.codes.count()}
+    from core import config
+
+    ctx["min_rate"] = config.get("feedback_min_rate")
+    ctx["rate"] = round(100 * c.response_count / ctx["total"]) if ctx["total"] else None
+    ctx["low_rate"] = ctx["rate"] is not None and not c.accepting and ctx["rate"] < ctx["min_rate"]
+    ctx["can_change"] = _can_act(request.user, c)
+    ctx["changes"] = c.changes.all()
+    ctx["change_form"] = ChangeForm()
     if c.results_visible:
         rows, derived = summary(c)
         for d in derived:
@@ -117,13 +130,47 @@ def moderate(request, pk):
     return redirect("feedback:detail", t.campaign_id)
 
 
+@login_required
+def change_add(request, pk):
+    c = get_object_or_404(Campaign, pk=pk)
+    if not _can_act(request.user, c) or request.method != "POST":
+        raise PermissionDenied
+    form = ChangeForm(request.POST)
+    if form.is_valid():
+        ch = form.save(commit=False)
+        ch.campaign, ch.created_by = c, request.user
+        ch.save()
+        log(request.user, "create", c, f"«{c}»: вы сказали — мы сделали: {ch.done[:80]}")
+        messages.success(request, _("Записано. Студенты увидят это на странице опросов."))
+    else:
+        messages.error(request, _("Заполните оба поля."))
+    return redirect("feedback:detail", pk)
+
+
+@login_required
+def change_delete(request, pk):
+    ch = get_object_or_404(Change, pk=pk)
+    if not _can_act(request.user, ch.campaign) or request.method != "POST":
+        raise PermissionDenied
+    log(request.user, "delete", ch.campaign, f"«{ch.campaign}»: удалено «мы сделали»: {ch.done[:80]}")
+    ch.delete()
+    return redirect("feedback:detail", ch.campaign_id)
+
+
+def public_changes(org_unit=None, limit=10):
+    qs = Change.objects.filter(is_public=True).select_related("campaign__org_unit")
+    if org_unit is not None:
+        qs = qs.filter(campaign__org_unit=org_unit)
+    return qs[:limit]
+
+
 # ---------- Страницы для студента: без входа в систему ----------
 
 def entry(request):
     code = request.GET.get("code", "").strip()
     if code:
         return redirect("student:vote", code=code.upper())
-    return render(request, "feedback/public_entry.html")
+    return render(request, "feedback/public_entry.html", {"changes": public_changes()})
 
 
 def vote(request, code):
@@ -146,4 +193,5 @@ def vote(request, code):
     for s in c.version.sections.all():
         items = [(it, posted.get(f"i{it.pk}", ""), errors.get(it.pk)) for it in s.items.all()]
         sections.append((s, items))
-    return render(request, "feedback/public_vote.html", {"c": c, "sections": sections, "code": code, "has_errors": bool(errors)})
+    return render(request, "feedback/public_vote.html", {"c": c, "sections": sections, "code": code, "has_errors": bool(errors),
+                                                         "changes": public_changes(c.org_unit, 5)})

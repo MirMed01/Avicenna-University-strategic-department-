@@ -1,0 +1,81 @@
+"""Настройки, которые Центр меняет сам, без программиста (страница «Настройки»).
+
+Значение по умолчанию действует, пока Центр его не изменил. Ориентиры для анализа тестов взяты из литературы
+(docs/ИССЛЕДОВАНИЕ_ПРОЦЕССОВ.md) и не утверждены в ТГМУ — их стоит утвердить на методическом совете.
+"""
+
+from dataclasses import dataclass
+from decimal import Decimal
+
+from django.utils.translation import gettext_lazy as _
+
+
+@dataclass(frozen=True)
+class Spec:
+    key: str
+    kind: type  # int или Decimal
+    default: object
+    label: str
+    help: str
+    min: object
+    max: object
+    group: str
+
+
+SPECS = [
+    Spec("feedback_min_respondents", int, 5, _("Итоги опроса показывать не меньше чем при (ответов)"),
+         _("Значение по умолчанию для новых опросов. Не меньше 3 — иначе можно вычислить, кто что ответил."), 3, 100,
+         _("Опросы студентов")),
+    Spec("feedback_min_rate", int, 50, _("Предупреждать, если ответило меньше (% выданных кодов)"),
+         _("При малой доле ответивших итог может не отражать мнение группы."), 0, 100, _("Опросы студентов")),
+    Spec("minor_to_major", int, 3, _("Сколько незначительных несоответствий по одному разделу норм — повод считать значительным"),
+         _("Программа только предупреждает, решение — за экспертом."), 2, 20, _("Проверки")),
+    Spec("repeat_years", int, 3, _("Искать повторяющиеся несоответствия в проверках за последние (лет)"),
+         "", 1, 10, _("Проверки")),
+    Spec("trend_years", int, 2, _("Предупреждать, если показатель снижается столько лет подряд"),
+         "", 2, 5, _("Проверки")),
+    Spec("risk_high", int, 15, _("Риск высокий, если вероятность × последствия не меньше"),
+         _("Шкала от 1 до 25."), 2, 25, _("Процессы и риски")),
+    Spec("risk_medium", int, 8, _("Риск средний, если вероятность × последствия не меньше"),
+         _("Ниже — низкий риск."), 1, 25, _("Процессы и риски")),
+    Spec("exam_p_min", Decimal, Decimal("0.20"), _("Трудность задания: слишком трудное, если доля верных ниже"),
+         "", Decimal("0"), Decimal("1"), _("Анализ тестов")),
+    Spec("exam_p_max", Decimal, Decimal("0.90"), _("Трудность задания: слишком лёгкое, если доля верных выше"),
+         "", Decimal("0"), Decimal("1"), _("Анализ тестов")),
+    Spec("exam_disc_min", Decimal, Decimal("0.20"), _("Различающая способность: слабая, если ниже"),
+         _("Отрицательная — задание, скорее всего, с ошибкой в ключе."), Decimal("-1"), Decimal("1"), _("Анализ тестов")),
+    Spec("exam_alpha_final", Decimal, Decimal("0.80"), _("Надёжность итогового экзамена: не ниже"),
+         "", Decimal("0"), Decimal("1"), _("Анализ тестов")),
+    Spec("exam_alpha_other", Decimal, Decimal("0.70"), _("Надёжность текущего и промежуточного контроля: не ниже"),
+         "", Decimal("0"), Decimal("1"), _("Анализ тестов")),
+    Spec("exam_distractor_min", int, 5, _("Неверный вариант «не работает», если его выбрали меньше (%)"),
+         "", 0, 50, _("Анализ тестов")),
+]
+BY_KEY = {s.key: s for s in SPECS}
+
+
+def get(key):
+    from .models import Setting
+
+    spec = BY_KEY[key]
+    raw = Setting.objects.filter(key=key).values_list("value", flat=True).first()
+    if raw is None:
+        return spec.default
+    try:
+        return spec.kind(raw)
+    except (ValueError, ArithmeticError):
+        return spec.default
+
+
+def get_many(prefix=""):
+    from .models import Setting
+
+    stored = dict(Setting.objects.filter(key__startswith=prefix).values_list("key", "value"))
+    out = {}
+    for s in SPECS:
+        if s.key.startswith(prefix):
+            try:
+                out[s.key] = s.kind(stored[s.key]) if s.key in stored else s.default
+            except (ValueError, ArithmeticError):
+                out[s.key] = s.default
+    return out

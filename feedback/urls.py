@@ -11,6 +11,8 @@ urlpatterns = [
     path("<int:pk>/codes/add/", views.add_codes, name="add_codes"),
     path("<int:pk>/toggle/", views.toggle, name="toggle"),
     path("texts/<uuid:pk>/", views.moderate, name="moderate"),
+    path("<int:pk>/changes/add/", views.change_add, name="change_add"),
+    path("changes/<int:pk>/delete/", views.change_delete, name="change_delete"),
 ]
 
 public_urlpatterns = [

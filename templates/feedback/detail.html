@@ -1,5 +1,14 @@
 {% extends "base.html" %}{% load kanon i18n %}
-{% block title %}{{ c.title }}{% endblock %}
+{% block title %}{{ c.title }}
+<div class="card"><h2>{% translate "Вы сказали — мы сделали" %}</h2>
+<p class="small muted">{% translate "Что изменили по итогам этого опроса. Студенты видят эти записи на странице опросов — так они знают, что их ответы не пропадают, и охотнее отвечают в следующий раз." %}</p>
+{% for ch in changes %}<div class="row between" style="border-left:3px solid var(--ok);padding:4px 10px"><div><div class="small muted">{% translate "Студенты сказали:" %} {{ ch.said }}</div><div><b>{% translate "Мы сделали:" %}</b> {{ ch.done }}</div>
+{% if not ch.is_public %}<span class="pill">{% translate "не показывается студентам" %}</span>{% endif %}</div>
+{% if can_change %}<form method="post" action="{% url 'feedback:change_delete' ch.pk %}">{% csrf_token %}<button class="btn small ghost">✕</button></form>{% endif %}</div>
+{% empty %}<p class="muted">{% translate "Пока ничего не записано." %}</p>{% endfor %}
+{% if can_change %}<form method="post" action="{% url 'feedback:change_add' c.pk %}" class="f">{% csrf_token %}{% include "_fields.html" with form=change_form %}<button class="btn small">{% translate "Записать" %}</button></form>{% endif %}
+</div>
+{% endblock %}
 {% block content %}
 <p class="small"><a href="{% url 'feedback:index' %}">{% translate "Опросы студентов" %}</a> ›</p>
 <div class="row between"><div><span class="kind">{% blocktranslate with instrument=c.version.instrument.title %}Опрос студентов · {{ instrument }}{% endblocktranslate %}</span><h1>{{ c.title }}</h1>
@@ -12,7 +21,9 @@
   <div class="stat"><b>{{ c.response_count }}</b><span>{% translate "ответов" %}</span></div>
   <div class="stat"><b>{{ used }} / {{ total }}</b><span>{% translate "кодов использовано" %}</span></div>
   <div class="stat"><b>{{ c.min_respondents }}</b><span>{% translate "минимум ответов для показа итогов" %}</span></div>
+  {% if rate is not None %}<div class="stat"><b>{{ rate }} %</b><span>{% translate "доля ответивших от выданных кодов" %}</span></div>{% endif %}
 </div>
+{% if low_rate %}<div class="msg">{% blocktranslate %}Ответили {{ rate }} % — меньше {{ min_rate }} %. Итог может не отражать мнение всей группы: делайте выводы осторожно.{% endblocktranslate %}</div>{% endif %}
 {% if manager %}<form method="post" action="{% url 'feedback:add_codes' c.pk %}" class="row small">{% csrf_token %}
 <input type="number" name="n" value="10" min="1" max="100" style="max-width:90px"><button class="btn small ghost">{% translate "+ Добавить коды" %}</button></form>{% endif %}
 
@@ -43,4 +54,13 @@
 {% if manager %}<p class="small muted">{% translate "Комментарии студентов кафедра видит только после того, как Центр отметит «Показать кафедре» (например, скрываются оскорбления и имена)." %}</p>{% endif %}
 </div>
 {% endif %}
+
+<div class="card"><h2>{% translate "Вы сказали — мы сделали" %}</h2>
+<p class="small muted">{% translate "Что изменили по итогам этого опроса. Студенты видят эти записи на странице опросов — так они знают, что их ответы не пропадают, и охотнее отвечают в следующий раз." %}</p>
+{% for ch in changes %}<div class="row between" style="border-left:3px solid var(--ok);padding:4px 10px"><div><div class="small muted">{% translate "Студенты сказали:" %} {{ ch.said }}</div><div><b>{% translate "Мы сделали:" %}</b> {{ ch.done }}</div>
+{% if not ch.is_public %}<span class="pill">{% translate "не показывается студентам" %}</span>{% endif %}</div>
+{% if can_change %}<form method="post" action="{% url 'feedback:change_delete' ch.pk %}">{% csrf_token %}<button class="btn small ghost">✕</button></form>{% endif %}</div>
+{% empty %}<p class="muted">{% translate "Пока ничего не записано." %}</p>{% endfor %}
+{% if can_change %}<form method="post" action="{% url 'feedback:change_add' c.pk %}" class="f">{% csrf_token %}{% include "_fields.html" with form=change_form %}<button class="btn small">{% translate "Записать" %}</button></form>{% endif %}
+</div>
 {% endblock %}

@@ -33,6 +33,7 @@ class Command(BaseCommand):
         self.instruments()
         self.problems()
         self.iaar()
+        self.processes()
 
     def _unit(self, kind, name, parent, order=0):
         unit, created = OrgUnit.objects.get_or_create(kind=kind, name=name, parent=parent, defaults={"order": order})
@@ -133,12 +134,20 @@ class Command(BaseCommand):
             Item.objects.filter(section__version__instrument__code=d["code"], code=code, text_tg="").update(text_tg=text_tg)
 
     def problems(self):
-        from capa.models import Problem
+        from capa.models import Problem, ProblemGroup
 
+        data = _load("problems.json")
+        groups = {}
+        for i, (code, title) in enumerate(data["groups"]):
+            groups[code], _ = ProblemGroup.objects.get_or_create(code=code, defaults={"title": title, "order": i})
         made = 0
-        for p in _load("problems.json")["problems"]:
+        for p in data["problems"]:
             obj, new = Problem.objects.get_or_create(code=p["code"], defaults={
-                "title": p["title"], "description": p["description"], "typical_actions": "\n".join(p["actions"])})
+                "title": p["title"], "description": p["description"], "typical_actions": "\n".join(p["actions"]),
+                "group": groups.get(p["group"]), "causes": p["causes"]})
+            if not new and obj.group_id is None and p["group"]:
+                # Старые проблемы получают группу один раз; правки Центра не затираются.
+                Problem.objects.filter(pk=obj.pk, group__isnull=True, causes="").update(group=groups[p["group"]], causes=p["causes"])
             if new:
                 made += 1
                 for fw, code in p["indicators"]:
@@ -180,3 +189,24 @@ class Command(BaseCommand):
                                      org_unit=faculties.get(fac), deadline=date(2027, 4, 21))
             c.ensure_assessments()
         self.stdout.write("Подготовка к аккредитации: 3 программы (срок — 21.04.2027, уточните дату визита).")
+
+    def processes(self):
+        """Типовой реестр процессов. Добавляются только новые процессы; паспорта, правленные Центром, не трогаются."""
+        from processes.models import Process
+
+        made = 0
+        for i, d in enumerate(_load("processes.json")["processes"]):
+            obj, new = Process.objects.get_or_create(code=d["code"], defaults={
+                "title": d["title"], "group": d["group"], "owner_position": d["owner_position"], "purpose": d["purpose"],
+                "inputs": d["inputs"], "outputs": d["outputs"], "customers": d["customers"], "order": i})
+            if not new:
+                continue
+            made += 1
+            for fw, code in d["nodes"]:
+                node = NormNode.objects.filter(version__framework__code=fw, code=code, parent__isnull=True).order_by(
+                    "-version__effective_from", "-id").first()
+                if node:
+                    obj.norm_nodes.add(node)
+            for fw, code in d["indicators"]:
+                obj.indicators.add(*Indicator.objects.filter(node__version__framework__code=fw, code=code))
+        self.stdout.write(f"Реестр процессов: добавлено {made}.")

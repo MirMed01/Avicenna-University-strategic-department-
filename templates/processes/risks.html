@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Карта рисков" %}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'processes:index' %}">{% translate "Процессы СМК" %}</a> ›</p>
+<h1>{% translate "Карта рисков" %}</h1>
+<p class="muted">{% blocktranslate %}Открытые риски всех процессов: {{ total }}. По вертикали — вероятность, по горизонтали — последствия (1–5). Границы «средний» и «высокий» задаются в «Настройках».{% endblocktranslate %}</p>
+<div class="tbl"><table class="riskmap"><thead><tr><th></th>{% for i in "12345" %}<th>{{ i }}</th>{% endfor %}</tr></thead><tbody>
+{% for lk, cells in grid %}<tr><th>{{ lk }}</th>{% for c in cells %}<td class="{{ c.level }}">{% if c.risks %}<b>{{ c.risks|length }}</b>{% endif %}</td>{% endfor %}</tr>{% endfor %}
+</tbody></table></div>
+<div class="card"><h2>{% translate "Самые серьёзные риски" %}</h2>
+{% for r, level in top %}<div class="row"><span class="pill {{ level }}">{{ r.score }}</span> <a href="{% url 'processes:detail' r.process_id %}">{{ r.process.code }}</a> {{ r.title }}</div>{% empty %}<p class="muted">{% translate "Рисков нет." %}</p>{% endfor %}</div>
+{% endblock %}

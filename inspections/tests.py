@@ -214,3 +214,37 @@ class RenderTests(Base):
         self.assertIn("18 из 40", html)
         self.assertNotIn("18.00", html)
         self.assertIn(">R</text>", html)  # подпись оси — код расчёта целиком, а не одна буква
+
+
+class HintsTests(Base):
+    def review(self, value):
+        insp, t1, _ = self.make()
+        self.fill(self.head, t1, {self.total: "100", self.part: str(value)})
+        self.client.force_login(self.expert)
+        self.client.post(reverse("inspections:transition", args=[insp.pk, "review"]))
+        return insp
+
+    def test_repeated_nonconformity_is_flagged(self):
+        first = self.review(45)
+        r = self.client.get(reverse("inspections:detail", args=[first.pk]))
+        self.assertNotContains(r, "повторяется")
+        second = self.review(42)
+        r = self.client.get(reverse("inspections:detail", args=[second.pk]))
+        self.assertContains(r, "повторяется")
+        self.assertEqual(len(r.context["repeated"]), 1)
+
+    def test_several_minor_in_one_section_warn(self):
+        from core.models import Setting
+
+        from .models import Result
+
+        insp = self.review(45)
+        r2 = Result.objects.create(inspection=insp, indicator=self.ind, title="1.1 ещё", value=D(44),
+                                   expected_level="medium", achieved="weak")
+        Finding.objects.create(inspection=insp, result=r2, severity="mild", text="ещё одно", auto=False)
+        Setting.objects.create(key="minor_to_major", value="2")
+        r = self.client.get(reverse("inspections:detail", args=[insp.pk]))
+        self.assertEqual(len(r.context["clusters"]), 1)
+        self.assertContains(r, "повод рассмотреть их как значительное")
+        Setting.objects.filter(key="minor_to_major").update(value="3")
+        self.assertEqual(self.client.get(reverse("inspections:detail", args=[insp.pk])).context["clusters"], [])

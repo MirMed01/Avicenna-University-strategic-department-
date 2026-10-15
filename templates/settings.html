@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Настройки" %}{% endblock %}
+{% block content %}
+<h1>{% translate "Настройки" %}</h1>
+<p class="muted">{% translate "Здесь Центр сам меняет правила программы — без программиста. Каждое изменение записывается в журнал." %}</p>
+<div class="card"><h2>{% translate "Справочники" %}</h2>
+<div class="row">
+<a class="btn ghost" href="{% url 'capa:problems' %}">{% translate "Проблемы качества и группы" %}</a>
+<a class="btn ghost" href="{% url 'processes:index' %}">{% translate "Процессы СМК" %}</a>
+<a class="btn ghost" href="{% url 'norms:index' %}">{% translate "Нормы и пороги" %}</a>
+<a class="btn ghost" href="{% url 'instruments:index' %}">{% translate "Инструменты и анкеты" %}</a>
+<a class="btn ghost" href="{% url 'org:tree' %}">{% translate "Структура университета" %}</a>
+<a class="btn ghost" href="{% url 'accounts:users' %}">{% translate "Пользователи и роли" %}</a>
+</div></div>
+<form method="post" class="f">{% csrf_token %}
+{% for e in form.non_field_errors %}<div class="err">{{ e }}</div>{% endfor %}
+{% for title, fields in groups %}<div class="card"><h2>{{ title }}</h2>
+{% for f in fields %}<div>{{ f.label_tag }}{{ f }}{% if f.help_text %}<div class="help">{{ f.help_text }}</div>{% endif %}{% for e in f.errors %}<div class="err">{{ e }}</div>{% endfor %}</div>{% endfor %}
+</div>{% endfor %}
+<p class="small muted">{% translate "Ориентиры для анализа тестов взяты из литературы по медицинскому образованию и в ТГМУ пока не утверждены — их стоит утвердить на методическом совете." %}</p>
+<div class="row"><button class="btn">{% translate "Сохранить" %}</button></div>
+</form>
+{% endblock %}

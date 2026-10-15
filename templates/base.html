@@ -13,10 +13,11 @@
     <a href="{% url 'inspections:index' %}">{% translate "Проверки" %}</a>
     <a href="{% url 'capa:index' %}">{% translate "Планы исправления" %}</a>
     <a href="{% url 'accreditation:index' %}">{% translate "Аккредитация" %}</a>
+    <a href="{% url 'processes:index' %}">{% translate "Процессы" %}</a>
     <a href="{% url 'feedback:index' %}">{% translate "Опросы студентов" %}</a>
     <a href="{% url 'portfolio:my' %}">{% translate "Моё портфолио" %}</a>
     {% if is_verifier %}<a href="{% url 'portfolio:queue' %}">{% translate "Проверка портфолио" %}</a>{% endif %}
-    {% if can_manage %}<a href="{% url 'accounts:users' %}">{% translate "Пользователи" %}</a><a href="{% url 'journal' %}">{% translate "Журнал" %}</a>{% endif %}
+    {% if can_manage %}<a href="{% url 'accounts:users' %}">{% translate "Пользователи" %}</a><a href="{% url 'journal' %}">{% translate "Журнал" %}</a><a href="{% url 'settings' %}">{% translate "Настройки" %}</a>{% endif %}
     <span class="me"><a href="{% url 'accounts:profile' %}">{{ user.full_name|default:user.email }}</a>
       <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>{% translate "Выйти" %}</button></form></span>
   {% endif %}

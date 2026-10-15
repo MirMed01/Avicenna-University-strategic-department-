@@ -151,11 +151,12 @@ class Finding(models.Model):
         MILD = "mild", _("Незначительное несоответствие")
         SEVERE = "severe", _("Значительное несоответствие")
         NOTE = "note", _("Замечание")
+        OPPORTUNITY = "opportunity", _("Возможность для улучшения")
         STRENGTH = "strength", _("Сильная сторона")
 
     inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE, related_name="findings")
     result = models.ForeignKey(Result, null=True, blank=True, on_delete=models.CASCADE, related_name="findings")
-    severity = models.CharField(_("вид"), max_length=10, choices=Severity.choices)
+    severity = models.CharField(_("вид"), max_length=12, choices=Severity.choices)
     text = models.TextField(_("описание"))
     auto = models.BooleanField(default=False)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")

@@ -3,7 +3,9 @@ from django import forms
 from accounts.models import User
 from instruments.forms import indicator_field
 
-from .models import Action, Plan, Problem
+from django.utils.translation import gettext_lazy as _
+
+from .models import Action, Cause, Plan, Problem, ProblemGroup
 
 DATE = forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
 
@@ -55,11 +57,28 @@ class ActionForm(forms.ModelForm):
 
 
 class ProblemForm(forms.ModelForm):
+    cause_set = forms.MultipleChoiceField(label=_("Тип причины"), choices=Cause.choices, required=False,
+                                          widget=forms.CheckboxSelectMultiple)
+
     class Meta:
         model = Problem
-        fields = ["code", "title", "description", "typical_actions", "indicators", "is_active"]
+        fields = ["group", "code", "title", "description", "typical_actions", "indicators", "is_active"]
         widgets = {"indicators": forms.SelectMultiple(attrs={"size": 8})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         indicator_field(self.fields["indicators"])
+        self.fields["group"].queryset = ProblemGroup.objects.filter(is_active=True)
+        if self.instance.pk:
+            self.fields["cause_set"].initial = self.instance.cause_list()
+        self.order_fields(["group", "code", "title", "description", "cause_set"])
+
+    def save(self, commit=True):
+        self.instance.causes = ",".join(self.cleaned_data["cause_set"])
+        return super().save(commit)
+
+
+class ProblemGroupForm(forms.ModelForm):
+    class Meta:
+        model = ProblemGroup
+        fields = ["code", "title", "order", "is_active"]

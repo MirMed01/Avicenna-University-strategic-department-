@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "feedback",
     "dashboard",
     "accreditation",
+    "processes",
 ]
 
 MIDDLEWARE = [
