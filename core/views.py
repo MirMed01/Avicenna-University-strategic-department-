@@ -38,6 +38,9 @@ def home(request):
     ctx["my_overdue"] = Action.objects.filter(
         Q(responsible=u) | Q(plan__owner=u), state=Action.State.PLANNED, due_date__lt=timezone.localdate(),
         plan__state="in_progress").select_related("plan")
+    from management.models import Decision
+
+    ctx["my_decisions"] = Decision.objects.filter(responsible=u, state=Decision.State.OPEN).select_related("review")
     plans = visible_plans(u)
     ctx["open_plans"] = plans.exclude(state__in=["closed", "cancelled"]).count()
     ctx["overdue_plans"] = sum(1 for p in plans if p.overdue)

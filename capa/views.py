@@ -40,7 +40,14 @@ def create(request, finding_pk):
         return redirect("capa:detail", finding.plan.pk)
     ind = finding.result.indicator if finding.result_id else None
     suggested = list(Problem.objects.filter(is_active=True, indicators=ind)) if ind else []
-    initial = {"title": _("Исправление: %(text)s") % {"text": finding.text[:200]}, "problem": suggested[0].pk if len(suggested) == 1 else None}
+    # Сочетание признаков: выше в списке проблема, у которой ниже нормы сразу несколько связанных показателей этой проверки.
+    below = set(insp.findings.filter(severity__in=["mild", "severe"], result__indicator__isnull=False)
+                .values_list("result__indicator_id", flat=True))
+    for p in suggested:
+        p.matches = len(below & set(p.indicators.values_list("pk", flat=True)))
+    suggested.sort(key=lambda p: -p.matches)
+    initial = {"title": _("Исправление: %(text)s") % {"text": finding.text[:200]}, "problem": suggested[0].pk if (len(suggested) == 1 or (
+        suggested and suggested[0].matches > suggested[1].matches)) else None}
     if finding.result_id and finding.result.expected_threshold is not None:
         initial["effectiveness_criterion"] = _(
             "На повторной проверке «%(title)s» достигает порога уровня кафедры (%(threshold)s).") % {

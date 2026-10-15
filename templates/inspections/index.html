@@ -2,7 +2,9 @@
 {% block title %}{% translate "Проверки" %}{% endblock %}
 {% block content %}
 <div class="row between"><h1>{% translate "Проверки кафедр" %}</h1>
-  {% if can_manage %}<a class="btn" href="{% url 'inspections:create' %}">+ {% translate "Назначить проверку" %}</a>{% endif %}</div>
+  <div class="row"><a class="btn ghost" href="{% url 'inspections:practices' %}">{% translate "Лучшие практики" %}</a>
+  {% if can_view_all %}<a class="btn ghost" href="{% url 'inspections:risk_plan' %}">{% translate "План проверок по риску" %}</a>{% endif %}
+  {% if can_manage %}<a class="btn" href="{% url 'inspections:create' %}">+ {% translate "Назначить проверку" %}</a>{% endif %}</div></div>
 <p class="muted">{% translate "Инструменты заполняются, показатели сравниваются с нормой, отклонения записываются в выводы проверки." %}</p>
 <div class="tbl"><table><thead><tr><th>{% translate "Проверка" %}</th><th>{% translate "Подразделение" %}</th><th>{% translate "Статус" %}</th><th>{% translate "Срок" %}</th><th>{% translate "Эксперт" %}</th></tr></thead><tbody>
 {% for i in rows %}<tr><td><a href="{% url 'inspections:detail' i.pk %}">{{ i.title }}</a></td><td>{{ i.org_unit }}</td>

@@ -27,6 +27,7 @@ urlpatterns = [
     path("accreditation/", include("accreditation.urls")),
     path("processes/", include("processes.urls")),
     path("exams/", include("exams.urls")),
+    path("management/", include("management.urls")),
     # Своё имя приложения: иначе ссылки меню «feedback:…» на этих страницах искались бы среди адресов студентов.
     path("s/", include((public_urlpatterns, "student"), namespace="student")),
     path("i18n/", include("django.conf.urls.i18n")),

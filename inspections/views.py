@@ -229,3 +229,30 @@ def delete_finding(request, pk):
     log(request.user, "delete", f.inspection, f"«{f.inspection}»: удалён вывод — {f.text[:80]}")
     f.delete()
     return redirect("inspections:detail", f.inspection_id)
+
+
+@login_required
+def practices(request):
+    """Библиотека лучших практик: сильные стороны, отмеченные на проверках, — чтобы кафедры перенимали опыт друг у друга."""
+    q = request.GET.get("q", "").strip()
+    qs = Finding.objects.filter(severity=Finding.Severity.STRENGTH, inspection__state__in=[St.REVIEW, St.CLOSED]).select_related(
+        "inspection__org_unit").order_by("-inspection__created_at", "id")
+    if q:
+        qs = qs.filter(text__icontains=q) | qs.filter(inspection__org_unit__name__icontains=q)
+    rows = [(f, can_view(request.user, f.inspection)) for f in qs[:300]]
+    return render(request, "inspections/practices.html", {"rows": rows, "q": q})
+
+
+@login_required
+def risk_plan(request):
+    """План проверок по риску: Центр из нескольких человек проверяет в первую очередь тех, кому труднее."""
+    from accounts.permissions import VIEW_ALL, has_role
+    from core import config
+    from org.models import OrgUnit
+
+    from .analysis import risk_ranking
+
+    if not has_role(request.user, *VIEW_ALL):
+        raise PermissionDenied
+    s = config.get_many()
+    return render(request, "inspections/risk_plan.html", {"rows": risk_ranking(OrgUnit.objects.all(), s), "s": s})

@@ -8,6 +8,8 @@
 {% if to_review %}<div class="msg">{% blocktranslate %}Записей портфолио на проверке: <b>{{ to_review }}</b>.{% endblocktranslate %} <a href="{% url 'portfolio:queue' %}">{% translate "Проверить" %}</a></div>{% endif %}
 {% if my_overdue %}<div class="msg error"><b>{% blocktranslate with n=my_overdue|length %}У вас просроченные мероприятия ({{ n }}):{% endblocktranslate %}</b>
 {% for a in my_overdue %}<div><a href="{% url 'capa:detail' a.plan_id %}">{{ a.plan.ref }}</a> — {{ a.title|truncatechars:90 }}, {% blocktranslate with d=a.due_date|date:"d.m.Y" %}срок {{ d }}{% endblocktranslate %}</div>{% endfor %}</div>{% endif %}
+{% if my_decisions %}<div class="msg"><b>{% translate "Решения руководства, порученные вам:" %}</b>
+{% for d in my_decisions %}<div><a href="{% url 'management:detail' d.review_id %}">{{ d.text|truncatechars:90 }}</a>, {% blocktranslate with dd=d.due_date|date:"d.m.Y" %}срок {{ dd }}{% endblocktranslate %}{% if d.overdue %} — <b>{% translate "просрочено" %}</b>{% endif %}</div>{% endfor %}</div>{% endif %}
 <div class="grid">
   <a class="stat" href="{% url 'org:tree' %}"><b>{{ faculties }}</b><span>{% translate "факультетов" %}</span></a>
   <a class="stat" href="{% url 'org:tree' %}"><b>{{ departments }}</b><span>{% translate "кафедр" %}</span></a>

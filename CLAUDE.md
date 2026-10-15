@@ -16,6 +16,7 @@
   `norms` (нормы и уровни), `portfolio` (портфолио преподавателя), `instruments` (инструменты, расчёты — `instruments/scoring.py`),
   `inspections` (проверки, выводы проверок, лепестковая диаграмма; права — `inspections/access.py`),
   `capa` (группы и проблемы качества, планы исправления), `processes` (реестр процессов СМК, риски, Стратегия 4.2/4.3),
+  `exams` (анализ экзаменационных тестов — `exams/analysis.py`), `management` (анализ со стороны руководства, решения),
   `feedback` (анонимные опросы студентов — `feedback/voting.py`; не добавлять связь кода с ответом, время ответа, IP),
   `dashboard` (панель, Стратегия 2030, отчёты Excel/Word — `dashboard/data.py`, `dashboard/reports.py`),
   `accreditation` (самооценка по IAAR, прогноз — `accreditation/readiness.py`), `core` (журнал изменений, начальные данные, «Настройки» — `core/config.py`).

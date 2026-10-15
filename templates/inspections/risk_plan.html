@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "План проверок по риску" %}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'inspections:index' %}">{% translate "Проверки" %}</a> ›</p>
+<h1>{% translate "План проверок по риску" %}</h1>
+<p class="muted">{% translate "Кафедры по убыванию баллов риска: сначала те, кому труднее. Баллы складываются из показателей ниже нормы (последняя проверка и последний опрос), повторяющихся несоответствий, просроченных планов исправления и давности последней проверки. Веса меняются в «Настройках»." %}</p>
+<p class="small muted">{% blocktranslate with a=s.plan_w_severe b=s.plan_w_mild c=s.plan_w_repeat d=s.plan_w_overdue e=s.plan_w_never f=s.plan_w_year %}Сейчас: ниже минимального порога — {{ a }}, ниже требуемого уровня — {{ b }}, повтор — {{ c }}, просроченный план — {{ d }}, не проверялась — {{ e }}, за каждый год после проверки — {{ f }}.{% endblocktranslate %}</p>
+<div class="tbl"><table><thead><tr><th>{% translate "Кафедра" %}</th><th>{% translate "Баллы" %}</th><th>{% translate "Ниже порога / ниже уровня" %}</th><th>{% translate "Повторы" %}</th><th>{% translate "Просрочено планов" %}</th><th>{% translate "Последняя проверка" %}</th><th></th></tr></thead><tbody>
+{% for r in rows %}<tr><td><a href="{% url 'org:detail' r.unit.pk %}">{{ r.unit.name }}</a></td><td class="num"><b>{{ r.score }}</b></td>
+<td class="num">{{ r.severe }} / {{ r.mild }}</td><td class="num">{{ r.repeat }}</td><td class="num">{{ r.overdue }}</td>
+<td class="small">{% if r.last %}<a href="{% url 'inspections:detail' r.last.pk %}">{{ r.last.created_at|date:"d.m.Y" }}</a>{% else %}<span class="pill warn">{% translate "не проверялась" %}</span>{% endif %}</td>
+<td>{% if r.planned %}<a class="small" href="{% url 'inspections:detail' r.planned.pk %}">{% translate "уже назначена" %}</a>{% elif can_manage %}<a class="btn small ghost" href="{% url 'inspections:create' %}?unit={{ r.unit.pk }}">{% translate "Назначить" %}</a>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="7" class="muted">{% translate "Кафедр нет." %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

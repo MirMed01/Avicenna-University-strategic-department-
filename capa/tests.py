@@ -198,3 +198,24 @@ class ClassifierTests(CapaBase):
     def test_head_cannot_edit_classifier(self):
         self.client.force_login(self.head)
         self.assertEqual(self.client.get(reverse("capa:group_create")).status_code, 403)
+
+
+class CombinationTests(CapaBase):
+    def test_problem_with_more_matching_indicators_ranks_first(self):
+        from inspections.models import Result
+
+        from .models import Problem
+
+        # Второй показатель этой проверки тоже ниже нормы и связан только с «синдромной» проблемой.
+        other_ind = self.ind_nothr
+        r2 = Result.objects.create(inspection=self.insp, indicator=other_ind, title="1.2", value=10,
+                                   expected_level="medium", achieved="weak")
+        Finding.objects.create(inspection=self.insp, result=r2, severity="mild", text="1.2 ниже", auto=False)
+        combo = Problem.objects.create(code="К-1", title="Кадровая проблема по сочетанию")
+        combo.indicators.add(self.ind, other_ind)
+        self.client.force_login(self.expert)
+        r = self.client.get(reverse("capa:create", args=[self.finding.pk]))
+        self.assertEqual(r.context["suggested"][0], combo)
+        self.assertEqual(r.context["suggested"][0].matches, 2)
+        self.assertEqual(r.context["form"].initial["problem"], combo.pk)
+        self.assertContains(r, "ниже нормы 2 связанных показателя")

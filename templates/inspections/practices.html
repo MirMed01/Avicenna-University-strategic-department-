@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Лучшие практики" %}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'inspections:index' %}">{% translate "Проверки" %}</a> ›</p>
+<h1>{% translate "Библиотека лучших практик" %}</h1>
+<p class="muted">{% translate "Сильные стороны кафедр, отмеченные экспертами на проверках. Перенимайте опыт: свяжитесь с кафедрой и спросите, как у них это устроено." %}</p>
+<form method="get" class="row"><input type="search" name="q" value="{{ q }}" placeholder="{% translate "Поиск: ОСКЭ, симуляция, наставничество…" %}" style="max-width:360px"><button class="btn small ghost">{% translate "Найти" %}</button></form>
+{% for f, visible in rows %}<div class="card" style="border-left:3px solid var(--ok)"><div class="small muted">{{ f.inspection.org_unit }} · {{ f.inspection.created_at|date:"d.m.Y" }}{% if visible %} · <a href="{% url 'inspections:detail' f.inspection_id %}">{% translate "проверка" %}</a>{% endif %}</div><div>{{ f.text }}</div></div>
+{% empty %}<p class="muted">{% if q %}{% translate "Ничего не найдено." %}{% else %}{% translate "Пока ни одной сильной стороны не отмечено. Эксперт добавляет их на странице проверки как вывод вида «Сильная сторона»." %}{% endif %}</p>{% endfor %}
+{% endblock %}

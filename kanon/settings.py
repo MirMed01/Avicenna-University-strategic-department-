@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "accreditation",
     "processes",
     "exams",
+    "management",
 ]
 
 MIDDLEWARE = [

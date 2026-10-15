@@ -263,3 +263,39 @@ class DeanFillsProgrammeReportTests(Base):
         t.refresh_from_db()
         self.assertEqual(t.status, Task.Status.SUBMITTED)
         self.assertEqual(self.fill(self.head, t, {n: "1"}).status_code, 403)  # заведующий кафедрой — не декан
+
+
+class PracticesAndRiskPlanTests(Base):
+    def reviewed(self, value):
+        insp, t1, _ = self.make()
+        self.fill(self.head, t1, {self.total: "100", self.part: str(value)})
+        self.client.force_login(self.expert)
+        self.client.post(reverse("inspections:transition", args=[insp.pk, "review"]))
+        return insp
+
+    def test_strengths_are_shared_with_everyone(self):
+        insp = self.reviewed(70)
+        Finding.objects.create(inspection=insp, severity="strength", text="Отличная симуляционная подготовка к ОСКЭ")
+        Finding.objects.create(inspection=insp, severity="note", text="Мелкое замечание")
+        self.client.force_login(self.other_head)  # чужая кафедра тоже учится
+        r = self.client.get(reverse("inspections:practices"))
+        self.assertContains(r, "Отличная симуляционная подготовка")
+        self.assertNotContains(r, "Мелкое замечание")
+        self.assertNotContains(self.client.get(reverse("inspections:practices") + "?q=наставничество"), "Отличная")
+
+    def test_risk_plan_orders_by_score_and_follows_settings(self):
+        from core.models import Setting
+
+        self.reviewed(30)  # Хирургия: ниже всех порогов
+        self.client.force_login(self.director)
+        rows = self.client.get(reverse("inspections:risk_plan")).context["rows"]
+        names = [r["unit"].name for r in rows]
+        # Терапия не проверялась (5 баллов), Хирургия — значительное несоответствие (3 балла)
+        self.assertEqual(names, ["Терапия", "Хирургия"])
+        Setting.objects.create(key="plan_w_severe", value="10")
+        rows = self.client.get(reverse("inspections:risk_plan")).context["rows"]
+        self.assertEqual([r["unit"].name for r in rows], ["Хирургия", "Терапия"])
+
+    def test_head_cannot_see_risk_plan(self):
+        self.client.force_login(self.head)
+        self.assertEqual(self.client.get(reverse("inspections:risk_plan")).status_code, 403)

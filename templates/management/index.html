@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Анализ со стороны руководства" %}{% endblock %}
+{% block content %}
+<div class="row between"><h1>{% translate "Анализ со стороны руководства" %}</h1>{% if manager %}<a class="btn" href="{% url 'management:create' %}">{% translate "+ Новый анализ" %}</a>{% endif %}</div>
+<p class="muted">{% translate "Раз в год (или чаще) руководство рассматривает работу системы качества (ISO 9001 и ISO 21001, п. 9.3). Программа сама собирает сводку за период, а решения руководства с ответственными и сроками отслеживаются до выполнения." %}</p>
+{% if open_decisions %}<div class="card"><h2>{% translate "Невыполненные решения" %}</h2>
+{% for d in open_decisions %}<div class="row between"><div>{{ d.text|truncatechars:120 }} <span class="small muted">· {{ d.responsible|default:"—" }} · <a href="{% url 'management:detail' d.review_id %}">{{ d.review.title }}</a></span></div>
+<span class="pill {% if d.overdue %}bad{% endif %}">{% translate "срок" %} {{ d.due_date|date:"d.m.Y" }}</span></div>{% endfor %}</div>{% endif %}
+<div class="tbl"><table><thead><tr><th>{% translate "Заседание" %}</th><th>{% translate "Дата" %}</th><th>{% translate "Период" %}</th><th>{% translate "Статус" %}</th></tr></thead><tbody>
+{% for r in reviews %}<tr><td><a href="{% url 'management:detail' r.pk %}">{{ r.title }}</a></td><td>{{ r.date|date:"d.m.Y" }}</td><td class="small">{{ r.period_from|date:"d.m.Y" }} — {{ r.period_to|date:"d.m.Y" }}</td><td>{{ r.get_state_display }}</td></tr>
+{% empty %}<tr><td colspan="4" class="muted">{% translate "Пока ни одного заседания." %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

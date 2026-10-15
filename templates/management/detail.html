@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{{ r.title }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'management:index' %}">{% translate "Анализ со стороны руководства" %}</a> ›</p>
+<div class="row between"><div><span class="kind">{{ r.get_state_display }} · {{ r.date|date:"d.m.Y" }}</span><h1>{{ r.title }}</h1>
+<p class="muted">{% blocktranslate with a=r.period_from|date:"d.m.Y" b=r.period_to|date:"d.m.Y" %}Период: {{ a }} — {{ b }}{% endblocktranslate %}</p></div>
+{% if manager %}<div class="row"><a class="btn ghost" href="{% url 'management:edit' r.pk %}">{% translate "Изменить" %}</a>
+{% if r.state == "draft" %}<form method="post" action="{% url 'management:refresh' r.pk %}">{% csrf_token %}<button class="btn ghost">{% translate "Обновить сводку" %}</button></form>
+<form method="post" action="{% url 'management:held' r.pk %}">{% csrf_token %}<button class="btn">{% translate "Заседание проведено" %}</button></form>{% endif %}</div>{% endif %}</div>
+
+<div class="card"><h2>{% translate "Сводка за период" %}</h2>
+<p class="small muted">{% blocktranslate with d=i.collected %}Собрана программой {{ d }}.{% endblocktranslate %}{% if r.state == "draft" %} {% translate "После отметки «Заседание проведено» сводка больше не меняется." %}{% endif %}</p>
+<div class="tbl"><table><tbody>
+<tr><th>{% translate "Решения прошлых заседаний" %}</th><td>{% blocktranslate with t=i.prev_decisions.total d=i.prev_decisions.done o=i.prev_decisions.open v=i.prev_decisions.overdue %}всего {{ t }}, выполнено {{ d }}, выполняется {{ o }}, просрочено {{ v }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Проверки" %}</th><td>{% blocktranslate with n=i.inspections.count u=i.inspections.units %}проведено {{ n }}, подразделений {{ u }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Выводы проверок" %}</th><td>{% blocktranslate with a=i.inspections.severe b=i.inspections.mild c=i.inspections.note d=i.inspections.opportunity e=i.inspections.strength %}значительных несоответствий {{ a }}, незначительных {{ b }}, замечаний {{ c }}, возможностей для улучшения {{ d }}, сильных сторон {{ e }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Планы исправления" %}</th><td>{% blocktranslate with a=i.plans.opened b=i.plans.closed_effective c=i.plans.open d=i.plans.overdue %}открыто за период {{ a }}, закрыто результативно {{ b }}; сейчас в работе {{ c }}, просрочено {{ d }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Мнение студентов и сторон" %}</th><td>{% blocktranslate with a=i.feedback.campaigns b=i.feedback.responses c=i.feedback.changes %}опросов {{ a }}, ответов {{ b }}, записей «мы сделали» {{ c }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Стратегия 2030" %}</th><td>{% blocktranslate with y=i.strategy.year a=i.strategy.entered b=i.strategy.met_medium %}за {{ y }} год внесено показателей {{ a }}, из них достигли цели 2027 года {{ b }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Процессы и риски" %}</th><td>{% blocktranslate with k=i.processes.key f=i.processes.full d=i.processes.digital h=i.processes.high_risks %}ключевых процессов {{ k }}, с полным паспортом {{ f }} %, в цифровой системе {{ d }} %, высоких рисков {{ h }}{% endblocktranslate %}</td></tr>
+<tr><th>{% translate "Анализ тестов" %}</th><td>{% blocktranslate with a=i.exams.count b=i.exams.low_reliability %}проанализировано тестов {{ a }}, с недостаточной надёжностью {{ b }}{% endblocktranslate %}</td></tr>
+</tbody></table></div></div>
+
+<div class="card"><h2>{% translate "Сведения заседания" %}</h2>
+<p><b>{% translate "Участники:" %}</b> {{ r.participants|linebreaksbr|default:"—" }}</p>
+<p><b>{% translate "Изменения условий:" %}</b> {{ r.changes|linebreaksbr|default:"—" }}</p>
+<p><b>{% translate "Достаточность ресурсов:" %}</b> {{ r.resources|linebreaksbr|default:"—" }}</p>
+<p><b>{% translate "Выводы руководства:" %}</b> {{ r.conclusions|linebreaksbr|default:"—" }}</p></div>
+
+<div class="card"><h2>{% translate "Решения" %}</h2>
+{% for d, can in decisions %}<div style="border-left:3px solid {% if d.state == 'done' %}var(--ok){% elif d.overdue %}var(--bad){% else %}var(--line){% endif %};padding:4px 10px">
+<div>{{ d.text|linebreaksbr }}</div><div class="small muted">{{ d.responsible|default:"—" }} · {% translate "срок" %} {{ d.due_date|date:"d.m.Y" }} · {{ d.get_state_display }}{% if d.overdue %} · <b>{% translate "просрочено" %}</b>{% endif %}</div>
+{% if d.result %}<div class="small"><b>{% translate "Сделано:" %}</b> {{ d.result }}</div>{% endif %}
+{% if can and d.state == "open" %}<form method="post" action="{% url 'management:decision_report' d.pk %}" class="row small">{% csrf_token %}
+<select name="state">{% for v, l in report_form.fields.state.choices %}<option value="{{ v }}"{% if v == d.state %} selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+<input type="text" name="result" placeholder="{% translate "Что сделано" %}" style="max-width:360px"><button class="btn small ghost">{% translate "Отметить" %}</button></form>{% endif %}</div>
+{% empty %}<p class="muted">{% translate "Решений пока нет." %}</p>{% endfor %}
+{% if manager %}<form method="post" action="{% url 'management:decision_add' r.pk %}" class="f">{% csrf_token %}{% include "_fields.html" with form=decision_form %}<button class="btn small">{% translate "+ Решение" %}</button></form>{% endif %}</div>
+{% endblock %}
