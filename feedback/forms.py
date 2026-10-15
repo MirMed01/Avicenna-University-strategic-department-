@@ -18,9 +18,15 @@ class CampaignForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["version"].queryset = InstrumentVersion.objects.filter(
-            status=InstrumentVersion.Status.PUBLISHED, instrument__respondent=Instrument.Respondent.STUDENT).select_related("instrument")
+            status=InstrumentVersion.Status.PUBLISHED,
+            # Анонимно по кодам опрашивают студентов, выпускников и работодателей (внешних).
+            instrument__respondent__in=[Instrument.Respondent.STUDENT, Instrument.Respondent.GRADUATE,
+                                        Instrument.Respondent.EXTERNAL]).select_related("instrument")
         self.fields["version"].label_from_instance = lambda v: _("%(title)s (в.%(number)s)") % {"title": v.instrument.title, "number": v.number}
-        self.fields["org_unit"].queryset = OrgUnit.objects.filter(is_active=True, kind=OrgUnit.Kind.DEPARTMENT).order_by("name")
+        self.fields["org_unit"].queryset = OrgUnit.objects.filter(
+            is_active=True, kind__in=[OrgUnit.Kind.DEPARTMENT, OrgUnit.Kind.FACULTY]).order_by("path")
+        self.fields["org_unit"].label_from_instance = lambda u: ("— " * u.depth) + u.name
+        self.fields["org_unit"].label = _("Кафедра или факультет")
         if not self.is_bound:
             from core import config
 

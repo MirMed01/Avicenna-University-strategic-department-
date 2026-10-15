@@ -248,3 +248,18 @@ class HintsTests(Base):
         self.assertContains(r, "повод рассмотреть их как значительное")
         Setting.objects.filter(key="minor_to_major").update(value="3")
         self.assertEqual(self.client.get(reverse("inspections:detail", args=[insp.pk])).context["clusters"], [])
+
+
+class DeanFillsProgrammeReportTests(Base):
+    def test_dean_fills_dean_instrument_in_faculty_inspection(self):
+        dean = self.user("dean@x.tj", Role.DEAN, self.fac)
+        inst = Instrument.objects.create(code="prog", title="Отчёт по программе", kind="data_form", respondent="dean")
+        v = InstrumentVersion.objects.create(instrument=inst)
+        n = Item.objects.create(section=Section.objects.create(version=v, title="Р"), code="n", text="Студентов", type="number")
+        v.publish()
+        insp = Inspection.objects.create(title="Мониторинг программы", org_unit=self.fac, lead_expert=self.expert, state="collecting")
+        t = Task.objects.create(inspection=insp, version=v)
+        self.assertEqual(self.fill(dean, t, {n: "120"}).status_code, 302)
+        t.refresh_from_db()
+        self.assertEqual(t.status, Task.Status.SUBMITTED)
+        self.assertEqual(self.fill(self.head, t, {n: "1"}).status_code, 403)  # заведующий кафедрой — не декан

@@ -111,3 +111,42 @@ class DemoDashboardTests(TestCase):
         self.assertEqual(len(r.context["heat"]["rows"]), 1)
         self.assertIn("СТ-1", r.context["heat"]["codes"])  # итог опроса студентов попал в карту
         self.assertContains(r, "c-warn")
+
+
+class HistoryTests(InspBase):
+    """История показателей кафедры по годам и предупреждение об ухудшении."""
+
+    def year_inspection(self, year, value):
+        from datetime import datetime
+
+        from django.utils import timezone as tz
+
+        from inspections.models import Inspection
+
+        insp, t1, _ = self.make()
+        self.fill(self.head, t1, {self.total: "100", self.part: str(value)})
+        self.client.force_login(self.expert)
+        self.client.post(reverse("inspections:transition", args=[insp.pk, "review"]))
+        Inspection.objects.filter(pk=insp.pk).update(created_at=tz.make_aware(datetime(year, 5, 1)))
+        return insp
+
+    def test_years_and_worsening_flag(self):
+        from .history import unit_history
+
+        for year, v in ((2024, 70), (2025, 60), (2026, 55)):
+            self.year_inspection(year, v)
+        h = unit_history(self.dep, 2)
+        self.assertEqual(h["years"], [2024, 2025, 2026])
+        row = h["rows"][0]
+        self.assertEqual([c["value"] for c in row["cells"]], [70, 60, 55])
+        self.assertTrue(row["worsening"])
+        self.assertEqual((row["first"], row["last"]), ((2024, 70), (2026, 55)))
+        self.assertFalse(unit_history(self.dep, 3)["rows"][0]["worsening"])
+
+    def test_page_access(self):
+        self.year_inspection(2025, 60)
+        self.client.force_login(self.head)
+        r = self.client.get(reverse("dashboard:history", args=[self.dep.pk]))
+        self.assertContains(r, "История показателей по годам")
+        self.client.force_login(self.other_head)
+        self.assertEqual(self.client.get(reverse("dashboard:history", args=[self.dep.pk])).status_code, 403)

@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{{ a.title }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'exams:index' %}">{% translate "Анализ тестов" %}</a> ›</p>
+<div class="row between"><div><span class="kind">{{ a.get_kind_display }} · {{ a.org_unit }} · {{ a.exam_date|date:"d.m.Y" }}</span><h1>{{ a.title }}</h1></div>
+{% if can_delete %}<form method="post" action="{% url 'exams:delete' a.pk %}" onsubmit="return confirm('{% translate "Удалить анализ?" %}')">{% csrf_token %}<button class="btn small ghost">{% translate "Удалить" %}</button></form>{% endif %}</div>
+<div class="grid">
+  <div class="stat"><b>{{ d.n }}</b><span>{% translate "студентов" %}</span></div>
+  <div class="stat"><b>{{ d.k }}</b><span>{% translate "заданий" %}</span></div>
+  <div class="stat"><b>{{ d.mean_pct }} %</b><span>{% blocktranslate with sd=d.sd %}средний результат (SD {{ sd }} задания){% endblocktranslate %}</span></div>
+  <div class="stat"><b>{% if d.alpha is None %}—{% else %}{{ d.alpha }}{% endif %}</b><span>{% blocktranslate %}надёжность (KR-20), нужно не ниже {{ alpha_min }}{% endblocktranslate %}</span></div>
+  <div class="stat"><b>{% if d.sem is None %}—{% else %}± {{ d.sem }}{% endif %}</b><span>{% translate "стандартная ошибка измерения (в заданиях)" %}</span></div>
+</div>
+{% if few %}<div class="msg">{% blocktranslate with n=d.n m=s.exam_min_students %}В анализе {{ n }} студентов — меньше {{ m }}. Показатели заданий на малой группе неустойчивы: делайте выводы осторожно.{% endblocktranslate %}</div>{% endif %}
+{% if alpha_low %}<div class="msg error">{% blocktranslate %}Надёжность теста ниже {{ alpha_min }}: по нему нельзя уверенно принимать решения о студентах. Обычно помогает убрать или исправить задания с отрицательной и слабой различающей способностью и добавить заданий.{% endblocktranslate %}</div>{% endif %}
+<div class="card"><h2>{% translate "Итог" %}</h2>
+<p>{% blocktranslate with n=to_review %}Заданий, которые стоит пересмотреть: {{ n }}.{% endblocktranslate %}</p>
+<ul class="small">
+{% if count.negative %}<li>{% blocktranslate with n=count.negative %}С отрицательной различающей способностью — {{ n }}: сильные студенты отвечают хуже слабых, скорее всего ошибка в ключе или в формулировке.{% endblocktranslate %}</li>{% endif %}
+{% if count.weak %}<li>{% blocktranslate with n=count.weak %}Со слабой различающей способностью — {{ n }}: задание плохо отличает подготовленных от неподготовленных.{% endblocktranslate %}</li>{% endif %}
+{% if count.hard %}<li>{% blocktranslate with n=count.hard %}Слишком трудных — {{ n }}.{% endblocktranslate %}</li>{% endif %}
+{% if count.easy %}<li>{% blocktranslate with n=count.easy %}Слишком лёгких — {{ n }}.{% endblocktranslate %}</li>{% endif %}
+{% if count.no_variance %}<li>{% blocktranslate with n=count.no_variance %}Без разброса (все ответили одинаково) — {{ n }}.{% endblocktranslate %}</li>{% endif %}
+{% if count.distractor %}<li>{% blocktranslate with n=count.distractor %}С неработающими неверными вариантами — {{ n }}: их почти никто не выбирает, их стоит заменить.{% endblocktranslate %}</li>{% endif %}
+</ul>
+<p class="small muted">{% blocktranslate with pmin=s.exam_p_min pmax=s.exam_p_max dmin=s.exam_disc_min %}Пороги: трудность от {{ pmin }} до {{ pmax }}, различающая способность не ниже {{ dmin }}. Их меняют в «Настройках».{% endblocktranslate %}</p></div>
+<div class="tbl"><table><thead><tr><th>{% translate "Задание" %}</th><th>{% translate "Трудность (доля верных)" %}</th><th>{% translate "Различающая способность" %}</th><th>{% translate "Верхние − нижние 27 %" %}</th>{% if d.has_key %}<th>{% translate "Варианты (% выбравших)" %}</th>{% endif %}<th>{% translate "Замечания" %}</th></tr></thead><tbody>
+{% for it in items %}<tr><td class="num">{{ it.label }}</td><td class="num">{{ it.p }}</td><td class="num">{% if it.r is None %}—{% else %}{{ it.r }}{% endif %}</td><td class="num">{{ it.d }}</td>
+{% if d.has_key %}<td class="small">{% for o, share in it.options %}{% if o == it.key %}<b>{{ o }}: {{ share }}</b>{% else %}{{ o }}: {{ share }}{% endif %}{% if not forloop.last %} · {% endif %}{% endfor %}</td>{% endif %}
+<td>{% for f in it.flags %}{% if f == "negative" %}<span class="pill bad">{% translate "проверьте ключ" %}</span>{% elif f == "weak" %}<span class="pill warn">{% translate "слабо различает" %}</span>{% elif f == "hard" %}<span class="pill warn">{% translate "слишком трудное" %}</span>{% elif f == "easy" %}<span class="pill warn">{% translate "слишком лёгкое" %}</span>{% elif f == "no_variance" %}<span class="pill">{% translate "нет разброса" %}</span>{% elif f == "distractor" %}<span class="pill warn">{% translate "не работают:" %} {{ it.dead|join:", " }}</span>{% endif %} {% empty %}<span class="pill ok">{% translate "в порядке" %}</span>{% endfor %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% if a.note %}<p class="small muted">{{ a.note }}</p>{% endif %}
+{% endblock %}

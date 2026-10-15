@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% load i18n kanon %}
+{% block title %}{% translate "История показателей" %}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'org:detail' unit.pk %}">{{ unit }}</a> ›</p>
+<h1>{% translate "История показателей по годам" %}</h1>
+<p class="muted">{% blocktranslate %}Значения по проверкам и опросам студентов за все годы: «было — стало». Цвет — сравнение с уровнем строгости подразделения. Флажок ставится, если показатель ухудшается {{ trend }} года подряд (меняется в «Настройках»).{% endblocktranslate %}</p>
+{% if h.rows %}<div class="tbl"><table class="heat"><thead><tr><th>{% translate "Показатель" %}</th>{% for y in h.years %}<th>{{ y }}</th>{% endfor %}<th>{% translate "Было → стало" %}</th></tr></thead><tbody>
+{% for r in h.rows %}<tr><td>{{ r.title }}{% if r.worsening %} <span class="pill bad">{% blocktranslate with n=r.streak %}ухудшается {{ n }} г. подряд{% endblocktranslate %}</span>{% endif %}</td>
+{% for c in r.cells %}<td>{% if c %}<span class="pill {% if c.status == 'ok' %}ok{% elif c.status == 'mild' %}warn{% elif c.status == 'severe' %}bad{% endif %}">{{ c.value|num }}</span>{% else %}·{% endif %}</td>{% endfor %}
+<td class="small">{% if r.last %}{{ r.first.1|num }} ({{ r.first.0 }}) → {{ r.last.1|num }} ({{ r.last.0 }}){% else %}—{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% else %}<p class="muted">{% translate "Пока нет посчитанных проверок и опросов с итогами." %}</p>{% endif %}
+{% endblock %}

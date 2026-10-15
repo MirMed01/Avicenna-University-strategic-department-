@@ -223,3 +223,27 @@ class LoopTests(Base):
         self.client.force_login(self.director)
         r = self.client.get(reverse("feedback:create"))
         self.assertEqual(r.context["form"]["min_respondents"].initial, 8)
+
+
+class OtherRespondentsTests(Base):
+    def test_graduate_survey_for_faculty_can_be_created(self):
+        inst = Instrument.objects.create(code="gr", title="Опрос выпускников", kind="survey", respondent="graduate")
+        v = InstrumentVersion.objects.create(instrument=inst)
+        Item.objects.create(section=Section.objects.create(version=v, title="Р"), code="a", text="Готов?", type="scale")
+        v.publish()
+        fac = self.dep.parent
+        self.client.force_login(self.director)
+        r = self.client.post(reverse("feedback:create"), {
+            "title": "Выпуск 2025", "version": v.pk, "org_unit": fac.pk, "closes_on": (timezone.localdate() + timedelta(days=30)).isoformat(),
+            "min_respondents": "5", "code_count": "40"})
+        c = Campaign.objects.get(title="Выпуск 2025")
+        self.assertRedirects(r, reverse("feedback:detail", args=[c.pk]))
+        self.assertEqual((c.org_unit, c.codes.count()), (fac, 40))
+
+
+class StudentPageWhileLoggedInTests(Base):
+    def test_director_can_open_student_pages(self):
+        """Дефект: вошедший в систему сотрудник открывал /s/ — ошибка 500 (ссылки меню искались среди адресов студентов)."""
+        self.client.force_login(self.director)
+        self.assertEqual(self.client.get(reverse("student:entry")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("student:vote", args=[self.codes[0]])).status_code, 200)

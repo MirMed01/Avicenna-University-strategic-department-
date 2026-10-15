@@ -211,6 +211,18 @@
     [
      "tsmu-strategy-2030",
      "1.1"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-1"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-2"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-3"
     ]
    ]
   },
@@ -265,6 +277,14 @@
     [
      "tsmu-strategy-2030",
      "1.2"
+    ],
+    [
+     "tsmu-internal",
+     "СР-2"
+    ],
+    [
+     "tsmu-internal",
+     "СР-3"
     ]
    ]
   },
@@ -311,6 +331,10 @@
     [
      "tsmu-internal",
      "ОСКЭ-2"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-2"
     ]
    ]
   },
@@ -345,7 +369,16 @@
      "4"
     ]
    ],
-   "indicators": []
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-1"
+    ],
+    [
+     "tsmu-internal",
+     "СР-6"
+    ]
+   ]
   },
   {
    "code": "О-6",
@@ -374,7 +407,12 @@
      "3"
     ]
    ],
-   "indicators": []
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-3"
+    ]
+   ]
   },
   {
    "code": "О-7",
@@ -411,7 +449,24 @@
      "9"
     ]
    ],
-   "indicators": []
+   "indicators": [
+    [
+     "tsmu-internal",
+     "ОП-4"
+    ],
+    [
+     "tsmu-internal",
+     "ОП-5"
+    ],
+    [
+     "tsmu-internal",
+     "ВЫП-1"
+    ],
+    [
+     "tsmu-internal",
+     "РАБ-1"
+    ]
+   ]
   },
   {
    "code": "О-8",
@@ -490,6 +545,10 @@
     [
      "tsmu-strategy-2030",
      "2.3"
+    ],
+    [
+     "tsmu-internal",
+     "ВП-1"
     ]
    ]
   },
@@ -629,6 +688,10 @@
     [
      "tsmu-internal",
      "СТ-1"
+    ],
+    [
+     "tsmu-internal",
+     "СР-1"
     ]
    ]
   }

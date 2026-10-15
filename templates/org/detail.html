@@ -22,7 +22,8 @@
 {% endif %}
 
 {% if inspections or can_manage %}<div class="card"><div class="row between"><h2>{% translate "Проверки" %}</h2>
-{% if can_manage and unit.kind != "university" %}<a class="btn small" href="{% url 'inspections:create' %}?unit={{ unit.pk }}">+ {% translate "Назначить проверку" %}</a>{% endif %}</div>
+<div class="row">{% if inspections %}<a class="btn small ghost" href="{% url 'dashboard:history' unit.pk %}">{% translate "История показателей по годам" %}</a>{% endif %}
+{% if can_manage and unit.kind != "university" %}<a class="btn small" href="{% url 'inspections:create' %}?unit={{ unit.pk }}">+ {% translate "Назначить проверку" %}</a>{% endif %}</div></div>
 {% for i in inspections %}<div><a href="{% url 'inspections:detail' i.pk %}">{{ i.title }}</a> · {% include "inspections/_state.html" with s=i.state label=i.get_state_display %} <span class="small muted">{{ i.created_at|date:"d.m.Y" }}</span></div>
 {% empty %}<p class="muted small">{% translate "Проверок не было." %}</p>{% endfor %}</div>{% endif %}
 

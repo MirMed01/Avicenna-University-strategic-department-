@@ -16,7 +16,7 @@
 <div class="card"><h2>{% translate "Тепловая карта кафедр" %}</h2>
 <p class="small muted">{% translate "По последней посчитанной проверке и последнему опросу студентов каждой кафедры. Цвет — сравнение с уровнем строгости этой кафедры. Сверху — кафедры с наибольшим числом отклонений." %}</p>
 {% if heat.rows %}<div class="tbl"><table class="heat"><thead><tr><th>{% translate "Кафедра" %}</th>{% for c, t in heat.codes|zip_titles:heat.titles %}<th class="num" title="{{ t }}">{{ c }}</th>{% endfor %}</tr></thead><tbody>
-{% for row in heat.rows %}<tr><td>{% if row.inspection %}<a href="{% url 'inspections:detail' row.inspection.pk %}">{{ row.unit.name }}</a>{% else %}{{ row.unit.name }}{% endif %}</td>
+{% for row in heat.rows %}<tr><td>{% if row.inspection %}<a href="{% url 'inspections:detail' row.inspection.pk %}">{{ row.unit.name }}</a>{% else %}{{ row.unit.name }}{% endif %} <a class="small" href="{% url 'dashboard:history' row.unit.pk %}" title="{% translate "История показателей по годам" %}">{% translate "по годам" %}</a></td>
 {% for c in row.line %}<td class="num {% if c.status == 'ok' %}c-ok{% elif c.status == 'mild' %}c-warn{% elif c.status == 'severe' %}c-bad{% endif %}">{% if c %}{{ c.value|num }}{% else %}·{% endif %}</td>{% endfor %}</tr>{% endfor %}
 </tbody></table></div>
 <div class="row small" style="margin-top:8px"><span class="pill ok">{% translate "норма" %}</span><span class="pill warn">{% translate "ниже требуемого уровня" %}</span><span class="pill bad">{% translate "ниже минимального порога" %}</span><span class="pill">{% translate "без цвета — порог не задан" %}</span><span class="muted">{% translate "· — нет данных" %}</span></div>

@@ -33,6 +33,8 @@ def can_fill(user, task):
     respondent = task.version.instrument.respondent
     if respondent in ("head",):
         return unit_in_scope(user, insp.org_unit, (Role.HEAD,))
+    if respondent == "dean":
+        return unit_in_scope(user, insp.org_unit, (Role.DEAN,))
     if respondent in ("teacher", "examiner"):
         return unit_in_scope(user, insp.org_unit, (Role.HEAD, Role.TEACHER))
     return False

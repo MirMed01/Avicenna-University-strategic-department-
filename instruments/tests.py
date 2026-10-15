@@ -155,7 +155,14 @@ class ViewTests(TestCase):
 class SeedTests(TestCase):
     def test_seed_instruments(self):
         call_command("load_initial_data", stdout=StringIO())
-        self.assertEqual(Instrument.objects.count(), 5)  # + анкета студентов (этап 5)
+        self.assertEqual(Instrument.objects.count(), 10)  # + отчёт по программе, среда, взаимное посещение, выпускники, работодатели
+        env = Instrument.objects.get(code="learning-environment").current_version()
+        sub = env.derived.get(code="СР-3")
+        self.assertEqual((sub.section.title, sub.indicator.code), ("Преподаватели", "СР-3"))  # подшкала считается по своему разделу
+        self.assertTrue(all(i.text_tg for i in env.items()))
+        prog = Instrument.objects.get(code="programme-annual")
+        self.assertEqual(prog.respondent, "dean")
+        self.assertEqual(prog.current_version().derived.count(), 5)
         annual = Instrument.objects.get(code="annual-report").current_version()
         self.assertEqual(annual.derived.count(), 6)
         self.assertTrue(all(d.indicator for d in annual.derived.all()))

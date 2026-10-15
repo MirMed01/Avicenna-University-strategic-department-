@@ -92,3 +92,18 @@ def export_docx(request):
     resp = HttpResponse(content, content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     resp["Content-Disposition"] = f'attachment; filename="kanon-otchet-{year}.docx"'
     return resp
+
+
+@login_required
+def unit_history_view(request, unit_pk):
+    """История показателей кафедры или факультета по годам."""
+    from accounts.permissions import unit_in_scope
+    from core import config
+
+    from .history import unit_history
+
+    unit = get_object_or_404(OrgUnit, pk=unit_pk)
+    if not (has_role(request.user, *VIEW_ALL) or unit_in_scope(request.user, unit, (Role.HEAD, Role.DEAN))):
+        raise PermissionDenied
+    trend = config.get("trend_years")
+    return render(request, "dashboard/history.html", {"unit": unit, "h": unit_history(unit, trend), "trend": trend})

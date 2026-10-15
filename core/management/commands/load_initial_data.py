@@ -110,15 +110,18 @@ class Command(BaseCommand):
                 continue
             made += 1
             ver = InstrumentVersion.objects.create(instrument=inst, number=1)
-            items = {}
+            items, sections = {}, {}
             for si, sec in enumerate(d["sections"]):
-                s = Section.objects.create(version=ver, title=sec["title"], order=si)
+                s = sections[sec["title"]] = Section.objects.create(version=ver, title=sec["title"], order=si)
                 for ii, (code, text, typ, help_, ind) in enumerate(sec["items"]):
                     items[code] = Item.objects.create(section=s, code=code, text=text, type=typ, help=help_, order=ii,
                                                       required=typ != "text", indicator=indicators.get(ind))
-            for di, (code, title, method, num, den, ind) in enumerate(d["derived"]):
+            for di, row in enumerate(d["derived"]):
+                code, title, method, num, den, ind = row[:6]
+                # Седьмое поле (необязательное) — раздел, по которому считать (подшкала анкеты).
                 Derived.objects.create(version=ver, code=code, title=title, method=method, order=di,
-                                       numerator=items.get(num), denominator=items.get(den), indicator=indicators.get(ind))
+                                       numerator=items.get(num), denominator=items.get(den), indicator=indicators.get(ind),
+                                       section=sections.get(row[6]) if len(row) > 6 else None)
             ver.publish()
             self._fill_tajik(d)
         self.stdout.write(f"Инструменты: добавлено {made}.")

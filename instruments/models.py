@@ -24,9 +24,11 @@ class Instrument(models.Model):
     class Respondent(models.TextChoices):
         EXPERT = "expert", _("Эксперт Центра")
         HEAD = "head", _("Заведующий кафедрой")
+        DEAN = "dean", _("Декан")
         TEACHER = "teacher", _("Преподаватель")
         EXAMINER = "examiner", _("Экзаменатор")
         STUDENT = "student", _("Студент (анонимно)")
+        GRADUATE = "graduate", _("Выпускник (анонимно)")
         EXTERNAL = "external", _("Внешний эксперт, работодатель")
 
     code = models.SlugField(_("код"), max_length=50, unique=True)

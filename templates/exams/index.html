@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Анализ тестов" %}{% endblock %}
+{% block content %}
+<div class="row between"><h1>{% translate "Анализ экзаменационных тестов" %}</h1>
+{% if can_upload %}<div class="row"><a class="btn ghost" href="{% url 'exams:template' %}">{% translate "Образец файла" %}</a><a class="btn" href="{% url 'exams:upload' %}">{% translate "+ Загрузить тест" %}</a></div>{% endif %}</div>
+<p class="muted">{% translate "Загрузите таблицу ответов студентов — программа посчитает трудность каждого задания, его различающую способность, работу неверных вариантов и надёжность всего теста. Так видно, какие задания исправить или заменить. Данные о студентах не сохраняются." %}</p>
+<div class="tbl"><table><thead><tr><th>{% translate "Тест" %}</th><th>{% translate "Кафедра" %}</th><th>{% translate "Дата" %}</th><th>{% translate "Студентов / заданий" %}</th><th>{% translate "Надёжность" %}</th><th>{% translate "Заданий с замечаниями" %}</th></tr></thead><tbody>
+{% for a, low, bad in rows %}<tr><td><a href="{% url 'exams:detail' a.pk %}">{{ a.title }}</a><div class="small muted">{{ a.get_kind_display }}</div></td><td>{{ a.org_unit }}</td>
+<td>{{ a.exam_date|date:"d.m.Y" }}</td><td class="num">{{ a.data.n }} / {{ a.data.k }}</td>
+<td>{% if a.data.alpha is None %}—{% elif low %}<span class="pill bad">{{ a.data.alpha }}</span>{% else %}<span class="pill ok">{{ a.data.alpha }}</span>{% endif %}</td>
+<td class="num">{{ bad }}</td></tr>
+{% empty %}<tr><td colspan="6" class="muted">{% translate "Пока ни одного анализа." %}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}
