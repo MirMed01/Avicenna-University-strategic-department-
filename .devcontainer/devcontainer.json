@@ -4,7 +4,7 @@
   "containerEnv": {
     "KANON_DEBUG": "1",
     "KANON_ALLOWED_HOSTS": ".app.github.dev,localhost,127.0.0.1",
-    "KANON_CSRF_ORIGINS": "https://*.app.github.dev,https://localhost:8000",
+    "KANON_CSRF_ORIGINS": "https://*.app.github.dev,https://localhost:8000,http://localhost:8000",
     "KANON_USE_X_FORWARDED_HOST": "1"
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",

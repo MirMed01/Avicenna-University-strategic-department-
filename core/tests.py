@@ -325,3 +325,21 @@ class OldCodespaceLoginTests(TestCase):
         r = self.login(CSRF_TRUSTED_ORIGINS=["https://localhost:8000"] + origins, ALLOWED_HOSTS=["localhost"] + hosts,
                        USE_X_FORWARDED_HOST=forwarded, SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
         self.assertEqual(r.status_code, 302)
+
+
+class CodespaceHttpOriginTests(TestCase):
+    """Дефект 16.10.2026 (снимок владельца): Codespaces прислал форму с Origin http://localhost:8000 — «Origin checking failed»."""
+
+    def test_login_with_http_localhost_origin(self):
+        from kanon.codespaces import settings_from_env
+
+        hosts, origins, forwarded = settings_from_env({"CODESPACES": "true"})
+        User.objects.create_user("d@demo.local", "Demo-pass-2026", full_name="Д", is_active=True)
+        h = {"HTTP_HOST": "localhost:8000", "HTTP_X_FORWARDED_HOST": "animated-enigma-8000.app.github.dev",
+             "HTTP_X_FORWARDED_PROTO": "https", "HTTP_ORIGIN": "http://localhost:8000"}
+        with self.settings(CSRF_TRUSTED_ORIGINS=origins, ALLOWED_HOSTS=["localhost"] + hosts, USE_X_FORWARDED_HOST=forwarded,
+                           SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https")):
+            c = self.client_class(enforce_csrf_checks=True)
+            token = c.get("/login/", **h).cookies["csrftoken"].value
+            r = c.post("/login/", {"username": "d@demo.local", "password": "Demo-pass-2026", "csrfmiddlewaretoken": token}, **h)
+        self.assertEqual(r.status_code, 302)

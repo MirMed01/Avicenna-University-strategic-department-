@@ -11,4 +11,5 @@ def settings_from_env(env):
     if env.get("CODESPACES") != "true":
         return None
     domain = env.get("GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN") or "app.github.dev"
-    return [f".{domain}"], [f"https://*.{domain}"], True
+    # Прокси Codespaces присылает форму то с внешним адресом, то с Origin http(s)://localhost:8000 (снимок 16.10.2026).
+    return [f".{domain}"], [f"https://*.{domain}", "https://localhost:8000", "http://localhost:8000"], True
