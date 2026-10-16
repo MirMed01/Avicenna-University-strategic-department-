@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16 11:00+0500\n"
+"POT-Creation-Date: 2026-10-16 14:57+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2129,6 +2129,9 @@ msgstr "Email"
 msgid "Просит роль"
 msgstr "Нақши дархостшуда"
 
+msgid "Действия"
+msgstr "Амалҳо"
+
 msgid "Рассмотреть"
 msgstr "Баррасӣ кардан"
 
@@ -2453,9 +2456,6 @@ msgstr ""
 
 msgid "Оценка результативности"
 msgstr "Арзёбии самаранокӣ"
-
-msgid "Действия"
-msgstr "Амалҳо"
 
 msgid "Подать на утверждение"
 msgstr "Барои тасдиқ пешниҳод кардан"
@@ -2993,6 +2993,9 @@ msgid ""
 msgstr ""
 "%(rate)s %% ҷавоб доданд — камтар аз %(min_rate)s %%. Натиҷа метавонад фикри"
 " тамоми гурӯҳро инъикос накунад: хулосаҳоро эҳтиёткорона бароред."
+
+msgid "Сколько кодов добавить"
+msgstr "Чанд рамз илова кардан"
 
 msgid "+ Добавить коды"
 msgstr "+ Илова кардани кодҳо"
@@ -4182,6 +4185,9 @@ msgstr ""
 "Хатарҳои кушодаи ҳамаи равандҳо: %(total)s. Амудӣ — эҳтимолият, уфуқӣ — "
 "оқибатҳо (1–5). Ҳудуди «миёна» ва «баланд» дар «Танзимот» муқаррар карда "
 "мешаванд."
+
+msgid "Вероятность"
+msgstr "Эҳтимолият"
 
 msgid "Самые серьёзные риски"
 msgstr "Ҷиддитарин хатарҳо"

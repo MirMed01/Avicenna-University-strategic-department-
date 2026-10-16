@@ -7,7 +7,7 @@
 {% if can_manage %}<a class="btn" href="{% url 'norms:node_create' version.pk %}">+ {% translate "Область" %}</a>{% endif %}</div>
 {% if version.framework.description %}<p>{{ version.framework.description }}</p>{% endif %}
 
-<div class="tbl"><table><thead><tr><th>{% translate "Раздел / показатель" %}</th><th class="num">{% translate "Слабый" %}</th><th class="num">{% translate "Средний" %}</th><th class="num">{% translate "Высокий" %}</th><th>{% translate "Ед." %}</th>{% if can_manage %}<th></th>{% endif %}</tr></thead><tbody>
+<div class="tbl"><table><thead><tr><th>{% translate "Раздел / показатель" %}</th><th class="num">{% translate "Слабый" %}</th><th class="num">{% translate "Средний" %}</th><th class="num">{% translate "Высокий" %}</th><th>{% translate "Ед." %}</th>{% if can_manage %}<th><span class="sr-only">{% translate "Действия" %}</span></th>{% endif %}</tr></thead><tbody>
 {% for n, depth in nodes %}
 <tr><td class="indent-{{ depth }}"><span class="kind">{{ n.get_kind_display }} {{ n.code }}</span><br><b>{{ n.title }}</b>
   {% if n.text %}<div class="small muted">{{ n.text }}</div>{% endif %}</td><td></td><td></td><td></td><td></td>

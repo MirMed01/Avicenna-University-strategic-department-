@@ -28,7 +28,7 @@
 {% empty %}<p class="muted small">{% translate "Проверок не было." %}</p>{% endfor %}</div>{% endif %}
 
 <div class="card"><h2>{% translate "Сотрудники в системе" %}</h2>
-{% if staff %}<div class="tbl"><table><thead><tr><th>{% translate "ФИО" %}</th><th>{% translate "Роль" %}</th><th></th></tr></thead><tbody>
+{% if staff %}<div class="tbl"><table><thead><tr><th>{% translate "ФИО" %}</th><th>{% translate "Роль" %}</th><th><span class="sr-only">{% translate "Действия" %}</span></th></tr></thead><tbody>
 {% for a in staff %}<tr><td>{{ a.user.full_name }}</td><td>{{ a.get_role_display }}</td>
 <td>{% if a.role == "teacher" %}<a href="{% url 'portfolio:show' a.user.pk %}">{% translate "Портфолио" %}</a>{% endif %}</td></tr>{% endfor %}
 </tbody></table></div>

@@ -380,3 +380,62 @@ class NavigationTests(TestCase):
         self.client.force_login(self.director)
         r = self.client.get("/settings/")
         self.assertTrue(r.context["nav_more_active"])
+
+
+class AccessibilityTokensTests(TestCase):
+    """WCAG 2.2 AA (п. 1.4.3): мелкий текст — контраст не ниже 4,5:1. Аудит 16.10.2026 нашёл 1364 нарушения в теме iOS."""
+
+    def tokens(self, block):
+        import re
+
+        return {k: v.strip() for k, v in re.findall(r"--([\w-]+):\s*([^;]+);", block)}
+
+    def themes(self):
+        from pathlib import Path
+
+        from django.conf import settings
+
+        css = Path(settings.BASE_DIR, "static", "kanon.css").read_text(encoding="utf-8")
+        light = self.tokens(css[css.index(":root{"):css.index("}", css.index(":root{"))])
+        dark_start = css.index("@media (prefers-color-scheme:dark){:root{")
+        dark = {**light, **self.tokens(css[dark_start:css.index("}}", dark_start)])}
+        return {"светлая": light, "тёмная": dark}
+
+    @staticmethod
+    def rgba(value, under=(255, 255, 255)):
+        import re
+
+        if value.startswith("#"):
+            h = value[1:]
+            return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+        r, g, b, a = [float(x) for x in re.findall(r"[\d.]+", value)]
+        return tuple(round(c * a + u * (1 - a)) for c, u in zip((r, g, b), under))
+
+    @staticmethod
+    def contrast(fg, bg):
+        def lum(c):
+            c = [x / 255 for x in c]
+            c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+            return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+        a, b = sorted((lum(fg), lum(bg)), reverse=True)
+        return (a + 0.05) / (b + 0.05)
+
+    def test_text_contrast_in_both_themes(self):
+        for name, t in self.themes().items():
+            paper, bg = self.rgba(t["paper"]), self.rgba(t["bg"])
+            pairs = {"muted/paper": (t["muted"], paper), "muted/bg": (t["muted"], bg), "accent/paper": (t["accent"], paper),
+                     "ghost": (t["accent-strong"], self.rgba(t["accent-soft"], bg)),
+                     "ok": (t["ok"], self.rgba(t["ok-bg"], paper)), "warn": (t["warn"], self.rgba(t["warn-bg"], paper)),
+                     "bad": (t["bad"], self.rgba(t["bad-bg"], paper)), "кнопка": (t["accent-ink"], self.rgba(t["accent"]))}
+            for label, (fg, under) in pairs.items():
+                with self.subTest(theme=name, pair=label):
+                    self.assertGreaterEqual(self.contrast(self.rgba(fg, under), under), 4.5)
+
+    def test_no_empty_table_headers(self):
+        from pathlib import Path
+
+        from django.conf import settings
+
+        bad = [str(p) for p in Path(settings.BASE_DIR, "templates").rglob("*.html") if "<th></th>" in p.read_text(encoding="utf-8")]
+        self.assertEqual(bad, [])

@@ -25,7 +25,7 @@
 </div>
 {% if low_rate %}<div class="msg">{% blocktranslate %}Ответили {{ rate }} % — меньше {{ min_rate }} %. Итог может не отражать мнение всей группы: делайте выводы осторожно.{% endblocktranslate %}</div>{% endif %}
 {% if manager %}<form method="post" action="{% url 'feedback:add_codes' c.pk %}" class="row small">{% csrf_token %}
-<input type="number" name="n" value="10" min="1" max="100" style="max-width:90px"><button class="btn small ghost">{% translate "+ Добавить коды" %}</button></form>{% endif %}
+<input type="number" name="n" value="10" min="1" max="100" style="max-width:90px" aria-label="{% translate "Сколько кодов добавить" %}"><button class="btn small ghost">{% translate "+ Добавить коды" %}</button></form>{% endif %}
 
 {% if not c.results_visible %}
 <div class="card"><h2>{% translate "Итоги пока скрыты" %}</h2><p>{% blocktranslate with n=c.response_count min=c.min_respondents %}Ответили {{ n }}, а итоги показываются начиная с {{ min }} ответов.{% endblocktranslate %}

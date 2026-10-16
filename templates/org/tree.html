@@ -6,7 +6,7 @@
   {% if can_manage %}<a class="btn" href="{% url 'org:create' %}">+ {% translate "Добавить подразделение" %}</a>{% endif %}</div>
 <p class="muted">{% blocktranslate with f=counts.faculty d=counts.department c=counts.center %}Факультетов: {{ f }} · кафедр: {{ d }} · центров: {{ c }}{% endblocktranslate %} ·
   {% if show_closed %}<a href="?">{% translate "скрыть закрытые" %}</a>{% else %}<a href="?closed=1">{% translate "показать закрытые" %}</a>{% endif %}</p>
-<div class="tbl"><table><thead><tr><th>{% translate "Подразделение" %}</th><th>{% translate "Вид" %}</th>{% if can_manage %}<th></th>{% endif %}</tr></thead><tbody>
+<div class="tbl"><table><thead><tr><th>{% translate "Подразделение" %}</th><th>{% translate "Вид" %}</th>{% if can_manage %}<th><span class="sr-only">{% translate "Действия" %}</span></th>{% endif %}</tr></thead><tbody>
 {% for u in units %}
 <tr class="{% if not u.is_active %}closed{% endif %}">
   <td class="indent-{{ u.depth }}"><a href="{% url 'org:detail' u.pk %}">{{ u.name }}</a></td>

@@ -5,7 +5,7 @@
 <h1>{% translate "Пользователи" %}</h1>
 {% if pending %}
 <div class="card"><h2>{% blocktranslate with n=pending|length %}Ждут подтверждения ({{ n }}){% endblocktranslate %}</h2>
-<div class="tbl"><table><thead><tr><th>{% translate "ФИО" %}</th><th>{% translate "Email" %}</th><th>{% translate "Просит роль" %}</th><th>{% translate "Подразделение" %}</th><th></th></tr></thead><tbody>
+<div class="tbl"><table><thead><tr><th>{% translate "ФИО" %}</th><th>{% translate "Email" %}</th><th>{% translate "Просит роль" %}</th><th>{% translate "Подразделение" %}</th><th><span class="sr-only">{% translate "Действия" %}</span></th></tr></thead><tbody>
 {% for u in pending %}<tr><td>{{ u.full_name }}</td><td>{{ u.email }}</td><td>{{ u.get_requested_role_display }}</td><td>{{ u.requested_unit|default:"—" }}</td>
 <td><a class="btn small" href="{% url 'accounts:user_detail' u.pk %}">{% translate "Рассмотреть" %}</a></td></tr>{% endfor %}
 </tbody></table></div></div>

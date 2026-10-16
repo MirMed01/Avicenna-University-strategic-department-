@@ -14,7 +14,7 @@
 {% if insp.note %}<p>{{ insp.note|linebreaksbr }}</p>{% endif %}
 
 <div class="card"><h2>{% blocktranslate with done=submitted total=tasks|length %}Заполнения ({{ done }} из {{ total }} сдано){% endblocktranslate %}</h2>
-<div class="tbl"><table><thead><tr><th>{% translate "Инструмент" %}</th><th>{% translate "Кто заполняет" %}</th><th>{% translate "Статус" %}</th><th></th></tr></thead><tbody>
+<div class="tbl"><table><thead><tr><th>{% translate "Инструмент" %}</th><th>{% translate "Кто заполняет" %}</th><th>{% translate "Статус" %}</th><th><span class="sr-only">{% translate "Действия" %}</span></th></tr></thead><tbody>
 {% for t, can in tasks %}<tr><td>{{ t.version.instrument.title }}{% if t.label %}<div class="small muted">{{ t.label }}</div>{% endif %}</td>
 <td>{{ t.version.instrument.get_respondent_display }}</td>
 <td><span class="pill {% if t.status == 'submitted' %}ok{% elif t.status == 'draft' %}warn{% endif %}">{{ t.get_status_display }}</span>

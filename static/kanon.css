@@ -2,10 +2,10 @@
    Цвета только через токены; светлая и тёмная темы — по настройке устройства. */
 :root{
   color-scheme:light dark;
-  --bg:#f2f2f7; --paper:#ffffff; --paper-2:#f2f2f7; --ink:#000000; --muted:rgba(60,60,67,.62); --line:rgba(60,60,67,.18);
+  --bg:#f2f2f7; --paper:#ffffff; --paper-2:#f2f2f7; --ink:#000000; --muted:#636366; --line:rgba(60,60,67,.18);
   --fill:rgba(118,118,128,.12); --fill-2:rgba(118,118,128,.2);
-  --accent:#007aff; --accent-ink:#ffffff; --accent-soft:rgba(0,122,255,.12); --teal:#0a84a0;
-  --ok:#248a3d; --ok-bg:rgba(52,199,89,.16); --warn:#c45f00; --warn-bg:rgba(255,149,0,.18); --bad:#d70015; --bad-bg:rgba(255,59,48,.14);
+  --accent:#0062cc; --accent-strong:#004fa3; --accent-ink:#ffffff; --accent-soft:rgba(0,98,204,.12); --teal:#0a84a0;
+  --ok:#1a7431; --ok-bg:rgba(52,199,89,.16); --warn:#9a4d00; --warn-bg:rgba(255,149,0,.18); --bad:#c00013; --bad-bg:rgba(255,59,48,.14);
   --glass:rgba(249,249,251,.72); --glass-line:rgba(255,255,255,.6); --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
   --r-card:18px; --r-ctl:12px; --side:264px;
   --f-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI Variable","Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -13,10 +13,10 @@
   --f-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#000000; --paper:#1c1c1e; --paper-2:#2c2c2e; --ink:#ffffff; --muted:rgba(235,235,245,.6); --line:rgba(84,84,88,.6);
+  --bg:#000000; --paper:#1c1c1e; --paper-2:#2c2c2e; --ink:#ffffff; --muted:#a1a1a8; --line:rgba(84,84,88,.6);
   --fill:rgba(118,118,128,.24); --fill-2:rgba(118,118,128,.32);
-  --accent:#0a84ff; --accent-soft:rgba(10,132,255,.2); --teal:#64d2ff;
-  --ok:#30d158; --ok-bg:rgba(48,209,88,.18); --warn:#ff9f0a; --warn-bg:rgba(255,159,10,.2); --bad:#ff453a; --bad-bg:rgba(255,69,58,.2);
+  --accent:#4aa3ff; --accent-strong:#8cc4ff; --accent-ink:#00264d; --accent-soft:rgba(74,163,255,.2); --teal:#64d2ff;
+  --ok:#4ee37a; --ok-bg:rgba(48,209,88,.18); --warn:#ffb340; --warn-bg:rgba(255,159,10,.2); --bad:#ff7a70; --bad-bg:rgba(255,69,58,.2);
   --glass:rgba(28,28,30,.7); --glass-line:rgba(255,255,255,.08); --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
 }}
 *{box-sizing:border-box}
@@ -95,7 +95,7 @@ a.stat:hover{text-decoration:none;transform:translateY(-1px)}
   border:0;background:var(--accent);color:var(--accent-ink);font:600 15px var(--f-body);letter-spacing:-.01em;cursor:pointer;
   text-decoration:none;transition:filter .15s,transform .1s}
 .btn:hover{filter:brightness(1.06);text-decoration:none} .btn:active{transform:scale(.98)}
-.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.ghost{background:var(--accent-soft);color:var(--accent-strong)}
 .btn.danger{background:var(--bad);color:#fff}
 .btn.small{min-height:32px;padding:5px 12px;font-size:13.5px;border-radius:10px}
 .btn:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{
@@ -165,6 +165,11 @@ form.f ul label{font-weight:400;display:flex;gap:8px;align-items:center;margin:0
 .riskmap th{font-weight:500;color:var(--muted);font-size:13px;text-align:center}
 
 details>summary{cursor:pointer}
+/* Доступность: текст только для программ чтения с экрана; ссылки внутри текста — с подчёркиванием (не только цветом) */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+p a,.help a,li a,.msg a{text-decoration:underline;text-underline-offset:2px}
+td a:not(.btn){text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.steps a,.navlink{text-decoration:none!important}
 /* Шаги цикла качества на главной */
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;counter-reset:s}
 .steps a{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--fill);color:var(--ink);font-weight:500;font-size:14.5px;height:100%}

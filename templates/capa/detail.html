@@ -15,7 +15,7 @@
 {% if plan.effectiveness_criterion %}<p class="small"><b>{% translate "Критерий результативности:" %}</b> {{ plan.effectiveness_criterion }}</p>{% endif %}</div>
 
 <div class="card"><h2>{% translate "Мероприятия" %}</h2>
-<div class="tbl"><table><thead><tr><th>{% translate "Мероприятие" %}</th><th>{% translate "Исполнитель" %}</th><th>{% translate "Срок" %}</th><th>{% translate "Статус" %}</th>{% if plan.state == "in_progress" or editable %}<th></th>{% endif %}</tr></thead><tbody>
+<div class="tbl"><table><thead><tr><th>{% translate "Мероприятие" %}</th><th>{% translate "Исполнитель" %}</th><th>{% translate "Срок" %}</th><th>{% translate "Статус" %}</th>{% if plan.state == "in_progress" or editable %}<th><span class="sr-only">{% translate "Действия" %}</span></th>{% endif %}</tr></thead><tbody>
 {% for a, can in actions %}<tr><td><span class="kind">{{ a.get_type_display }}</span><br>{{ a.title }}
 {% if a.result_note %}<div class="small muted">{{ a.result_note }}</div>{% endif %}</td>
 <td>{{ a.responsible|default:"—" }}</td><td class="num">{{ a.due_date|date:"d.m.Y" }}</td>
