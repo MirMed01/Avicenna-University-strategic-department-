@@ -11,8 +11,8 @@
 {% if it.localized_help %}<div class="help">{{ it.localized_help }}</div>{% endif %}
 {% if it.type == "yes_no" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}" style="max-width:200px"><option value="">—</option>
 <option value="yes" {% if val == "yes" %}selected{% endif %}>{% translate "Да" %}</option><option value="no" {% if val == "no" %}selected{% endif %}>{% translate "Нет" %}</option></select>
-{% elif it.type == "scale" %}<div class="row" role="radiogroup">{% for n in "12345" %}<label style="display:inline-flex;gap:4px;font-weight:400"><input type="radio" name="i{{ it.pk }}" value="{{ n }}" {% if val == n %}checked{% endif %}> {{ n }}</label>{% endfor %}
-<span class="small muted">{% translate "1 — совсем нет, 5 — полностью да" %}</span></div>
+{% elif it.type == "scale" %}<div class="scale5" role="radiogroup">{% for n in "12345" %}<label><input type="radio" name="i{{ it.pk }}" value="{{ n }}" {% if val == n %}checked{% endif %}>{{ n }}</label>{% endfor %}</div>
+<div class="small muted">{% translate "1 — совсем нет, 5 — полностью да" %}</div>
 {% elif it.type == "choice" %}<select id="i{{ it.pk }}" name="i{{ it.pk }}"><option value="">—</option>{% for o in it.option_list %}<option {% if val == o %}selected{% endif %}>{{ o }}</option>{% endfor %}</select>
 {% elif it.type == "text" %}<textarea id="i{{ it.pk }}" name="i{{ it.pk }}" rows="3" maxlength="3000" placeholder="{% translate "Не пишите имён — так ответ останется анонимным" %}">{{ val }}</textarea>{% endif %}
 {% if err %}<div class="err">{{ err }}</div>{% endif %}</div>{% endfor %}</div>{% endfor %}

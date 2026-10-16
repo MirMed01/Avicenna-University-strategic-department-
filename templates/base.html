@@ -1,33 +1,38 @@
 {% load static i18n %}{% get_current_language as LANG %}<!doctype html>
-<html lang="{{ LANG }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="{{ LANG }}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>{% block title %}{% translate "Канон" %}{% endblock %} · {% translate "ТГМУ" %}</title>
 <link rel="stylesheet" href="{% static 'kanon.css' %}"></head>
-<body>
-<header class="top"><div class="in">
+<body class="{% if user.is_authenticated %}app{% else %}public{% endif %}">
+{% include "_icons.html" %}
+{% get_available_languages as LANGS %}
+{% if user.is_authenticated %}
+<aside class="side glass" aria-label="{% translate "Меню" %}">
   <a class="brand" href="{% url 'home' %}">Канон<small>Қонун · QANUN</small></a>
-  {% if user.is_authenticated %}
-    {% if can_view_all or is_verifier %}<a href="{% url 'dashboard:index' %}">{% translate "Панель" %}</a>{% endif %}
-    <a href="{% url 'org:tree' %}">{% translate "Структура" %}</a>
-    <a href="{% url 'norms:index' %}">{% translate "Нормы" %}</a>
-    <a href="{% url 'instruments:index' %}">{% translate "Инструменты" %}</a>
-    <a href="{% url 'inspections:index' %}">{% translate "Проверки" %}</a>
-    <a href="{% url 'capa:index' %}">{% translate "Планы исправления" %}</a>
-    <a href="{% url 'accreditation:index' %}">{% translate "Аккредитация" %}</a>
-    <a href="{% url 'processes:index' %}">{% translate "Процессы" %}</a>
-    {% if can_view_all %}<a href="{% url 'management:index' %}">{% translate "Руководство" %}</a>{% endif %}
-    <a href="{% url 'exams:index' %}">{% translate "Анализ тестов" %}</a>
-    <a href="{% url 'feedback:index' %}">{% translate "Опросы студентов" %}</a>
-    <a href="{% url 'portfolio:my' %}">{% translate "Моё портфолио" %}</a>
-    {% if is_verifier %}<a href="{% url 'portfolio:queue' %}">{% translate "Проверка портфолио" %}</a>{% endif %}
-    {% if can_manage %}<a href="{% url 'accounts:users' %}">{% translate "Пользователи" %}</a><a href="{% url 'journal' %}">{% translate "Журнал" %}</a><a href="{% url 'settings' %}">{% translate "Настройки" %}</a>{% endif %}
-    <span class="me"><a href="{% url 'accounts:profile' %}">{{ user.full_name|default:user.email }}</a>
-      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>{% translate "Выйти" %}</button></form></span>
-  {% endif %}
-  <form class="lang" method="post" action="{% url 'set_language' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
-    {% get_available_languages as LANGS %}{% for code, name in LANGS %}<button name="language" value="{{ code }}" {% if code == LANG %}aria-current="true"{% endif %}>{{ name }}</button>{% endfor %}</form>
-</div></header>
-<main>
-  {% for m in messages %}<div class="msg {{ m.tags }}">{{ m }}</div>{% endfor %}
+  {% include "_nav.html" %}
+  <div class="side-foot">
+    <a class="me" href="{% url 'accounts:profile' %}"><svg class="ic"><use href="#i-person"/></svg><span>{{ user.full_name|default:user.email }}</span></a>
+    {% include "_lang.html" %}
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="navlink"><svg class="ic"><use href="#i-logout"/></svg><span>{% translate "Выйти" %}</span></button></form>
+  </div>
+</aside>
+<header class="bar glass mobile-only"><a class="brand" href="{% url 'home' %}">Канон</a>{% include "_lang.html" %}</header>
+<nav class="tabbar glass mobile-only" aria-label="{% translate "Главные разделы" %}">
+  {% for t in nav_tabs %}<a href="{{ t.url }}"{% if t.active %} aria-current="page"{% endif %}><svg class="ic"><use href="#i-{{ t.icon }}"/></svg><span>{{ t.short }}</span></a>{% endfor %}
+  <details class="sheet"><summary{% if nav_more_active %} aria-current="page"{% endif %}><svg class="ic"><use href="#i-menu"/></svg><span>{% translate "Меню" %}</span></summary>
+    <div class="sheet-body glass">{% include "_nav.html" %}
+      <div class="side-foot"><a class="me" href="{% url 'accounts:profile' %}"><svg class="ic"><use href="#i-person"/></svg><span>{{ user.full_name|default:user.email }}</span></a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="navlink"><svg class="ic"><use href="#i-logout"/></svg><span>{% translate "Выйти" %}</span></button></form></div></div>
+  </details>
+</nav>
+{% else %}
+<header class="bar glass"><a class="brand" href="{% url 'home' %}">Канон<small>Қонун · QANUN</small></a>{% include "_lang.html" %}</header>
+{% endif %}
+<main class="content">
+  {% for m in messages %}<div class="msg {{ m.tags }}" role="status">{{ m }}</div>{% endfor %}
   {% block content %}{% endblock %}
 </main>
 </body></html>

@@ -343,3 +343,40 @@ class CodespaceHttpOriginTests(TestCase):
             token = c.get("/login/", **h).cookies["csrftoken"].value
             r = c.post("/login/", {"username": "d@demo.local", "password": "Demo-pass-2026", "csrfmiddlewaretoken": token}, **h)
         self.assertEqual(r.status_code, 302)
+
+
+class NavigationTests(TestCase):
+    """Меню в стиле iOS: разделы по группам, подсветка текущего, пункты по правам; нижние вкладки на телефоне."""
+
+    def setUp(self):
+        from accounts.models import Role, RoleAssignment
+        from org.models import OrgUnit
+
+        uni = OrgUnit.objects.create(kind="university", name="ТГМУ")
+        self.director = User.objects.create_user("d@x.tj", "pass12345!", full_name="Директор")
+        RoleAssignment.objects.create(user=self.director, role=Role.DIRECTOR, org_unit=uni)
+        self.teacher = User.objects.create_user("t@x.tj", "pass12345!", full_name="Преподаватель")
+        RoleAssignment.objects.create(user=self.teacher, role=Role.TEACHER, org_unit=uni)
+
+    def items(self, r):
+        return {i["name"]: i for g in r.context["nav_groups"] for i in g["items"]}
+
+    def test_active_section_and_rights(self):
+        self.client.force_login(self.director)
+        r = self.client.get("/processes/?level=department")
+        items = self.items(r)
+        self.assertTrue(items["processes:index"]["active"])
+        self.assertFalse(items["home"]["active"])
+        self.assertIn("settings", items)
+        self.assertEqual([t["name"] for t in r.context["nav_tabs"]], ["home", "inspections:index", "capa:index", "processes:index"])
+        self.assertContains(r, 'class="tabbar')
+        self.client.force_login(self.teacher)
+        items = self.items(self.client.get("/"))
+        self.assertTrue(items["home"]["active"])
+        self.assertNotIn("settings", items)
+        self.assertNotIn("management:index", items)
+
+    def test_section_outside_tabs_marks_menu(self):
+        self.client.force_login(self.director)
+        r = self.client.get("/settings/")
+        self.assertTrue(r.context["nav_more_active"])

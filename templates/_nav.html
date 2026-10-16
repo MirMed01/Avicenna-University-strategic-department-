@@ -1,0 +1,2 @@
+{% for g in nav_groups %}<div class="navgroup"><div class="navtitle">{{ g.title }}</div>
+{% for i in g.items %}<a class="navlink" href="{{ i.url }}"{% if i.active %} aria-current="page"{% endif %}><svg class="ic"><use href="#i-{{ i.icon }}"/></svg><span>{{ i.label }}</span></a>{% endfor %}</div>{% endfor %}

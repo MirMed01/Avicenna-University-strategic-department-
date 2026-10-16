@@ -4,7 +4,7 @@
 <div class="row between"><h1>{% translate "Реестр процессов СМК" %}</h1>
 <div class="row"><a class="btn ghost" href="{% url 'processes:risks' %}">{% translate "Карта рисков" %}</a>{% if manager %}<a class="btn" href="{% url 'processes:create' %}">{% translate "+ Процесс" %}</a>{% endif %}</div></div>
 <p class="muted">{% translate "Каждый процесс с паспортом: цель, владелец, входы и выходы, показатели, риски, механизм улучшения, пункты стандартов (ISO 9001, п. 4.4) и инструменты оценки. Карты факультета и кафедры — типовые: одинаковы для всех факультетов и кафедр. Центр и владелец процесса правят паспорт сами." %}</p>
-<div class="row">{% for v, l, n in levels %}<a class="btn {% if v != level %}ghost{% endif %}" href="?level={{ v }}">{{ l }} ({{ n }})</a>{% endfor %}</div>
+<nav class="seg seg-wide" aria-label="{% translate "Уровень" %}">{% for v, l, n in levels %}<a href="?level={{ v }}"{% if v == level %} aria-current="page"{% endif %}>{{ l }} <span class="muted">{{ n }}</span></a>{% endfor %}</nav>
 {% if level == "university" %}<div class="grid">
   <div class="stat"><b>{{ n_key }}</b><span>{% translate "ключевых процессов" %}</span></div>
   <div class="stat"><b>{% if full is not None %}{{ full }} %{% else %}—{% endif %}</b><span>{% translate "Стратегия 4.3: доля ключевых процессов с полным паспортом (владелец, показатели, риски, мониторинг, улучшение)" %}</span></div>

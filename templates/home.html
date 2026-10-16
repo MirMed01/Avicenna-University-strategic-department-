@@ -18,6 +18,12 @@
   <a class="stat" href="{% url 'portfolio:my' %}"><b>{{ my_entries }}</b><span>{% translate "записей в моём портфолио" %}</span></a>
 </div>
 <div class="card"><h2>{% translate "Цикл качества" %}</h2>
-<p>{% blocktranslate %}Нормы → инструменты → проверка кафедры → выводы проверки → план исправления → повторная проверка.
-Дальше появятся анонимное окно студентов и панели руководства.{% endblocktranslate %}</p></div>
+<ol class="steps">
+  <li><a href="{% url 'norms:index' %}"><b>1</b>{% translate "Нормы" %}</a></li>
+  <li><a href="{% url 'instruments:index' %}"><b>2</b>{% translate "Инструменты" %}</a></li>
+  <li><a href="{% url 'inspections:index' %}"><b>3</b>{% translate "Проверки" %}</a></li>
+  <li><a href="{% url 'inspections:index' %}"><b>4</b>{% translate "Выводы проверки" %}</a></li>
+  <li><a href="{% url 'capa:index' %}"><b>5</b>{% translate "План исправления" %}</a></li>
+  <li><a href="{% url 'inspections:index' %}"><b>6</b>{% translate "Повторная проверка" %}</a></li>
+</ol></div>
 {% endblock %}
