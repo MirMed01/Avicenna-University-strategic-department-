@@ -60,7 +60,10 @@ def journal(request):
 
 def csrf_failure(request, reason=""):
     """Вместо технической страницы Django — понятное объяснение: форма устарела после нового входа."""
-    return render(request, "csrf_failure.html", status=403)
+    from django.conf import settings
+
+    # В режиме показа (Codespaces) — техническая причина мелким шрифтом, чтобы ошибку можно было сразу разобрать.
+    return render(request, "csrf_failure.html", {"reason": reason if settings.DEBUG else ""}, status=403)
 
 
 def health(request):

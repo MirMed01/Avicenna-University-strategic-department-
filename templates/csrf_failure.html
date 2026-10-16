@@ -4,5 +4,6 @@
 <div class="auth card"><h1>{% translate "Страница устарела" %}</h1>
 <p>{% translate "Форма была открыта до нового входа в систему (или вход выполнен в другой вкладке), поэтому для защиты она не принята. Ничего не сохранилось." %}</p>
 <p>{% translate "Вернитесь назад, обновите страницу (F5) и отправьте форму ещё раз." %}</p>
+{% if reason %}<p class="small muted">{% translate "Техническая причина:" %} {{ reason }}</p>{% endif %}
 <div class="row"><a class="btn" href="javascript:history.back()">{% translate "Назад" %}</a><a class="btn ghost" href="{% url 'home' %}">{% translate "На главную" %}</a></div></div>
 {% endblock %}

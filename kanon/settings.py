@@ -17,6 +17,14 @@ CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get("KANON_CSRF_ORIGINS", "").spli
 KANON_PUBLIC_URL = os.environ.get("KANON_PUBLIC_URL", "").rstrip("/")
 # За прокси (Codespaces, nginx) брать настоящий адрес из X-Forwarded-Host.
 USE_X_FORWARDED_HOST = os.environ.get("KANON_USE_X_FORWARDED_HOST", "0") == "1"
+if DEBUG:
+    from kanon.codespaces import settings_from_env
+
+    _cs = settings_from_env(os.environ)
+    if _cs:  # показ в GitHub Codespaces: адрес …app.github.dev доверенный даже в старом Codespace
+        ALLOWED_HOSTS += [h for h in _cs[0] if h not in ALLOWED_HOSTS]
+        CSRF_TRUSTED_ORIGINS += [o for o in _cs[1] if o not in CSRF_TRUSTED_ORIGINS]
+        USE_X_FORWARDED_HOST = USE_X_FORWARDED_HOST or _cs[2]
 if USE_X_FORWARDED_HOST:
     # Тот же доверенный прокси сообщает и протокол — ссылки в QR будут https.
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

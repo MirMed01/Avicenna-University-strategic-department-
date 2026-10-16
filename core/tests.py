@@ -296,3 +296,32 @@ class SeedRegistryTests(TestCase):
         from processes.models import strategy_shares
 
         self.assertEqual(strategy_shares()[2], 17)  # Стратегия 4.2/4.3 — только процессы университета
+
+
+class OldCodespaceLoginTests(TestCase):
+    """Дефект 16.10.2026: в Codespace со старыми настройками любой пароль давал «Страница устарела» (Origin не доверен)."""
+
+    H = {"HTTP_HOST": "localhost:8000", "HTTP_X_FORWARDED_HOST": "animated-enigma-8000.app.github.dev",
+         "HTTP_X_FORWARDED_PROTO": "https", "HTTP_ORIGIN": "https://animated-enigma-8000.app.github.dev"}
+
+    def login(self, **settings):
+        User.objects.create_user("d@demo.local", "Demo-pass-2026", full_name="Д", is_active=True)
+        with self.settings(**settings):
+            c = self.client_class(enforce_csrf_checks=True)
+            token = c.get("/login/", **self.H).cookies["csrftoken"].value
+            return c.post("/login/", {"username": "d@demo.local", "password": "Demo-pass-2026", "csrfmiddlewaretoken": token}, **self.H)
+
+    def test_old_settings_reproduce_the_defect(self):
+        r = self.login(CSRF_TRUSTED_ORIGINS=["https://localhost:8000"], ALLOWED_HOSTS=["localhost", ".app.github.dev"], DEBUG=True)
+        self.assertEqual(r.status_code, 403)
+        self.assertContains(r, "Origin checking failed", status_code=403)  # в режиме показа причина видна
+
+    def test_codespace_detected_from_github_variables(self):
+        from kanon.codespaces import settings_from_env
+
+        self.assertIsNone(settings_from_env({}))
+        hosts, origins, forwarded = settings_from_env(
+            {"CODESPACES": "true", "GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN": "app.github.dev"})
+        r = self.login(CSRF_TRUSTED_ORIGINS=["https://localhost:8000"] + origins, ALLOWED_HOSTS=["localhost"] + hosts,
+                       USE_X_FORWARDED_HOST=forwarded, SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
+        self.assertEqual(r.status_code, 302)

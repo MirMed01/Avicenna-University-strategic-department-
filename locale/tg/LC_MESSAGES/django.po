@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 23:36+0500\n"
+"POT-Creation-Date: 2026-10-16 09:32+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2539,6 +2539,9 @@ msgstr ""
 
 msgid "Вернитесь назад, обновите страницу (F5) и отправьте форму ещё раз."
 msgstr "Ба қафо баргардед, саҳифаро нав кунед (F5) ва шаклро боз фиристед."
+
+msgid "Техническая причина:"
+msgstr "Сабаби техникӣ:"
 
 msgid "На главную"
 msgstr "Ба саҳифаи асосӣ"
