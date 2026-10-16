@@ -17,6 +17,19 @@ class AnalysisError(ValueError):
     pass
 
 
+def read_limited(ws):
+    """Строки листа по одной, не больше MAX_ROWS и MAX_COLS: поддельный файл не займёт всю память (аудит 16.10.2026)."""
+    rows = []
+    for row in ws.iter_rows(values_only=True, max_col=MAX_COLS + 2):
+        row = list(row)
+        while row and row[-1] in (None, ""):  # пустые ячейки справа (лист дополняет ими строку)
+            row.pop()
+        if len(row) > MAX_COLS + 1 or len(rows) > MAX_ROWS + 2:  # первый столбец — номер студента; заголовок и ключ — запас
+            raise AnalysisError("Слишком большой файл: не больше 3000 студентов и 400 заданий.")
+        rows.append(row)
+    return rows
+
+
 def _norm(v):
     if v is None:
         return ""

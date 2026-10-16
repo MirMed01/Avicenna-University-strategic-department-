@@ -3,7 +3,8 @@
 {% block content %}
 <p class="small"><a href="{% url 'exams:index' %}">{% translate "Анализ тестов" %}</a> ›</p>
 <div class="row between"><div><span class="kind">{{ a.get_kind_display }} · {{ a.org_unit }} · {{ a.exam_date|date:"d.m.Y" }}</span><h1>{{ a.title }}</h1></div>
-{% if can_delete %}<form method="post" action="{% url 'exams:delete' a.pk %}" onsubmit="return confirm('{% translate "Удалить анализ?" %}')">{% csrf_token %}<button class="btn small ghost">{% translate "Удалить" %}</button></form>{% endif %}</div>
+{% if can_delete %}<details><summary class="btn small ghost">{% translate "Удалить" %}</summary>
+<form method="post" action="{% url 'exams:delete' a.pk %}" class="row" style="margin-top:6px">{% csrf_token %}<span class="small">{% translate "Удалить анализ?" %}</span><button class="btn small danger">{% translate "Да, удалить" %}</button></form></details>{% endif %}</div>
 <div class="grid">
   <div class="stat"><b>{{ d.n }}</b><span>{% translate "студентов" %}</span></div>
   <div class="stat"><b>{{ d.k }}</b><span>{% translate "заданий" %}</span></div>

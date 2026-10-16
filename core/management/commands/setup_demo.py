@@ -130,3 +130,9 @@ class Command(BaseCommand):
             answers, errors = validate(c, {f"i{it.pk}": v for it, v in zip(items, vote)})
             submit(code.code, answers)
         TextAnswer.objects.filter(campaign=c).exclude(text="Всё понравилось").update(decision=TextAnswer.Decision.PUBLIC)
+        # Итоги видны только после закрытия приёма — демо-опрос закрыт; для пробы студента — второй, открытый опрос.
+        Campaign.objects.filter(pk=c.pk).update(is_open=False)
+        trial = Campaign.objects.create(title="Опрос студентов 1 курса — попробуйте ответить (демо, открыт)", version=version,
+                                        org_unit=department, closes_on=timezone.localdate() + timedelta(days=30),
+                                        created_by=c.created_by)
+        trial.add_codes(25)

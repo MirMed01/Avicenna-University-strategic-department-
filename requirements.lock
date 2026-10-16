@@ -1,0 +1,14 @@
+# Точные версии, проверенные тестами (аудит 16.10.2026, ASVS 14.2). Обновлять: pip install -U -r requirements.txt, тесты, pip freeze > requirements.lock
+asgiref==3.12.1
+Django==5.2.18
+et_xmlfile==2.0.0
+gunicorn==23.0.0
+lxml==6.1.3
+openpyxl==3.1.5
+packaging==26.3
+psycopg==3.3.6
+psycopg-binary==3.3.6
+python-docx==1.2.0
+segno==1.6.6
+sqlparse==0.6.0
+typing_extensions==4.16.0

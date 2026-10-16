@@ -61,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core.middleware.content_security_policy",
 ]
 
 ROOT_URLCONF = "kanon.urls"
@@ -105,7 +106,9 @@ DATABASES = {"default": _database()}
 
 AUTH_USER_MODEL = "accounts.User"
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 8}},
+    # ASVS 2.1.1: не короче 12 символов и не похож на имя или email (аудит 16.10.2026).
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 12}},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
@@ -116,6 +119,8 @@ if sys.argv[1:2] == ["test"]:
     PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 CSRF_FAILURE_VIEW = "core.views.csrf_failure"
+# ASVS 3.3.2: сессия живёт рабочий день, а не две недели.
+SESSION_COOKIE_AGE = int(os.environ.get("KANON_SESSION_HOURS", "8")) * 3600
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"

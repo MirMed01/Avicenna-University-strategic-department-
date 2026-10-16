@@ -8,7 +8,8 @@ User=kanon
 Group=kanon
 WorkingDirectory=/srv/kanon/app
 EnvironmentFile=/etc/kanon/kanon.env
-ExecStart=/srv/kanon/app/.venv/bin/gunicorn kanon.wsgi:application --bind 127.0.0.1:8001 --workers 3 --timeout 60 --access-logfile -
+# Журнал запросов gunicorn отключён: он записывал бы коды студентов из адресов /s/… (журнал запросов ведёт nginx).
+ExecStart=/srv/kanon/app/.venv/bin/gunicorn kanon.wsgi:application --bind 127.0.0.1:8001 --workers 3 --timeout 60
 Restart=on-failure
 RestartSec=5
 NoNewPrivileges=true

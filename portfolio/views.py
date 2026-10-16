@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import FileResponse, Http404
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -130,7 +131,10 @@ def review(request, pk):
             entry.review_comment = form.cleaned_data["comment"]
             entry.save()
             messages.success(request, _("Подтверждено.") if entry.status == S.VERIFIED else _("Возвращено на исправление."))
-    return redirect(request.POST.get("next") or "portfolio:queue")
+    nxt = request.POST.get("next", "")
+    if not url_has_allowed_host_and_scheme(nxt, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
+        nxt = ""  # только свои адреса: переадресация на чужой сайт невозможна (аудит 16.10.2026)
+    return redirect(nxt or "portfolio:queue")
 
 
 @login_required

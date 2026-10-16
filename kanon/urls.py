@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 from accounts.urls import login_view
 from core import views as core_views
@@ -31,5 +32,7 @@ urlpatterns = [
     # Своё имя приложения: иначе ссылки меню «feedback:…» на этих страницах искались бы среди адресов студентов.
     path("s/", include((public_urlpatterns, "student"), namespace="student")),
     path("i18n/", include("django.conf.urls.i18n")),
+    # Вход в служебный раздел — через общую страницу входа с защитой от подбора пароля.
+    path("admin/login/", RedirectView.as_view(url="/login/", query_string=True)),
     path("admin/", admin.site.urls),
 ]

@@ -51,7 +51,8 @@ class Campaign(models.Model):
 
     @property
     def results_visible(self):
-        return self.response_count >= self.min_respondents
+        # Итоги — только после закрытия приёма: иначе по разнице «до и после» видно ответ одного студента (аудит 16.10.2026).
+        return not self.accepting and self.response_count >= self.min_respondents
 
     def add_codes(self, n):
         made = 0

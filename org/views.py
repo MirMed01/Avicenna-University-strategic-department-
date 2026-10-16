@@ -40,6 +40,8 @@ def tree(request):
 
 @login_required
 def detail(request, pk):
+    from inspections.access import can_view as can_view_inspection
+
     unit = get_object_or_404(OrgUnit, pk=pk)
     staff = unit.role_assignments.select_related("user").order_by("role", "user__full_name")
     teachers = [a.user for a in staff if a.role == Role.TEACHER]
@@ -48,7 +50,8 @@ def detail(request, pk):
         "org/detail.html",
         {"unit": unit, "staff": staff, "teachers": teachers, "children": unit.children.order_by("order", "name"),
          "blockers": unit.delete_blockers(),
-         "inspections": unit.inspections.order_by("-created_at")[:10]},
+         # Проверки — только тем, кто вправе их открыть (аудит 16.10.2026: список был виден всем).
+         "inspections": [i for i in unit.inspections.order_by("-created_at")[:10] if can_view_inspection(request.user, i)]},
     )
 
 

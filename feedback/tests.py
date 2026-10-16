@@ -125,6 +125,7 @@ class ResultsTests(Base):
     def test_texts_moderated_before_department_sees(self):
         for code, t in zip(self.codes, ("Хорошо", "Плохо объясняют", "")):
             self.vote(code, text=t)
+        Campaign.objects.filter(pk=self.c.pk).update(is_open=False)  # итоги и тексты — только после закрытия приёма
         self.client.force_login(self.head)
         r = self.client.get(reverse("feedback:detail", args=[self.c.pk]))
         self.assertNotContains(r, "Плохо объясняют")

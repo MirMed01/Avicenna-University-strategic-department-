@@ -29,7 +29,8 @@
 
 {% if not c.results_visible %}
 <div class="card"><h2>{% translate "Итоги пока скрыты" %}</h2><p>{% blocktranslate with n=c.response_count min=c.min_respondents %}Ответили {{ n }}, а итоги показываются начиная с {{ min }} ответов.{% endblocktranslate %}
-{% translate "Так нельзя догадаться, кто что ответил." %}</p></div>
+{% translate "Так нельзя догадаться, кто что ответил." %}
+{% if c.accepting %}{% translate "Итоги откроются после закрытия приёма ответов — пока опрос идёт, они не показываются никому: иначе по изменению после одного ответа можно узнать ответ конкретного студента." %}{% endif %}</p></div>
 {% else %}
 {% if derived %}<div class="card"><h2>{% translate "Показатели" %}</h2>
 <div class="tbl"><table><tbody>{% for d in derived %}<tr><td>{{ d.d.code }} {{ d.d.title }}</td>

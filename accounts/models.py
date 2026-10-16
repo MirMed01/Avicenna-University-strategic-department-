@@ -31,7 +31,8 @@ class Role(models.TextChoices):
 
 
 # Роли, которые человек может запросить сам при регистрации.
-SELF_REQUEST_ROLES = (Role.TEACHER, Role.HEAD, Role.DEAN, Role.EXPERT)
+# Эксперт Центра видит весь университет — эту роль назначает только Центр, при регистрации её не просят (аудит 16.10.2026).
+SELF_REQUEST_ROLES = (Role.TEACHER, Role.HEAD, Role.DEAN)
 
 
 class User(AbstractUser):
@@ -78,3 +79,10 @@ class RoleAssignment(models.Model):
 
     def __str__(self):
         return f"{self.user} — {self.get_role_display()} ({self.org_unit})"
+
+
+class LoginFailure(models.Model):
+    """Неудачная попытка входа (ASVS 2.2.1): после нескольких подряд вход по этому email временно закрыт."""
+
+    username = models.CharField(max_length=254, db_index=True)
+    at = models.DateTimeField(auto_now_add=True, db_index=True)

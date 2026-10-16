@@ -4,7 +4,7 @@ set -euo pipefail
 cd /srv/kanon/app
 /srv/kanon/app/deploy/backup.sh                     # сначала резервная копия
 sudo -u kanon git pull --ff-only
-sudo -u kanon .venv/bin/pip install -q -r requirements.txt
+sudo -u kanon .venv/bin/pip install -q -r requirements.txt -c requirements.lock
 set -a; . /etc/kanon/kanon.env; set +a
 sudo -E -u kanon .venv/bin/python manage.py migrate --noinput
 sudo -E -u kanon .venv/bin/python manage.py load_initial_data

@@ -14,7 +14,7 @@ from core import config
 from core.models import log
 from org.models import OrgUnit
 
-from .analysis import AnalysisError, analyse, flags, parse_rows
+from .analysis import AnalysisError, analyse, flags, parse_rows, read_limited
 from .forms import UploadForm
 from .models import ExamAnalysis
 
@@ -53,8 +53,7 @@ def upload(request):
 
         try:
             wb = load_workbook(form.cleaned_data["file"], read_only=True, data_only=True)
-            rows = list(wb.worksheets[0].iter_rows(values_only=True))
-            data = analyse(*parse_rows(rows))
+            data = analyse(*parse_rows(read_limited(wb.worksheets[0])))
         except AnalysisError as e:
             form.add_error("file", str(e))
         except Exception:  # повреждённый или не тот файл

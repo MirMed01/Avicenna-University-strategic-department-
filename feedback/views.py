@@ -105,7 +105,10 @@ def codes(request, pk):
 def add_codes(request, pk):
     c = get_object_or_404(Campaign, pk=pk)
     if request.method == "POST":
-        n = max(1, min(100, int(request.POST.get("n") or 10)))
+        try:
+            n = max(1, min(100, int(request.POST.get("n") or 10)))
+        except ValueError:
+            n = 10
         c.add_codes(n)
         log(request.user, "update", c, f"«{c}»: добавлено кодов: {n}")
     return redirect("feedback:detail", pk)
@@ -167,7 +170,7 @@ def public_changes(org_unit=None, limit=10):
 # ---------- Страницы для студента: без входа в систему ----------
 
 def entry(request):
-    code = request.GET.get("code", "").strip()
+    code = "".join(ch for ch in request.GET.get("code", "").strip().upper() if ch.isalnum())
     if code:
         return redirect("student:vote", code=code.upper())
     return render(request, "feedback/public_entry.html", {"changes": public_changes()})

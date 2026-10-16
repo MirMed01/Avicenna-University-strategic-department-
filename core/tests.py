@@ -172,7 +172,7 @@ class TajikSmokeTests(TestCase):
     def test_student_page_in_tajik(self):
         from feedback.models import AccessCode
 
-        code = AccessCode.objects.filter(used=False).first().code
+        code = AccessCode.objects.filter(used=False, campaign__is_open=True).first().code  # открытый демо-опрос
         self.client.post("/i18n/setlang/", {"language": "tg", "next": "/"})
         r = self.client.get(f"/s/{code}/")
         self.assertContains(r, "Машғулиятҳои кафедра")
